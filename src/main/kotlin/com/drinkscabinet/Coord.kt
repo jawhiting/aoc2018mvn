@@ -1,5 +1,6 @@
 package com.drinkscabinet
 
+import Delta
 import Direction
 import kotlin.math.abs
 import kotlin.math.max
@@ -14,7 +15,7 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
         return xs
     }
 
-    fun move(d: Direction): Coord {
+    fun move(d: Delta): Coord {
         return Coord(this.x + d.x, this.y + d.y)
     }
 
@@ -30,10 +31,6 @@ private data class Coord3(val x: Long, val y: Long, val z: Long) : Comparable<Co
         if( xs == 0 ) xs = y.compareTo(other.y)
         if( xs == 0 ) return x.compareTo(other.x)
         return xs
-    }
-
-    fun move(d: Direction): Coord {
-        return Coord(this.x + d.x, this.y + d.y)
     }
 
     fun distance(other: Coord3): Long {

@@ -2,9 +2,7 @@ import java.util.*
 
 class PathFinder {
 
-
     companion object {
-
         fun <T> dijkstra2(start: T, target: T, nextMoves: (T) -> Iterable<Pair<T, Int>>): Pair<Map<T, Int>, Map<T, T>> {
             val distances = mutableMapOf<T, Int>()
 

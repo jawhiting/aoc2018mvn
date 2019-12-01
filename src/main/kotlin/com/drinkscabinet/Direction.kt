@@ -1,4 +1,9 @@
-enum class Direction(val x: Int, val y: Int) {
+interface Delta {
+    val x : Int
+    val y : Int
+}
+
+enum class Direction(override val x: Int, override val y: Int) : Delta {
     N(0, -1),
     E(1, 0),
     S(0, 1),
@@ -9,7 +14,7 @@ enum class Direction(val x: Int, val y: Int) {
     }
 }
 
-enum class UpDown(val x: Int, val y: Int) {
+enum class UpDown(override val x: Int, override val y: Int) : Delta{
     U(0, -1),
     R(1, 0),
     D(0, 1),
@@ -21,7 +26,7 @@ enum class UpDown(val x: Int, val y: Int) {
 
 }
 
-enum class Direction8(val x: Int, val y: Int) {
+enum class Direction8(override val x: Int, override val y: Int) : Delta {
     N(0, -1),
     NE(1, -1),
     E(1, 0),
