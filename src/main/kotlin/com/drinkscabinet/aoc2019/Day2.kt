@@ -17,6 +17,7 @@ class Day2(val orig: IntArray) {
 
     fun part2(n: Int, v: Int): Int {
         program = orig.copyOf()
+        ip = 0
         program[1] = n
         program[2] = v
         part1()
@@ -56,8 +57,8 @@ private fun main() {
 
     val d2 = Day2(orig)
     println(d2.part2(12, 2))
-    for( n in 0..1000 ) {
-        for( v in 0..1000) {
+    for( n in 0..100 ) {
+        for( v in 0..100) {
             val r = d2.part2(n, v)
             if( r != 1 ) println("$n $v $r")
             if( r == 19690720 ) return
