@@ -2,10 +2,7 @@ package com.drinkscabinet.aoc2019
 
 import GridString
 import com.drinkscabinet.Coord
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.sqrt
+import kotlin.math.*
 
 private class Day10(val gs: GridString) {
 
@@ -13,6 +10,10 @@ private class Day10(val gs: GridString) {
 
     fun maxSeen() : Int {
         return asteroids.map{ countSee(it)}.max()!!
+    }
+
+    fun maxCoord() : Coord {
+        return asteroids.maxBy { countSee(it) }!!
     }
 
     fun countSee(a: Coord) : Int {
@@ -45,6 +46,8 @@ private fun main() {
     println(d.maxSeen())
     println(Day10(parse(testInput210)).maxSeen())
     println(Day10(parse(input)).maxSeen())
+    println(Day10(parse(input)).maxCoord())
+    println(Day10(parse(input)).countSee(Coord(17, 23)))
 }
 
 private fun parse(s: String) : GridString {
@@ -75,6 +78,10 @@ private fun between(a: Coord, b: Coord, p: Coord) : Boolean {
     if( p.equals(a) || p.equals(b)) return false
     return LongRange(min(a.x, b.x), max(a.x, b.x)).contains(p.x) &&
      LongRange(min(a.y, b.y), max(a.y, b.y)).contains(p.y)
+}
+
+private fun angle(a: Coord, b: Coord): Double {
+    atan()
 }
 
 
