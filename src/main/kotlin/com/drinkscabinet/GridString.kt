@@ -11,6 +11,10 @@ class GridString(val default: Char = '.') {
         return this
     }
 
+    fun getAll(c: Char) : Set<Coord> {
+        return chars.filterValues { it == c }.keys
+    }
+
     fun <T> addAll(m: Map<Coord, T>, transformer: (v: T) -> Char ): GridString {
         m.entries.forEach{ chars[it.key] = transformer.invoke(it.value)}
         return this
