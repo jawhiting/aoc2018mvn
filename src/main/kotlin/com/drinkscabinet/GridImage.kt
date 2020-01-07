@@ -27,7 +27,7 @@ class GridImage(val cellSize: Int = 1, val defaultColor: Color = Color.WHITE) {
         var yMax = data.keys.map(Coord::y).max()!!
         val cellSize3d = cellSize+1
 
-        val image = BufferedImage(((xMax-xMin)*cellSize3d).toInt(), ((yMax-yMin)*cellSize3d).toInt(), BufferedImage.TYPE_INT_RGB)
+        val image = BufferedImage(((xMax-xMin+1)*cellSize3d).toInt(), ((yMax-yMin+1)*cellSize3d).toInt(), BufferedImage.TYPE_INT_RGB)
 
         val graphics = image.createGraphics()
         if( graphics != null ) {

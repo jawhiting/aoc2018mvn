@@ -6,8 +6,19 @@ class GridString(val default: Char = '.') {
 
     private val supplemental = mutableMapOf<Long, String>()
 
+    fun copyOf() : GridString {
+        val copy = GridString(default)
+        copy.chars.putAll(chars)
+        copy.supplemental.putAll(supplemental)
+        return copy
+    }
+
+    fun get(coord: Coord): Char {
+        return chars.getOrDefault(coord, default)
+    }
+
     fun add(coord: Coord, char: Char): GridString {
-        chars.put(coord, char)
+        chars[coord] = char
         return this
     }
 
@@ -18,6 +29,18 @@ class GridString(val default: Char = '.') {
     fun <T> addAll(m: Map<Coord, T>, transformer: (v: T) -> Char ): GridString {
         m.entries.forEach{ chars[it.key] = transformer.invoke(it.value)}
         return this
+    }
+
+    fun applyAll(updater: (Coord, Char) -> Char) {
+        chars.replaceAll(updater)
+    }
+
+    fun neighbours(pos: Coord, directions: Iterable<Delta>) : Iterable<Pair<Coord, Char>> {
+        return directions.map{ pos.move(it) }.map{ it to  get(it)}
+    }
+
+    fun neighbours4(pos: Coord) : Iterable<Pair<Coord, Char>> {
+        return neighbours(pos, Direction.values().asIterable())
     }
 
     fun <T> addAllExtra(m: Map<Coord, T>, transformer: (v: T) -> Pair<Char, String?> ): GridString {
@@ -75,6 +98,22 @@ class GridString(val default: Char = '.') {
             result.append(System.lineSeparator())
         }
         return result.toString()
+    }
+
+    companion object {
+        fun parse(s: String, default: Char = '.') : GridString {
+            val grid = GridString(default)
+            var x = 0
+            var y = 0
+            for (line in s.lines()) {
+                for (char in line.chars()) {
+                    grid.add(Coord(x++, y), char.toChar())
+                }
+                ++y
+                x = 0
+            }
+            return grid
+        }
     }
 }
 
