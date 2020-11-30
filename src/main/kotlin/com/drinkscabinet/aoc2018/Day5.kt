@@ -18,7 +18,7 @@ fun main() {
                 true
             )
         )
-    }.min())
+    }.minOrNull())
 }
 
 fun compact(s: String) : Int {

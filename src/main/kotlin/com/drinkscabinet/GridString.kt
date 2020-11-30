@@ -60,10 +60,10 @@ class GridString(val default: Char = '.') {
 
     fun toString(nums: Boolean): String {
         if( chars.isEmpty() ) return ""
-        var xMin = chars.keys.map(Coord::x).min()!!
-        var xMax = chars.keys.map(Coord::x).max()!!
-        var yMin = chars.keys.map(Coord::y).min()!!
-        var yMax = chars.keys.map(Coord::y).max()!!
+        var xMin = chars.keys.map(Coord::x).minOrNull()!!
+        var xMax = chars.keys.map(Coord::x).maxOrNull()!!
+        var yMin = chars.keys.map(Coord::y).minOrNull()!!
+        var yMax = chars.keys.map(Coord::y).maxOrNull()!!
 
 
         val result = StringBuilder()

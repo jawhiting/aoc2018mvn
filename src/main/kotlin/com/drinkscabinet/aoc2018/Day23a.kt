@@ -40,7 +40,7 @@ fun main() {
                 }
             }
         }
-        val maxDistance = newGeneration.map { it.second }.max() ?: 0
+        val maxDistance = newGeneration.map { it.second }.maxOrNull() ?: 0
 
         currentBotXs = newGeneration.filter { it.second == maxDistance }.map { it.first }.toSet()
     }
@@ -50,7 +50,7 @@ fun main() {
 
 inline fun <T> Iterable<T>.deltaBy(block: (T) -> Long): Long {
     val values = map(block)
-    return abs((values.max() ?: 0L) - (values.min() ?: 0L))
+    return abs((values.maxOrNull() ?: 0L) - (values.minOrNull() ?: 0L))
 }
 
 data class CoordX(val x: Long, val y: Long, val z: Long) {

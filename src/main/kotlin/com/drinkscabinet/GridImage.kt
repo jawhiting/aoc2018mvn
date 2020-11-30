@@ -21,10 +21,10 @@ class GridImage(val cellSize: Int = 1, val defaultColor: Color = Color.WHITE) {
 
     fun toImage(): BufferedImage {
         if( data.isEmpty() ) throw IllegalStateException("No data")
-        var xMin = data.keys.map(Coord::x).min()!!
-        var xMax = data.keys.map(Coord::x).max()!!
-        var yMin = data.keys.map(Coord::y).min()!!
-        var yMax = data.keys.map(Coord::y).max()!!
+        var xMin = data.keys.map(Coord::x).minOrNull()!!
+        var xMax = data.keys.map(Coord::x).maxOrNull()!!
+        var yMin = data.keys.map(Coord::y).minOrNull()!!
+        var yMax = data.keys.map(Coord::y).maxOrNull()!!
         val cellSize3d = cellSize+1
 
         val image = BufferedImage(((xMax-xMin+1)*cellSize3d).toInt(), ((yMax-yMin+1)*cellSize3d).toInt(), BufferedImage.TYPE_INT_RGB)
