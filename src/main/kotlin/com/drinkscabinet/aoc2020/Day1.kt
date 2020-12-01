@@ -5,14 +5,20 @@ import java.util.*
 
 private fun main() {
     var nums = Utils.extractInts(input).toSortedSet();
-    val result = nums.parallelStream().filter { nums.contains( 2020 - it ) }.findAny().get()
+    val result = findSum(2020, nums).get()
     println(result)
     val mult = result * (2020 - result)
 
     // 1886252724 too high
     println(mult)
 
-    // Part 2
+    // Part 2 stream
+    val result2 = nums.map { it to findSum(2020 - it, nums) }.first { it.second.isPresent }
+    println(result2.first)
+    println(result2.second.get())
+    println(2020 - result2.first - result2.second.get())
+
+    // Part 2 loop
     for (num in nums) {
         val next = findSum(2020-num, nums)
         if (next.isPresent) {
