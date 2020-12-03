@@ -19,6 +19,10 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
         return Coord(this.x + d.x, this.y + d.y)
     }
 
+    fun move(c: Coord): Coord {
+        return Coord(this.x + c.x, this.y + c.y)
+    }
+
     fun distance(c: Coord): Long {
         return abs(x - c.x) + abs(y - c.y)
     }

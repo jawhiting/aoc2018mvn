@@ -58,12 +58,28 @@ class GridString(val default: Char = '.') {
         return toString(false)
     }
 
+    fun getXMin() : Long {
+        return chars.keys.map(Coord::x).minOrNull()!!
+    }
+
+    fun getXMax() : Long {
+        return chars.keys.map(Coord::x).maxOrNull()!!
+    }
+
+    fun getYMin() : Long {
+        return chars.keys.map(Coord::y).minOrNull()!!
+    }
+
+    fun getYMax() : Long {
+        return chars.keys.map(Coord::y).maxOrNull()!!
+    }
+
     fun toString(nums: Boolean): String {
         if( chars.isEmpty() ) return ""
-        var xMin = chars.keys.map(Coord::x).minOrNull()!!
-        var xMax = chars.keys.map(Coord::x).maxOrNull()!!
-        var yMin = chars.keys.map(Coord::y).minOrNull()!!
-        var yMax = chars.keys.map(Coord::y).maxOrNull()!!
+        var xMin = getXMin()
+        var xMax = getXMax()
+        var yMin = getYMin()
+        var yMax = getYMax()
 
 
         val result = StringBuilder()
