@@ -1,86 +1,95 @@
 package com.drinkscabinet.aoc2020
 
+
+
 fun main() {
     val passports = parse(input)
-    val validCount = passports.filter { isValid(it) }.count()
+    val validCount = passports.filter { it.isValid() }.count()
     println("Part1=$validCount")
 
-    val validCount2 = passports.filter{ isValid(it, true) }.count()
+    val validCount2 = passports.filter{ it.isValid(true) }.count()
     println("Part2=$validCount2")
-
-    // test hcl
-    println(contentValid("hcl", "#123abc"))
-    println(contentValid("hcl", "#123abz"))
-    println(contentValid("hcl", "123abc"))
-    println(contentValid("pid", "000000001"))
-    println(contentValid("pid", "0123456789"))
 }
 
 
-fun parse(s: String) : List<Map<String, String>> {
-    val result = mutableListOf<Map<String, String>>()
+private fun parse(s: String) : List<Passport> {
+    val result = mutableListOf<Passport>()
     var passport = mutableMapOf<String, String>()
 
     for (line in s.lines()) {
         if( line.trim().isEmpty() ) {
             // next passport
-            result.add(passport)
+            result.add(Passport(passport))
             passport = mutableMapOf()
         }
         else {
             line.split(" ").map { it.substringBefore(":").trim() to it.substringAfter(":").trim() }.toMap(passport)
         }
     }
-    if( passport.isNotEmpty() ) result.add(passport)
+    if( passport.isNotEmpty() ) result.add(Passport(passport))
     println("Parsed ${result.size} passports")
     return result
 }
-/*
-byr (Birth Year)
-iyr (Issue Year)
-eyr (Expiration Year)
-hgt (Height)
-hcl (Hair Color)
-ecl (Eye Color)
-pid (Passport ID)
-cid (Country ID)
- */
-private val mandatoryFields = listOf("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid")
-private val optionalFields = listOf("cid")
-private val eyeColours = setOf("amb", "blu", "brn", "gry", "grn", "hzl", "oth")
-fun isValid(passport: Map<String, String>, checkContent: Boolean = false) : Boolean {
-    val validFields =  mandatoryFields.filterNot { passport.containsKey(it) }.isEmpty()
-    if( !validFields || !checkContent ) return validFields
-    // Check content
-    val validContent = mandatoryFields.filterNot { contentValid(it, passport[it]!!) }.isEmpty()
-    return validContent
-}
 
-private fun contentValid(field: String, value: String) : Boolean {
-    return try {
-        when (field) {
-            "byr" -> value.toInt() in 1920..2002
-            "iyr" -> value.toInt() in 2010..2020
-            "eyr" -> value.toInt() in 2020..2030
-            "hgt" -> {
-                if( value.endsWith("in")) {
-                    value.substringBefore("i").toInt() in 59..76
-                }
-                else if( value.endsWith("cm")) {
-                    value.substringBefore("c").toInt() in 150..193
-                }
-                else {
-                    false
-                }
-            }
-            "hcl" -> "#[0-9a-f]{6}".toRegex().matches(value)
-            "ecl" -> eyeColours.contains(value)
-            "pid" -> "[0-9]{9}".toRegex().matches(value)
-            else -> true
+data class Passport(val data: Map<String, String>) {
+    companion object {
+        private val mandatoryFields = listOf("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid")
+        private val optionalFields = listOf("cid")
+        private val eyeColours = setOf("amb", "blu", "brn", "gry", "grn", "hzl", "oth")
+
+        fun parse(data: String) : Passport {
+            return Passport(
+                data.split("\n", " ").map { it.substringBefore(":").trim() to it.substringAfter(":").trim() }.toMap()
+            )
         }
-    }catch (e: Exception) {
-        false
+
+        fun contentValid(field: String, value: String) : Boolean {
+            return try {
+                when (field) {
+                    "byr" -> value.toInt() in 1920..2002
+                    "iyr" -> value.toInt() in 2010..2020
+                    "eyr" -> value.toInt() in 2020..2030
+                    "hgt" -> {
+                        if( value.endsWith("in")) {
+                            value.substringBefore("i").toInt() in 59..76
+                        }
+                        else if( value.endsWith("cm")) {
+                            value.substringBefore("c").toInt() in 150..193
+                        }
+                        else {
+                            false
+                        }
+                    }
+                    "hcl" -> "#[0-9a-f]{6}".toRegex().matches(value)
+                    "ecl" -> eyeColours.contains(value)
+                    "pid" -> "[0-9]{9}".toRegex().matches(value)
+                    else -> true
+                }
+            }catch (e: Exception) {
+                false
+            }
+        }
     }
+
+    /*
+    byr (Birth Year)
+    iyr (Issue Year)
+    eyr (Expiration Year)
+    hgt (Height)
+    hcl (Hair Color)
+    ecl (Eye Color)
+    pid (Passport ID)
+    cid (Country ID)
+     */
+    fun isValid(checkContent: Boolean = false) : Boolean {
+        val validFields =  mandatoryFields.filterNot { data.containsKey(it) }.isEmpty()
+        if( !validFields || !checkContent ) return validFields
+        // Check content
+        val validContent = mandatoryFields.filterNot { contentValid(it, data[it]!!) }.isEmpty()
+        return validContent
+    }
+
+
 }
 
 
