@@ -1,29 +1,20 @@
 package com.drinkscabinet.aoc2020
 
-import java.util.stream.Collectors
+import com.drinkscabinet.chunks
 
 fun main() {
-
-    val acc = input.split("\n\n").map { it.chars().filter { it in 'a'.toInt()..'z'.toInt() }.distinct().count() }.sum()
+    val acc = input.chunks().map { it.chars().filter { it in 'a'.toInt()..'z'.toInt() }.distinct().count() }.sum()
     println("Part1=$acc")
     // 6911
 
-    val acc2 = input.split("\n\n").map{ intersect(it) }.sum()
+    val acc2 = input.chunks().map{ intersect2(it) }.sum()
     println("Part2=$acc2")
     // 4589 too high
     // 3473 correct
-
 }
 
-private fun intersect(s: String) : Int {
-
-    var intersection = s.lines().first().chars().distinct().toArray().toSet()
-
-    for (line in s.lines()) {
-        val thisIntersection = line.chars().distinct().toArray().toSet()
-        intersection = intersection.intersect(thisIntersection)
-    }
-    return intersection.size
+private fun intersect2(s: String) : Int {
+    return s.lines().map{ it.chars().toArray().toSet() }.reduce{ a,b -> a.intersect(b)}.size
 }
 
 private val testInput = """

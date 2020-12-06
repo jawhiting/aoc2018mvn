@@ -10,5 +10,13 @@ class Utils {
         fun extractLongs(s: String): LongArray {
             return "(-?\\d+)".toRegex().findAll(s).asIterable().map { it.value.toLong() }.toLongArray()
         }
+
+        fun chunks(s: String): List<String> {
+            return s.split("\n\n")
+        }
     }
+}
+
+fun String.chunks() : List<String> {
+    return this.split("\n\n")
 }
