@@ -39,8 +39,25 @@ class GridString(val default: Char = '.') {
         return directions.map{ pos.move(it) }.map{ it to  get(it)}
     }
 
+    fun neighboursMatch(pos: Coord, directions: Iterable<Delta>, filter: (Char) -> Boolean) : Int {
+        return directions.map{ pos.move(it) }.filter{ filter(get(it)) }.count()
+    }
+
     fun neighbours4(pos: Coord) : Iterable<Pair<Coord, Char>> {
         return neighbours(pos, Direction.values().asIterable())
+    }
+
+    fun nextInDirection(pos: Coord, direction: Delta) : Pair<Coord, Char> {
+        // Ignore default char. If we hit the edge, return default char
+        var current = pos.move(direction)
+        val maxX = getXMax()
+        val maxY = getYMax()
+        val minX = getXMin()
+        val minY = getYMin()
+        while( get(current) == default && current.x in minX..maxX && current.y in minY..maxY) {
+            current = current.move(direction)
+        }
+        return current to get(current)
     }
 
     fun <T> addAllExtra(m: Map<Coord, T>, transformer: (v: T) -> Pair<Char, String?> ): GridString {
