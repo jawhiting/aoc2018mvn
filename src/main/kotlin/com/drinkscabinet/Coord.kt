@@ -26,6 +26,21 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
     fun distance(c: Coord): Long {
         return abs(x - c.x) + abs(y - c.y)
     }
+
+    fun rotate90(c: Int) : Coord {
+        var amount = c%4
+        if( amount < 0 ) amount = 4+amount
+        var result = this
+        for( i in 1..amount ) {
+            result = result.rotate90()
+        }
+        return result
+    }
+
+    // Rotate 90 degrees clockwise
+    fun rotate90() : Coord {
+        return Coord(-y, x)
+    }
 }
 
 private data class Coord3(val x: Long, val y: Long, val z: Long) : Comparable<Coord3> {

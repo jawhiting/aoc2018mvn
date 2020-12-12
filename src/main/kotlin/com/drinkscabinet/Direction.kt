@@ -10,7 +10,9 @@ enum class Direction(override val x: Int, override val y: Int) : Delta {
     W(-1, 0);
 
     fun rotate(c: Int): Direction {
-        return values()[(ordinal+c) % values().size]
+        var amount = c%4
+        if( c < 0 ) amount = 4+amount
+        return values()[(ordinal+amount) % values().size]
     }
 }
 

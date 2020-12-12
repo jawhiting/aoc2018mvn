@@ -1,4 +1,6 @@
 import com.drinkscabinet.Coord
+import java.util.*
+import kotlin.collections.HashMap
 
 class GridString(val default: Char = '.') {
 
