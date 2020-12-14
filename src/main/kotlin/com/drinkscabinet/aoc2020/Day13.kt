@@ -1,6 +1,7 @@
 package com.drinkscabinet.aoc2020
 
 import com.drinkscabinet.Utils
+import kotlin.system.measureTimeMillis
 
 
 private fun main() {
@@ -21,36 +22,36 @@ private fun main() {
     println(min)
     val minDepart = nextAfter(time, min)
     println(minDepart)
-    println((minDepart-time) * min)
+    println((minDepart - time) * min)
 
-    part2a("17,x,13,19")
-    part2a("67,7,59,61")
-    part2a("67,x,7,59,61")
-    part2a("67,7,x,59,61")
-    part2a("1789,37,47,1889")
+    println(measureTimeMillis { part2a("17,x,13,19") })
+    println(measureTimeMillis { part2a("67,7,59,61") })
+    println(measureTimeMillis { part2a("67,x,7,59,61") })
+    println(measureTimeMillis { part2a("67,7,x,59,61") })
+    println(measureTimeMillis { part2a("1789,37,47,1889") })
 //    val startingPoint = 100_000_000_000_000
-    part2a(input2)
+    println(measureTimeMillis { part2a(input2) } )
 }
 
-private fun nextAfter(time: Long, period: Long) : Long {
+private fun nextAfter(time: Long, period: Long): Long {
     val mod = time % period
-    if( mod == 0L ) return time
-    return time + (period-mod)
+    if (mod == 0L) return time
+    return time + (period - mod)
 }
 
-private fun part2a(s: String, tStart : Long = 1) {
+private fun part2a(s: String, tStart: Long = 1) {
     // unpack into list of pairs of value to position
     val items = s.split(",")
     val buses = mutableListOf<Pair<Long, Long>>()
-    for( i in items.indices) {
-        if( items[i] == "x" ) continue
+    for (i in items.indices) {
+        if (items[i] == "x") continue
         val id = items[i].toLong()
         var time = i.toLong()
-        if( time > id ) time %= id
-        buses.add(id to (id-time)%id)
+        if (time > id) time %= id
+        buses.add(id to (id - time) % id)
     }
     println(buses)
-    val busesToMatch = buses.map{ it.first }.toMutableSet()
+    val busesToMatch = buses.map { it.first }.toMutableSet()
     var t = 1
     // find max pair
     val maxPair = buses.maxByOrNull { it.first }!!
@@ -61,14 +62,14 @@ private fun part2a(s: String, tStart : Long = 1) {
 
     var current = 0L
 
-    while( busesToMatch.isNotEmpty() ) {
+    while (busesToMatch.isNotEmpty()) {
 
         current += increment
         // See if any match - if so add them to the increment
         for (bus in buses) {
-            if( current % bus.first == bus.second) {
+            if (current % bus.first == bus.second) {
                 // Found a matching one - increase the increment if we haven't already
-                if( busesToMatch.contains(bus.first)) {
+                if (busesToMatch.contains(bus.first)) {
                     increment *= bus.first
                     busesToMatch.remove(bus.first)
                     println("Found match for $bus increment is now $increment")
@@ -87,7 +88,7 @@ private data class Tester(val buses: List<Pair<Long, Long>>) {
     val maxPair = buses.maxByOrNull { it.first }!!
     val firstPair = buses.first()
 
-    inline fun matches(toTest: Long) : Boolean {
+    inline fun matches(toTest: Long): Boolean {
         return buses.none { toTest % it.first != it.second }
     }
 }

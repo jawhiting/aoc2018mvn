@@ -51,18 +51,18 @@ private class Ship {
     }
 }
 
-fun main() {
+private fun main() {
 //    part1()
     part2()
 }
 
-fun part1() {
+private fun part1() {
     val ship = Ship()
     input.lines().forEach { ship.move(it) }
     println("Position=${ship.position} Distance=${ship.position.distance(Coord(0,0))}")
 }
 
-fun part2() {
+private fun part2() {
     val ship = Ship()
     input.lines().forEach { ship.move2(it) }
     println("Position=${ship.position} Distance=${ship.position.distance(Coord(0,0))}")
