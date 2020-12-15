@@ -1,9 +1,16 @@
 package com.drinkscabinet.aoc2020
 
 import com.drinkscabinet.Utils
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.math.pow
 
 private fun main() {
-    part1()
+//    part1()
+    println(findAllXs("XX01XX"))
+    println(addresses(42, "X1001X"))
+    println(addresses(26, "00000000000000000000000000000000X0XX"))
+    part2()
 }
 
 
@@ -24,6 +31,11 @@ private fun part1() {
     println("Part1=${Computer().execute(input.lines())}")
 }
 
+private fun part2() {
+    println("Part2test=${Computer().execute2(testInput2.lines())}")
+    println("Part2=${Computer().execute2(input.lines())}")
+}
+
 fun apply(l: Long, mask0: Long, mask1: Long) : Long {
     // set the 1s
     var result = l or mask1
@@ -40,9 +52,51 @@ fun get0Mask(s: String) : Long {
     return s.replace('X', '1').toLong(2)
 }
 
+private fun addresses(addr: Long, mask: String) : Set<Long> {
+    // Get all the addresses resulting from the current mask applied to this address
+    val mask1 = get1Mask(mask)
+//    val mask0 = get0Mask(mask)
+    val startAddr = addr or mask1
+    println("addr : ${addr.toString(2)}")
+    println("mask : ${mask}")
+    println("mask1: ${addr.toString(2)}")
+//    println("mask0: ${addr.toString(2)}")
+    println("apply: ${startAddr.toString(2)}")
+    // Now, for every bit position with an X, apply all the combinations
+    val result = mutableSetOf<Long>()
+    val xCount = mask.count { it == 'X' }
+    // get all the x positions
+    val xPos = findAllXs(mask).toList()
+    println(xPos)
+    val combinations = 2.0.pow(xCount.toDouble()).toInt()
+    println(startAddr.toString(2))
+    for( i in 0 until combinations) {
+        // apply the bits to the startAddr
+        val bits = BitSet.valueOf(longArrayOf(startAddr))
+
+        // Now manipulate the bits
+        val applyBits = BitSet.valueOf(longArrayOf(i.toLong()))
+        for( b in 0 until xCount) {
+            // get the bit, apply it to the corresponding main bit
+            bits[xPos[b]] = applyBits[b]
+        }
+        val element = bits.toLongArray()[0]
+        println(element.toString(2))
+        result.add(element)
+    }
+    return result
+}
+
+private fun findAllXs(s: String) : Set<Int> {
+    val result = mutableSetOf<Int>()
+    s.toCharArray().forEachIndexed { index, c -> if( c == 'X') result.add(s.lastIndex - index) }
+    return result
+}
+
 private class Computer() {
     private var ip = 0
     private val memory = mutableMapOf<Long, Long>()
+    private var mask = ""
     private var mask0 = 0L
     private var mask1 = 0L
 
@@ -56,6 +110,7 @@ private class Computer() {
 
     public fun execute(instruction: String) {
         if( instruction.startsWith("mask")) {
+            println(instruction.count { it == 'X' })
             mask0 = get0Mask(instruction.substringAfter("= "))
             mask1 = get1Mask(instruction.substringAfter("= "))
         }
@@ -66,6 +121,32 @@ private class Computer() {
             memory[address] = apply(value, mask0, mask1)
         }
     }
+
+    public fun execute2(program: List<String>) : Long {
+        for (instruction in program) {
+            execute2(instruction)
+        }
+        // Add all the non-zero values
+        return memory.values.sum()
+    }
+
+    public fun execute2(instruction: String) {
+        if( instruction.startsWith("mask")) {
+            println(instruction.count { it == 'X' })
+            mask = instruction.substringAfter("= ")
+        }
+        else {
+            val values = Utils.extractLongs(instruction)
+            val address = values[0]
+            val value = values[1]
+            // Find all the places to write
+            val addresses = addresses(address, mask)
+            addresses.forEach { memory[it] = value }
+        }
+    }
+
+
+
 }
 
 private val testInput = """
@@ -73,6 +154,13 @@ private val testInput = """
     mem[8] = 11
     mem[7] = 101
     mem[8] = 0
+""".trimIndent()
+
+private val testInput2 = """
+    mask = 000000000000000000000000000000X1001X
+    mem[42] = 100
+    mask = 00000000000000000000000000000000X0XX
+    mem[26] = 1
 """.trimIndent()
 
 private val input = """
