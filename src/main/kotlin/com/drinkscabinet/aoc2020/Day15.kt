@@ -20,12 +20,11 @@ fun main() {
 
 fun saidAtTurn(s: String, t: Long) : Long {
 
-    val whenLastSaid = mutableMapOf<Long, Long>()
-    val whenLastSaid2 = IntArray(t.toInt(), {-1})
+    val whenLastSaid = LongArray(t.toInt())
     val initial = Utils.extractLongs(s)
     var turn = 1L
     for (i in initial) {
-        whenLastSaid[i] = turn
+        whenLastSaid[i.toInt()] = turn
         ++turn
     }
     // Now start the game
@@ -44,13 +43,13 @@ fun saidAtTurn(s: String, t: Long) : Long {
         }
 
         // Now examine what we're about to say
-        if( !whenLastSaid.containsKey(toSay)) {
+        if( whenLastSaid[toSay.toInt()] == 0L) {
             firstTimeSaid = true
         }
         else {
-            previouslySaid = whenLastSaid[toSay]!!
+            previouslySaid = whenLastSaid[toSay.toInt()]
         }
-        whenLastSaid[toSay] = turn
+        whenLastSaid[toSay.toInt()] = turn
 //        println("Turn: $turn Value: $toSay")
         if (turn == t) return toSay
         ++turn
