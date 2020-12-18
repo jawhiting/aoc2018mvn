@@ -43,7 +43,7 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
     }
 }
 
-private data class Coord3(val x: Long, val y: Long, val z: Long) : Comparable<Coord3> {
+data class Coord3(val x: Long, val y: Long, val z: Long) : Comparable<Coord3> {
 
     override fun compareTo(other: Coord3): Int {
         var xs = z.compareTo(other.z)
@@ -54,6 +54,49 @@ private data class Coord3(val x: Long, val y: Long, val z: Long) : Comparable<Co
 
     fun distance(other: Coord3): Long {
         return abs(x - other.x) + abs(y - other.y) + abs(z - other.z)
+    }
+
+    fun neighbours26() : Set<Coord3> {
+        val result = mutableSetOf<Coord3>()
+        for( x in -1..1) {
+            for( y in -1..1) {
+                for ( z in -1..1) {
+                    if( x == 0 && y == 0 && z == 0 ) continue   // dont add self
+                    result.add(Coord3(this.x + x, this.y + y, this.z + z))
+                }
+            }
+        }
+        return result
+    }
+}
+
+data class Coord4(val x: Long, val y: Long, val z: Long, val w: Long) : Comparable<Coord4> {
+
+    override fun compareTo(other: Coord4): Int {
+        var xs = w.compareTo(other.w)
+        if( xs == 0 ) xs = z.compareTo(other.z)
+        if( xs == 0 ) xs = y.compareTo(other.y)
+        if( xs == 0 ) return x.compareTo(other.x)
+        return xs
+    }
+
+    fun distance(other: Coord4): Long {
+        return abs(x - other.x) + abs(y - other.y) + abs(z - other.z) + abs(w - other.w)
+    }
+
+    fun neighbours80() : Set<Coord4> {
+        val result = mutableSetOf<Coord4>()
+        for( x in -1..1) {
+            for( y in -1..1) {
+                for ( z in -1..1) {
+                    for( w in -1..1 ) {
+                        if (x == 0 && y == 0 && z == 0 && w == 0) continue   // dont add self
+                        result.add(Coord4(this.x + x, this.y + y, this.z + z, this.w + w))
+                    }
+                }
+            }
+        }
+        return result
     }
 }
 
