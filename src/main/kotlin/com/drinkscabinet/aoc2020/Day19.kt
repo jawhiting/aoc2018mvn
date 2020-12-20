@@ -53,15 +53,17 @@ private fun toRegex(id: Int, rules: Map<Int, String>) : String {
         ints.sortDescending()
         for (int in ints) {
             if( id == 11 ) {
-                regex = "(?<grp11>(${toRegex(42, rules)})+(${toRegex(31, rules)})+)"
+                regex = "(${toRegex(42, rules)})+(${toRegex(31, rules)})+"
             }
             else if( id == 8 ) {
-                regex = "(?:${toRegex(42, rules)})+"
+                regex = "(${toRegex(42, rules)})+"
             }
             else {
                 val r = toRegex(int, rules)
                 regex = regex.replace(int.toString(), r)
-                regex = "(?:$regex)"
+                if( !regex.startsWith("(") || !regex.endsWith(")")) {
+                    regex = "($regex)"
+                }
             }
         }
 

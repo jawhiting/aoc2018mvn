@@ -73,6 +73,48 @@ class GridString(val default: Char = '.') {
         return this
     }
 
+    fun flipH() : GridString {
+        val target = chars.map { Coord(-it.key.x, it.key.y) to it.value }.toMap()
+        chars.clear()
+        chars.putAll(target)
+        return this
+    }
+
+    fun flipV() : GridString {
+        val target = chars.map { Coord(it.key.x, -it.key.y) to it.value }.toMap()
+        chars.clear()
+        chars.putAll(target)
+        return this
+    }
+
+    /**
+     * Translate all cells in this grid by the specified coordinate
+     */
+    fun translate(c: Coord) : GridString {
+        val target = chars.map { it.key.move(c) to it.value }.toMap()
+        chars.clear()
+        chars.putAll(target)
+        return this
+    }
+
+    /**
+     * Translate the grid so that the top left corner is 0,0
+     */
+    fun normalise() {
+        val c = Coord(-getXMin(), -getYMin())
+        translate(c)
+    }
+
+    /**
+     * Rotate right 90 degrees the specified number of times
+     */
+    fun rotate90(count: Int) : GridString {
+        val target = chars.map { it.key.rotate90(count) to it.value }.toMap()
+        chars.clear()
+        chars.putAll(target)
+        return this
+    }
+
     override fun toString(): String {
         return toString(false)
     }
@@ -137,10 +179,14 @@ class GridString(val default: Char = '.') {
 
     companion object {
         fun parse(s: String, default: Char = '.') : GridString {
+            return parse(s.lines(), default)
+        }
+
+        fun parse(s: List<String>, default: Char = '.') : GridString {
             val grid = GridString(default)
             var x = 0
             var y = 0
-            for (line in s.lines()) {
+            for (line in s) {
                 for (char in line.chars()) {
                     grid.add(Coord(x++, y), char.toChar())
                 }
@@ -156,9 +202,18 @@ fun main() {
     val gs = GridString()
 
     gs.add(Coord(0, 0), 'x')
-    gs.add(Coord(10, 14), 'Z')
-    gs.add(Coord(5, 3), 'Z')
+    gs.add(Coord(1, 1), 'y')
+    gs.add(Coord(3, 3), 'Z')
 
-    println(gs)
+    println(gs.toString(true))
+
+    for( i in 1 .. 4 ) {
+        gs.rotate90(1).normalise()
+        println(gs.toString(true))
+    }
+
+    gs.flipH()
+    println(gs.toString(true))
+    gs.normalise()
     println(gs.toString(true))
 }
