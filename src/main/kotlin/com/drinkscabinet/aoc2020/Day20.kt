@@ -1,11 +1,14 @@
 package com.drinkscabinet.aoc2020
 
 import GridString
+import UpDown
+import com.drinkscabinet.Coord
 import com.drinkscabinet.Utils
+import java.lang.Exception
 
 private fun main() {
     val tiles = parse(input)
-    tiles.forEach { println(it)    }
+//    tiles.forEach { println(it)    }
 
     val matchCount = mutableMapOf<Int, Int>()
 
@@ -16,16 +19,151 @@ private fun main() {
     }
 
     println("There are ${matchCount.count { it.value == 2 }} 2-Matches")
-    val result = matchCount.filter { it.value == 2 }.map { it.key.toLong() }.fold(1L, {a,b -> a*b})
+    println("There are ${matchCount.count { it.value == 3 }} 3-Matches")
+    println("There are ${matchCount.count { it.value == 4 }} 4-Matches")
+    println("There are ${matchCount.count { it.value == 5 }} 5-Matches")
+    val tiles2 = matchCount.filter { it.value == 2 }
+    val result = tiles2.map { it.key.toLong() }.fold(1L, { a, b -> a*b})
     println("Part1=$result")
+
+    val monster = GridString.parse(seaMonster)
+    println(monster.toString(true))
+
+    val monsters = mutableListOf<GridString>()
+    for( i in 0..3 ) {
+        monsters.add(monster.copyOf().rotate90(i).normalise())
+    }
+    for( i in 0..3 ) {
+        monsters.add(monster.copyOf().flipH().rotate90(i).normalise())
+    }
+
+    monsters.forEach{ println(it.toString(true))}
+
+    // start stitching
+    // pick a 2-match
+    println(tiles2)
+    val start = tiles[tiles2.keys.first()]!!
+
+    println("starting with ${start.id}")
+    val allTiles = tiles.values.toSet().minus(start)
+    println(sidesWithMatches(start, allTiles))
+    // get R=56
+    val start2 = start.exactMatch(UpDown.R, 56)!!
+    println(sidesWithMatches(start2, allTiles))
+
+    // OK this is our starting point - build grid from here
+    val assembled = mutableMapOf(Coord(0,0) to start2)
+    // Remaining tiles to be placed
+    val remainingTilesets = allTiles.toMutableSet()
+    // build it row by row
+    for( y in 0..11 ) {
+        for( x in 0..11 ) {
+            val c = Coord(x, y)
+            if( assembled.containsKey(c) ) continue
+            if( x == 0 ) {
+                // only worry about sig above
+                val aboveSig = assembled[ Coord(x, y-1)]!!.currentSignatures[UpDown.D]!!
+                val match = remainingTilesets.filter { it.allSignatures.contains(aboveSig) }
+                if( match.size != 1 ) {
+                    throw Exception("Unexpected match size ${match.size}")
+                }
+                assembled[c] = match[0].exactMatch(UpDown.U, aboveSig)!!
+                remainingTilesets.remove(match[0])
+            }
+            else if( y == 0 ) {
+                // only worry about sig to left
+                val leftSig = assembled[ Coord(x-1, y)]!!.currentSignatures[UpDown.R]!!
+                // Find match
+                val match = remainingTilesets.filter { it.allSignatures.contains(leftSig) }
+                if( match.size != 1 ) {
+                    throw Exception("Unexpected match size ${match.size}")
+                }
+                assembled[c] = match[0].exactMatch(UpDown.L, leftSig)!!
+                remainingTilesets.remove(match[0])
+            }
+            else {
+                // worry about left and above sig
+                val aboveSig = assembled[ Coord(x, y-1)]!!.currentSignatures[UpDown.D]!!
+                val leftSig = assembled[ Coord(x-1, y)]!!.currentSignatures[UpDown.R]!!
+                val match = remainingTilesets.filter { it.allSignatures.contains(leftSig) && it.allSignatures.contains(aboveSig) }
+                if( match.size != 1 ) {
+                    throw Exception("Unexpected match size ${match.size}")
+                }
+                assembled[c] = match[0].exactMatch(UpDown.L, leftSig)!!
+                remainingTilesets.remove(match[0])
+            }
+        }
+    }
+    // Did we get here?
+    println(assembled[Coord(11, 11)])
+
+    // Phew!
+    // now build the overall grid
+    val megaGrid = GridString()
+    for (entry in assembled) {
+        val translateBy = Coord(entry.key.x * 8, entry.key.y * 8)
+        val points = entry.value.grid.getAll('#').filter { it.x in 1..8 && it.y in 1..8 }
+        // translate and add to megagrid
+        points.map { it.move(translateBy) }.forEach { megaGrid.add(it, '#') }
+    }
+    println("Complete: ")
+    println(megaGrid)
 }
 
-private fun parse(s: String) : Map<Int, Tile> {
+private fun sidesWithMatches(tile: Tileset, tiles: Set<Tileset>) : Map<UpDown, Int> {
+    // find the tiles that match this
+    val matchingTiles = tiles.filter { it.canMatch(tile) }
+    val possibleSigs = matchingTiles.flatMap { it.allSignatures }.toSet()
+    // now which sides match them
+    val def = tile.defaultSignatures
+    return def.filter { possibleSigs.contains(it.value) }.toMap()
+}
+
+private fun sidesWithMatches(tile: Tile, tiles: Set<Tileset>) : Map<UpDown, Int> {
+    // find the tiles that match this
+    val matchingTiles = tiles.filter { it.canMatch(tile) }
+    val possibleSigs = matchingTiles.flatMap { it.allSignatures }.toSet()
+    // now which sides match them
+    val def = tile.currentSignatures
+    return def.filter { possibleSigs.contains(it.value) }.toMap()
+}
+
+private fun parse(s: String) : Map<Int, Tileset> {
 
     val tiles = s.lines().chunked(12).map{ Tile.parse(it)}.toList()
-    return tiles.map{ it.id to it }.toMap()
+    return tiles.map{ it.id to Tileset(it.id, it.grid) }.toMap()
 }
 
+data class Tileset(val id: Int, val grid: GridString) {
+
+    private val orientations = listOf(
+            Tile(id, grid.copyOf().normalise()),
+            Tile(id, grid.copyOf().rotate90(1).normalise()),
+            Tile(id, grid.copyOf().rotate90(2).normalise()),
+            Tile(id, grid.copyOf().rotate90(3).normalise()),
+            Tile(id, grid.copyOf().flipH().normalise()),
+            Tile(id, grid.copyOf().flipH().rotate90(1).normalise()),
+            Tile(id, grid.copyOf().flipH().rotate90(2).normalise()),
+            Tile(id, grid.copyOf().flipH().rotate90(3).normalise()),
+    )
+
+    val allSignatures = orientations[0].allSignatures
+
+    val defaultSignatures = orientations[0].currentSignatures
+
+    fun canMatch(other: Tileset) : Boolean {
+        return orientations[0].canMatch(other.orientations[0])
+    }
+
+    fun canMatch(other: Tile) : Boolean {
+        return orientations[0].canMatch(other)
+    }
+
+    fun exactMatch(side: UpDown, signature: Int) : Tile? {
+        return orientations.find { it.currentSignatures[side] == signature }
+    }
+
+}
 
 
 data class Tile(val id: Int, val grid: GridString) {
@@ -34,6 +172,8 @@ data class Tile(val id: Int, val grid: GridString) {
     val bottom = grid.getAll('#').filter { it.y == 9L }.map { powers[it.x.toInt()] }.sum()
     val left = grid.getAll('#').filter { it.x == 0L }.map { powers[it.y.toInt()] }.sum()
     val right = grid.getAll('#').filter { it.x == 9L }.map { powers[it.y.toInt()] }.sum()
+
+    val currentSignatures = mapOf(UpDown.U to top, UpDown.D to bottom, UpDown.L to left, UpDown.R to right)
 
     val topI = grid.getAll('#').filter { it.y == 0L }.map { powers[9-it.x.toInt()] }.sum()
     val bottomI = grid.getAll('#').filter { it.y == 9L }.map { powers[9-it.x.toInt()] }.sum()
@@ -59,7 +199,11 @@ data class Tile(val id: Int, val grid: GridString) {
     }
 }
 
-
+private val seaMonster = """
+                  # 
+#    ##    ##    ###
+ #  #  #  #  #  #       
+"""
 
 private val testInput = """
     Tile 2311:

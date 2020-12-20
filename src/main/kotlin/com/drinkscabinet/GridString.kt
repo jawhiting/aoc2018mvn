@@ -100,9 +100,10 @@ class GridString(val default: Char = '.') {
     /**
      * Translate the grid so that the top left corner is 0,0
      */
-    fun normalise() {
+    fun normalise() : GridString {
         val c = Coord(-getXMin(), -getYMin())
         translate(c)
+        return this
     }
 
     /**
