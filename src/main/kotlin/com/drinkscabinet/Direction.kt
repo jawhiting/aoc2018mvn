@@ -42,3 +42,13 @@ enum class Direction8(override val x: Int, override val y: Int) : Delta {
         return values()[(ordinal+c) % values().size]
     }
 }
+
+enum class DirectionHex(override val x: Int, override val y: Int) : Delta {
+
+    NE(1, -1),
+    E(2, 0),
+    SE(1, 1),
+    SW(-1, 1),
+    W(-2, 0),
+    NW(-1, -1);
+}

@@ -74,6 +74,11 @@ private fun part2() {
     println(result)
 }
 
+fun part2arr() {
+    val arr = IntArray(1000001)
+    // initialise it
+}
+
 
 private class Ring() {
 
