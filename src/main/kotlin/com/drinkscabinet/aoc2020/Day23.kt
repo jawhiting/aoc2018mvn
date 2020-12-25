@@ -40,11 +40,12 @@ private fun part2() {
     val ring = Ring.init2(input)
     println(ring)
 
+    val start = System.currentTimeMillis()
     for( i in 1..10_000_000 ) {
         // pick up 3 next cups
         val nextCups = mutableListOf<RingElement>()
         if( i % 100000 == 0 ) {
-            println("Move $i")
+            println("${System.currentTimeMillis()-start} Move $i")
             println("Cups: $ring")
         }
         for( c in 0..2 ) nextCups.add(ring.top!!.removeNext())
@@ -64,7 +65,7 @@ private fun part2() {
         //its always the next to the right of current, so just shift
         ring.setTopElement(ring.top!!.next)
     }
-    println("Final: $ring")
+    println("${System.currentTimeMillis()-start} Final: $ring")
     // cups to right of 1
     val one = ring.getElement(1)
     val next = one.next
@@ -73,12 +74,6 @@ private fun part2() {
     val result = next.value.toLong() * next2.value.toLong()
     println(result)
 }
-
-fun part2arr() {
-    val arr = IntArray(1000001)
-    // initialise it
-}
-
 
 private class Ring() {
 
@@ -157,6 +152,21 @@ private data class RingElement(val value: Int) {
         n.next.prev = this
         n.next = n
         n.prev = n
+        return n
+    }
+
+    // Remove the next X items from the ring
+    fun removeNext(x : Int) : RingElement {
+        val n = next
+        // calculate beyond
+        var beyond = n
+        for( i in 1..x ) beyond = beyond.next
+        next = beyond
+        // close the removed loop
+        beyond.prev.next = n
+        n.prev = beyond.prev
+        beyond.prev = this
+
         return n
     }
 
