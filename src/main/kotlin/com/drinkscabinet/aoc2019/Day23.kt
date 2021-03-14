@@ -9,7 +9,7 @@ private fun main() {
         val c = Computer(i, comp.clone(), router)
         router.add(c)
     }
-    router.part2()
+    router.part1()
 }
 
 private class Computer(val address: Long, val computer: IntCode, val router: Router) {
