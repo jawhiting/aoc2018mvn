@@ -17,18 +17,6 @@ private fun main() {
     println(result2.first)
     println(result2.second.get())
     println(2020 - result2.first - result2.second.get())
-
-    // Part 2 loop
-    for (num in nums) {
-        val next = findSum(2020-num, nums)
-        if (next.isPresent) {
-            println(num)
-            println(next.get())
-            println(2020 - num - next.get())
-            println(num * next.get() * (2020-num-next.get()))
-            return
-        }
-    }
 }
 
 private fun findSum(target: Int, nums: Set<Int>) : Optional<Int> {
