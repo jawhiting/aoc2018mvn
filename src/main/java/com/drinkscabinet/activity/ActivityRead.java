@@ -7,13 +7,7 @@ import com.apicatalog.jsonld.document.JsonDocument;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
-import jakarta.json.JsonArray;
 import jakarta.json.JsonStructure;
-import org.apache.streams.jackson.StreamsJacksonMapper;
-import org.apache.streams.pojo.StreamsJacksonMapperConfiguration;
-import org.apache.streams.pojo.json.Activity;
-import org.apache.streams.pojo.json.ActivityObject;
-import org.apache.streams.pojo.json.objectTypes.Note;
 
 import java.io.IOException;
 import java.io.StringReader;
