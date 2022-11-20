@@ -7,8 +7,6 @@ import com.apicatalog.jsonld.document.JsonDocument;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
-import com.ibm.common.activitystreams.ASObject;
-import com.ibm.common.activitystreams.IO;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonStructure;
 import org.apache.streams.jackson.StreamsJacksonMapper;
