@@ -65,27 +65,6 @@
             <artifactId>jsonld-java</artifactId>
             <version>0.13.4</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.io-informatics.oss</groupId>-->
-<!--            <artifactId>jackson-jsonld</artifactId>-->
-<!--            <version>0.0.5</version>-->
-<!--        </dependency>-->
-        <!-- https://mvnrepository.com/artifact/org.apache.streams/streams-schema-activitystreams -->
-        <dependency>
-            <groupId>org.apache.streams</groupId>
-            <artifactId>streams-schema-activitystreams</artifactId>
-            <version>0.6.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.streams</groupId>
-            <artifactId>streams-pojo</artifactId>
-            <version>0.6.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.streams</groupId>
-            <artifactId>streams-core</artifactId>
-            <version>0.6.1</version>
-        </dependency>
         <dependency>
             <groupId>com.squareup.moshi</groupId>
             <artifactId>moshi-kotlin</artifactId>
