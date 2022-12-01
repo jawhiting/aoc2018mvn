@@ -11,12 +11,15 @@ class Utils {
             return "(-?\\d+)".toRegex().findAll(s).asIterable().map { it.value.toLong() }.toLongArray()
         }
 
-        fun chunks(s: String): List<String> {
-            return s.split("\n\n")
+        fun input(year: Int, day: Int): String {
+            return {}.javaClass.getResource("/$year/day$day.txt")?.readText()!!
         }
     }
 }
 
 fun String.chunks() : List<String> {
-    return this.split("\n\n")
+    return if (this.contains("\n\n"))
+        this.split("\n\n")
+    else
+        this.split("\r\n\r\n")
 }
