@@ -1,8 +1,6 @@
 package com.drinkscabinet.aoc2022kt
 
 import com.drinkscabinet.Utils
-import kotlin.streams.toList
-
 
 val test_data = """vJrwpWtwJgWrhcsFMMfFFhFp
 jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
@@ -39,10 +37,16 @@ private fun score(ss: Iterable<String>): Int {
     assert(common.size == 1)
     return score(common.first())
 }
+
+private fun score2(ss: Iterable<String>): Int {
+    return ss.map { it.toCharArray().toSet() }.reduce { a, s -> a.intersect(s) }.map(::score).first()
+}
+
 private fun main() {
     println(test_data.lines().map(::score).sum())
-    println(Utils.input(2022, 3) .lines().map(::score).sum())
+    println(Utils.input(2022, 3).lines().map(::score).sum())
 
     println(test_data.lines().chunked(3).map(::score).sum())
     println(Utils.input(2022, 3).lines().chunked(3).map(::score).sum())
+    println(Utils.input(2022, 3).lines().chunked(3).map(::score2).sum())
 }
