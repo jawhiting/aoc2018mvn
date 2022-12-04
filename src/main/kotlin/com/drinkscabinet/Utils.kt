@@ -7,6 +7,10 @@ class Utils {
             return "(-?\\d+)".toRegex().findAll(s).asIterable().map { it.value.toInt() }.toIntArray()
         }
 
+        fun extractUInts(s: String): IntArray {
+            return "(\\d+)".toRegex().findAll(s).asIterable().map { it.value.toInt() }.toIntArray()
+        }
+
         fun extractLongs(s: String): LongArray {
             return "(-?\\d+)".toRegex().findAll(s).asIterable().map { it.value.toLong() }.toLongArray()
         }
@@ -22,4 +26,13 @@ fun String.chunks() : List<String> {
         this.split("\n\n")
     else
         this.split("\r\n\r\n")
+}
+
+fun IntRange.contains(other: IntRange) : Boolean {
+    return (this.first <= other.first) && (this.last >= other.last)
+}
+
+fun IntRange.overlaps(other: IntRange) : Boolean {
+    return this.contains(other) or other.contains(this) or this.contains(other.first) or this.contains(other.last)
+
 }
