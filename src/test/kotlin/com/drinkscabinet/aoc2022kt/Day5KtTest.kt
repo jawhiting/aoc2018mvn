@@ -14,7 +14,8 @@ move 3 from 1 to 3
 move 2 from 2 to 1
 move 1 from 1 to 2"""
 
-    private val realData = Utils.input(2022, 5)
+    // Get the year and day from the class
+    private val realData = Utils.input(this)
 
     @Test
     fun testPart1() {

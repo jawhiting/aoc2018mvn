@@ -18,21 +18,31 @@ class Utils {
         fun input(year: Int, day: Int): String {
             return {}.javaClass.getResource("/$year/day$day.txt")?.readText()!!
         }
+
+        fun input(aoc: Any): String {
+            return input(getYear(aoc), getDay(aoc))
+        }
+
+        fun getYear(aoc: Any): Int {
+            return extractUInts(aoc.javaClass.packageName)[0]
+        }
+
+        fun getDay(aoc: Any): Int {
+            return extractUInts(aoc.javaClass.simpleName)[0]
+        }
+
     }
 }
 
-fun String.chunks() : List<String> {
-    return if (this.contains("\n\n"))
-        this.split("\n\n")
-    else
-        this.split("\r\n\r\n")
+fun String.chunks(): List<String> {
+    return if (this.contains("\n\n")) this.split("\n\n")
+    else this.split("\r\n\r\n")
 }
 
-fun IntRange.contains(other: IntRange) : Boolean {
+fun IntRange.contains(other: IntRange): Boolean {
     return (this.first <= other.first) && (this.last >= other.last)
 }
 
-fun IntRange.overlaps(other: IntRange) : Boolean {
+fun IntRange.overlaps(other: IntRange): Boolean {
     return this.contains(other) or other.contains(this) or this.contains(other.first) or this.contains(other.last)
-
 }

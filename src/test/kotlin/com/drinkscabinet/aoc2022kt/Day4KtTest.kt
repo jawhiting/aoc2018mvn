@@ -16,7 +16,8 @@ class Day4KtTest {
 6-6,4-6
 2-6,4-8"""
 
-    private val realData = Utils.input(2022, 4)
+    // Get the year and day from the class
+    private val realData = Utils.input(this)
 
     @Test
     fun testPart1() {

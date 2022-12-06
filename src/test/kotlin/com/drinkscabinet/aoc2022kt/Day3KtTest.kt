@@ -14,7 +14,8 @@ wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
 ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw"""
 
-    private val realData = Utils.input(2022, 3)
+    // Get the year and day from the class
+    private val realData = Utils.input(this)
 
     @Test
     fun testScore() {
@@ -25,12 +26,12 @@ CrZsJsPPZsGzwwsLwLmpwMDw"""
     @Test
     fun testPart1() {
         assertEquals(157, day3part1(testData))
-        assertEquals(8038, day3part1(realData))
+        assertEquals(8039, day3part1(realData))
     }
 
     @Test
     fun testPart2() {
-        assertEquals(70, day3part1(testData))
-        assertEquals(2510, day3part1(realData))
+        assertEquals(70, day3part2(testData))
+        assertEquals(2510, day3part2(realData))
     }
 }
