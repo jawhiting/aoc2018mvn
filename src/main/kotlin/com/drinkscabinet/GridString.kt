@@ -1,6 +1,4 @@
 import com.drinkscabinet.Coord
-import java.util.*
-import kotlin.collections.HashMap
 
 class GridString(val default: Char = '.') {
 
@@ -136,12 +134,24 @@ class GridString(val default: Char = '.') {
         return chars.keys.map(Coord::y).maxOrNull()!!
     }
 
+    fun getXRange(): LongRange {
+        return LongRange(getXMin(), getXMax())
+    }
+
+    fun getYRange(): LongRange {
+        return LongRange(getYMin(), getYMax())
+    }
+
+    fun contains(c: Coord): Boolean {
+        return c.x in getXRange() && c.y in getYRange()
+    }
+
     fun toString(nums: Boolean): String {
         if( chars.isEmpty() ) return ""
-        var xMin = getXMin()
-        var xMax = getXMax()
-        var yMin = getYMin()
-        var yMax = getYMax()
+        val xMin = getXMin()
+        val xMax = getXMax()
+        val yMin = getYMin()
+        val yMax = getYMax()
 
 
         val result = StringBuilder()
