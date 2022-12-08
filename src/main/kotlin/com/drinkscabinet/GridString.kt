@@ -142,6 +142,14 @@ class GridString(val default: Char = '.') {
         return LongRange(getYMin(), getYMax())
     }
 
+    fun getCoords() = sequence {
+        for( x in getXRange()) {
+            for( y in getYRange()) {
+                yield(Coord(x, y))
+            }
+        }
+    }
+
     fun contains(c: Coord): Boolean {
         return c.x in getXRange() && c.y in getYRange()
     }

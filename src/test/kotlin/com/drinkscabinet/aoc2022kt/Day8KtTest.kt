@@ -84,17 +84,9 @@ class Day8KtTest {
     private fun part2(data: String): Int {
         val trees = GridString.parse(data)
         var maxScore = 0
-        for( x in trees.getXRange()) {
-            for( y in trees.getYRange()) {
-                val s = score(trees, Coord(x, y))
-                println("Score for $x $y is $s")
-                if( s > maxScore ) {
-                    println("New max score found")
-                    maxScore = s
-                }
-            }
-        }
-        return maxScore
+        // make a list of all the coords
+        val coords = trees.getCoords().toList()
+        return coords.parallelStream().map { score(trees, it) }.max(Int::compareTo).orElse(0)
     }
 
     private fun score(trees: GridString, c: Coord): Int {
