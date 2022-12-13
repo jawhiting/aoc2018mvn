@@ -71,10 +71,10 @@ data class IntOrList(val int: Int?, val list: List<IntOrList>?) : Comparable<Int
         if (this.isList && other.isList) {
             return compareLists(this.list!!, other.list!!)
         }
-        if (this.isInt) {
-            return compareLists(listOf(this), other.list!!)
+        return if (this.isInt) {
+            compareLists(listOf(this), other.list!!)
         } else {
-            return compareLists(this.list!!, listOf(other))
+            compareLists(this.list!!, listOf(other))
         }
     }
 
@@ -175,40 +175,23 @@ class Day13KtTest {
 
 
     private fun part1(data: String): Int {
-        val pairs: MutableList<Pair<IntOrList, IntOrList>> = mutableListOf()
-        for (c in data.chunks()) {
-            val lines = c.lines()
-            assert(lines.size == 2)
-            pairs.add(IntOrList.parse(lines[0]) to IntOrList.parse(lines[1]))
-        }
+        val pairs = data.chunks().map(String::lines).map { IntOrList.parse(it[0]) to IntOrList.parse(it[1]) }.toList()
         // Now check the list for which ones are in the right order
         return pairs.mapIndexed { i, p -> i + 1 to p }.filter { it.second.first < it.second.second }.sumOf { it.first }
     }
 
     private fun part2(data: String): Int {
-        val items = mutableListOf<IntOrList>()
-        for (line in data.lines()) {
-            if (line != "") {
-                items.add(IntOrList.parse(line))
-            }
-        }
-        val div1 = "[[2]]"
-        val div2 = "[[6]]"
-        val dividers = setOf(div1, div2)
-        items.add(IntOrList.parse(div1))
-        items.add(IntOrList.parse(div2))
+        val items = data.lines().filter{it.isNotEmpty()}.map( IntOrList::parse).toMutableList()
+        val dividers = setOf("[[2]]", "[[6]]")
+        dividers.forEach { items.add(IntOrList.parse(it)) }
         items.sort()
-        for (i in items.indices) {
-            println("${i + 1}\t\t${items[i]}")
-        }
-        val strs = items.map(IntOrList::toString).toList()
-        var result = 1
-        strs.forEachIndexed { index, s ->
-            if (dividers.contains(s)) {
-                result *= index+1
+        return items.map(IntOrList::toString).foldIndexed(1) { i, r, t ->
+            if (dividers.contains(t)) {
+                r * (i + 1)
+            } else {
+                r
             }
         }
-        return result
     }
 
 }
