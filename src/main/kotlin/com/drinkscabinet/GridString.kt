@@ -13,8 +13,12 @@ class GridString(val default: Char = '.') {
         return copy
     }
 
-    fun get(coord: Coord): Char {
+    operator fun get(coord: Coord): Char {
         return chars.getOrDefault(coord, default)
+    }
+
+    operator fun set(coord: Coord, char: Char) {
+        chars[coord] = char
     }
 
     fun add(coord: Coord, char: Char): GridString {
@@ -166,6 +170,13 @@ class GridString(val default: Char = '.') {
 
         if( nums ) {
             // print header
+            if( xMax > 99 ) {
+                result.append("    ")
+                for( x in xMin..xMax ) {
+                    result.append((x /100) % 10)
+                }
+                result.append(System.lineSeparator())
+            }
             if( xMax > 9 ) {
                 result.append("    ")
                 for( x in xMin..xMax ) {
