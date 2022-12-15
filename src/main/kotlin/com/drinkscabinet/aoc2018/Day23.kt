@@ -38,12 +38,12 @@ private data class Bot(val pos: Coord3, val range: Long) {
 }
 
 private fun part2(bots: List<Bot>) {
-    var xMin = bots.map { it.pos.x }.min()!!
-    var xMax = bots.map { it.pos.x }.max()!!
-    var yMin = bots.map { it.pos.y }.min()!!
-    var yMax = bots.map { it.pos.y }.max()!!
-    var zMin = bots.map { it.pos.z }.min()!!
-    var zMax = bots.map { it.pos.z }.max()!!
+    var xMin = bots.map { it.pos.x }.minOrNull()!!
+    var xMax = bots.map { it.pos.x }.maxOrNull()!!
+    var yMin = bots.map { it.pos.y }.minOrNull()!!
+    var yMax = bots.map { it.pos.y }.maxOrNull()!!
+    var zMin = bots.map { it.pos.z }.minOrNull()!!
+    var zMax = bots.map { it.pos.z }.maxOrNull()!!
 
     var dist = 1L
     while (dist < xMax - xMin) dist *= 2

@@ -9,7 +9,7 @@ private class Day10(val gs: GridString) {
     private val asteroids = gs.getAll('#')
 
     fun maxSeen() : Int {
-        return asteroids.map{ countSee(it)}.max()!!
+        return asteroids.map{ countSee(it)}.maxOrNull()!!
     }
 
     fun maxCoord() : Coord {

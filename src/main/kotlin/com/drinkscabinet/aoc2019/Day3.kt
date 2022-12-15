@@ -37,5 +37,5 @@ fun main() {
     val w2 = Wire.parse("U62,R66,U55,R34,D71,R55,D58,R83")
     println(w1)
     println(w1.crossings(w2))
-    println(w1.crossings(w2).map { abs(it.x) + abs(it.y) }.min())
+    println(w1.crossings(w2).map { abs(it.x) + abs(it.y) }.minOrNull())
 }
