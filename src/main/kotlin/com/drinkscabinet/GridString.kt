@@ -1,4 +1,5 @@
 import com.drinkscabinet.Coord
+import kotlin.math.abs
 
 class GridString(val default: Char = '.') {
 
@@ -169,6 +170,14 @@ class GridString(val default: Char = '.') {
         val result = StringBuilder()
 
         if( nums ) {
+            // print minuses
+            if( xMin < 0 ) {
+                result.append("    ")
+                for( x in xMin..xMax ) {
+                    result.append(if(x < 0) "-" else " ")
+                }
+                result.append(System.lineSeparator())
+            }
             // print header
             if( xMax > 99 ) {
                 result.append("    ")
@@ -186,7 +195,7 @@ class GridString(val default: Char = '.') {
             }
             result.append("    ")
             for( x in xMin..xMax ) {
-                result.append(x % 10)
+                result.append(abs(x % 10))
             }
             result.append(System.lineSeparator())
 

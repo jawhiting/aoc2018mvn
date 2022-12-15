@@ -1,7 +1,6 @@
 package com.drinkscabinet
 
 import Delta
-import Direction
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -25,6 +24,10 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
 
     fun distance(c: Coord): Long {
         return abs(x - c.x) + abs(y - c.y)
+    }
+
+    inline fun distance(x: Long, y: Long): Long {
+        return abs(this.x - x) + abs(this.y - y)
     }
 
     fun rotate90(c: Int) : Coord {
