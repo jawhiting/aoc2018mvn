@@ -4,7 +4,7 @@ import GridString
 import com.drinkscabinet.Coord
 import kotlin.math.*
 
-private class Day10(val gs: GridString) {
+private class Day10(gs: GridString) {
 
     private val asteroids = gs.getAll('#')
 
@@ -13,7 +13,7 @@ private class Day10(val gs: GridString) {
     }
 
     fun maxCoord() : Coord {
-        return asteroids.maxBy { countSee(it) }!!
+        return asteroids.maxBy { countSee(it) }
     }
 
     fun countSee(a: Coord) : Int {
@@ -80,10 +80,6 @@ private fun between(a: Coord, b: Coord, p: Coord) : Boolean {
      LongRange(min(a.y, b.y), max(a.y, b.y)).contains(p.y)
 }
 
-private fun angle(a: Coord, b: Coord): Double {
-    atan()
-}
-
 
 private val testInput1 = """
     .#..#
@@ -91,19 +87,6 @@ private val testInput1 = """
     #####
     ....#
     ...##
-""".trimIndent()
-
-private val testInput33 = """
-    ......#.#.
-    #..#.#....
-    ..#######.
-    .#.#.###..
-    .#..#.....
-    ..#....#.#
-    #..#....#.
-    .##.#..###
-    ##...#..#.
-    .#....####
 """.trimIndent()
 
 private val testInput210 = """

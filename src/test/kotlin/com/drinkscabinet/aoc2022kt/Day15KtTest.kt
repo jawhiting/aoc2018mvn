@@ -59,7 +59,6 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3"""
 
     private fun part2(data: String, maxX: Long): Long {
         val sensors = parse(data)
-        val beacons = sensors.map { it.second }.toSet()
         val sensorRanges = sensors.associate { it.first to it.first.distance(it.second) }
 
         return freq(scan(maxX, sensorRanges))
@@ -67,7 +66,7 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3"""
 
     private fun scan(maxX: Long, sensorRanges: Map<Coord, Long>): Coord {
         for (y in 0..maxX) {
-            if (y % 1000L == 0L) {
+            if (y % 1000000L == 0L) {
                 println("Y $y")
             }
             var x = 0L
