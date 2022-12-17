@@ -27,6 +27,26 @@ class GridString(val default: Char = '.') {
         return this
     }
 
+    fun add(coord: Coord, shape: GridString): GridString {
+        shape.chars.filter { it.value != shape.default }.forEach { (pos, c) -> add(pos.move(coord), c) }
+        return this
+    }
+
+    /** Does this shape at the specified offset overlap with
+     * any non-default characters
+     */
+    fun overlaps(offset: Coord, shape: GridString): Boolean {
+        for( (pos, c) in shape.chars ) {
+            if( c == shape.default ) {
+                continue
+            }
+            if( this[pos.move(offset)] != this.default ) {
+                return true
+            }
+        }
+        return false
+    }
+
     fun getAll(c: Char) : Set<Coord> {
         return chars.filterValues { it == c }.keys
     }
@@ -124,19 +144,19 @@ class GridString(val default: Char = '.') {
     }
 
     fun getXMin() : Long {
-        return chars.keys.map(Coord::x).minOrNull()!!
+        return chars.keys.map(Coord::x).minOrNull() ?: 0
     }
 
     fun getXMax() : Long {
-        return chars.keys.map(Coord::x).maxOrNull()!!
+        return chars.keys.map(Coord::x).maxOrNull() ?: 0
     }
 
     fun getYMin() : Long {
-        return chars.keys.map(Coord::y).minOrNull()!!
+        return chars.keys.map(Coord::y).minOrNull() ?: 0
     }
 
     fun getYMax() : Long {
-        return chars.keys.map(Coord::y).maxOrNull()!!
+        return chars.keys.map(Coord::y).maxOrNull() ?: 0
     }
 
     fun getXRange(): LongRange {
@@ -159,7 +179,7 @@ class GridString(val default: Char = '.') {
         return c.x in getXRange() && c.y in getYRange()
     }
 
-    fun toString(nums: Boolean): String {
+    fun toString(nums: Boolean = false, invertV: Boolean = false): String {
         if( chars.isEmpty() ) return ""
         val xMin = getXMin()
         val xMax = getXMax()
@@ -201,7 +221,9 @@ class GridString(val default: Char = '.') {
 
         }
 
-        for( y in yMin..yMax ) {
+        val yRange = if(invertV) yMax downTo yMin else yMin .. yMax
+
+        for( y in yRange ) {
             if( nums ) {
                 result.append(" %2d ".format(y))
             }

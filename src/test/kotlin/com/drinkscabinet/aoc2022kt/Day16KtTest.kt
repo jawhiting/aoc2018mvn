@@ -199,6 +199,7 @@ Valve JJ has flow rate=21; tunnel leads to valve II"""
         }
     }
 
+    /*
     data class State2(val pos1: String, val time1: Int, val pos2: String, val time2: Int, val score: Int, val closed: Set<String>) {
 
         fun maxPossible(targetTime: Int): Int {
@@ -211,7 +212,7 @@ Valve JJ has flow rate=21; tunnel leads to valve II"""
             val remaining = arrayOf(time1, time2)
             while( (remaining[0] < targetTime || remaining[1] < targetTime) && closed.isNotEmpty()) {
                 // take the next item with the longest time
-                val timeIndex =
+                val timeIndex = if(remaining[0] <= remaining[1]) 0 else 1
             }
 
             // my move
@@ -293,7 +294,7 @@ Valve JJ has flow rate=21; tunnel leads to valve II"""
             var maxChild = 0
         }
     }
-
+    */
 
     private fun solve(root: Valve, minutes: Int): Int {
         return State(root.id, 0, 0, Valve.viableValves.map { it.id }.toSet()).maxScore(minutes, moves = listOf())
