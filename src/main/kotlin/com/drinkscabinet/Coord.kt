@@ -48,10 +48,12 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
 
 data class Coord3(val x: Long, val y: Long, val z: Long) : Comparable<Coord3> {
 
+    constructor(x: Int, y: Int, z: Int) : this(x.toLong(), y.toLong(), z.toLong())
+
     override fun compareTo(other: Coord3): Int {
         var xs = z.compareTo(other.z)
-        if( xs == 0 ) xs = y.compareTo(other.y)
-        if( xs == 0 ) return x.compareTo(other.x)
+        if (xs == 0) xs = y.compareTo(other.y)
+        if (xs == 0) return x.compareTo(other.x)
         return xs
     }
 
@@ -59,15 +61,31 @@ data class Coord3(val x: Long, val y: Long, val z: Long) : Comparable<Coord3> {
         return abs(x - other.x) + abs(y - other.y) + abs(z - other.z)
     }
 
-    fun neighbours26() : Set<Coord3> {
+    fun elements() = sequence {
+        yield(x)
+        yield(y)
+        yield(z)
+    }
+
+    fun neighbours26(): Set<Coord3> {
         val result = mutableSetOf<Coord3>()
-        for( x in -1..1) {
-            for( y in -1..1) {
-                for ( z in -1..1) {
-                    if( x == 0 && y == 0 && z == 0 ) continue   // dont add self
+        for (x in -1..1) {
+            for (y in -1..1) {
+                for (z in -1..1) {
+                    if (x == 0 && y == 0 && z == 0) continue   // dont add self
                     result.add(Coord3(this.x + x, this.y + y, this.z + z))
                 }
             }
+        }
+        return result
+    }
+
+    fun neighbours6(): Set<Coord3> {
+        val result = mutableSetOf<Coord3>()
+        for (delta in listOf(1, -1)) {
+            result.add(this.copy(x = x + delta))
+            result.add(this.copy(y = y + delta))
+            result.add(this.copy(z = z + delta))
         }
         return result
     }
