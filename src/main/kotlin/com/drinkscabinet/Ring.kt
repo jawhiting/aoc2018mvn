@@ -109,7 +109,7 @@ class Ring<T>() {
         }
 
         fun move(steps: Long) {
-            if (steps == 0L) {
+            if (steps == 0L || (steps % (size - 1)) == 0L) {
                 // do noting
                 return
             }
@@ -125,12 +125,12 @@ class Ring<T>() {
         }
 
         fun moveForward(steps: Long) {
-            // take ourself out of the ring
+            // take ourself out of the ring, unless its a zero move
             prev.next = next
             next.prev = prev
             // Now move forward X steps
             var target = this
-            for (i in 1..steps % (size - 1)) {
+            for (i in 1..(steps % (size - 1))) {
                 target = target.next
             }
             // Now add after this item
@@ -146,7 +146,7 @@ class Ring<T>() {
             next.prev = prev
             // Now move backward X steps
             var target = this
-            for (i in 1..steps % (size - 1)) {
+            for (i in 1..(steps % (size - 1))) {
                 target = target.prev
             }
             // Now add before this item

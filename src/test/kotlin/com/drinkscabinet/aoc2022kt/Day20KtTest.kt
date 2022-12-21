@@ -17,6 +17,13 @@ class Day20KtTest {
 0
 4"""
 
+    private val test2 = """0
+4
+5
+1
+2
+3"""
+
     // Get the year and day from the class
     private val realData = Utils.input(this)
 
@@ -47,9 +54,14 @@ class Day20KtTest {
     }
 
     @Test
+    fun testPartExample() {
+        assertEquals(6492713224, part2(test2))
+    }
+
+    @Test
     fun testPart2real() {
         // 2697722344572 too low
-        assertEquals(1623178306, part2(realData))
+        assertEquals(4248669215955, part2(realData))
     }
 
 
@@ -77,11 +89,13 @@ class Day20KtTest {
         val ring = parse(data, 811589153)
         // Get all the entries in order
         val entries = ring.elements().toList()
+        println("Initial $ring")
         for (i in 1..10) {
             for (e in entries) {
                 e.move(e.value)
-//            println("After entry: $e Ring is $ring")
+//                println("After entry: $e Ring is $ring")
             }
+//            println("After iteration: $i Ring is $ring")
         }
         // Make 0 the root element
         while (ring.root!!.value != 0L) {
