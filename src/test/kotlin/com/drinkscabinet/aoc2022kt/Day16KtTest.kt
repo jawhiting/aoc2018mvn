@@ -3,8 +3,8 @@ package com.drinkscabinet.aoc2022kt
 import PathFinder
 import com.drinkscabinet.Utils
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import kotlin.math.max
 
 
 data class Valve(val id: String, val rate: Int, val exitNames: List<String>) {
@@ -51,10 +51,17 @@ data class Valve(val id: String, val rate: Int, val exitNames: List<String>) {
         }
 
         fun parse(data: String): Valve {
+            reset()
             for (line in data.lines()) {
                 parseLine(line)
             }
             return resolve()
+        }
+
+        fun reset() {
+            valvesByName.clear()
+            viableValves.clear()
+            distances.clear()
         }
 
         private fun resolve(): Valve {
@@ -94,150 +101,75 @@ Valve JJ has flow rate=21; tunnel leads to valve II"""
     // Get the year and day from the class
     private val realData = Utils.input(this)
 
+    @BeforeEach
+    fun setUp() {
+        State2.maxChild = 0
+        Valve.reset()
+    }
 
     @Test
     fun testPart1() {
-        assertEquals(1651, this.part1(testData, 30))
-        assertEquals(1647, this.part1(realData, 30))
+        assertEquals(1651, this.part1(testData))
+    }
 
+    @Test
+    fun testPart1real() {
+        assertEquals(1647, this.part1(realData))
+    }
+
+    private fun part1(data: String): Int {
+        val root = Valve.parse(data)
+        return solve(root, 1, 30)
     }
 
     @Test
     fun testPart2() {
-//        assertEquals(56000011, this.part2(testData, 20))
-//        assertEquals(13081194638237, this.part2(realData, 4000000))
+        assertEquals(1707, this.part2(testData))
     }
 
+    @Test
+    fun testPart2real() {
+        assertEquals(2169, this.part2(realData))
+    }
 
-    private fun part1(data: String, minutes: Int): Int {
+    private fun part2(data: String): Int {
         val root = Valve.parse(data)
-//        println(Valve.valvesByName)
-//        println(root.distanceTo(Valve.valvesByName["AA"]!!))
-//        println(root.distanceTo(Valve.valvesByName["BB"]!!))
-//        println(root.distanceTo(Valve.valvesByName["JJ"]!!))
-        return solve(root, minutes)
+        return solve(root, 2, 26)
     }
 
-    data class State(val pos: String, val score: Int, val time: Int, val closed: Set<String>) {
+    private fun solve(root: Valve, actorCount: Int, maxTime: Int): Int {
+        val positions = List(actorCount) { root.id }.toTypedArray()
+        val times = List(actorCount) { 0 }.toTypedArray()
+        return State2(positions, times, 0, Valve.viableValves.map { it.id }.toSet()).maxScore(maxTime, moves = listOf())
+    }
 
-        private fun maxPossible(targetTime: Int): Int {
-            if( time >= targetTime || closed.isEmpty()) {
+    data class State2(val positions: Array<String>, val times: Array<Int>, val score: Int, val closed: Set<String>) {
+
+        private fun maxPossible(targetTime: Int, valves: Map<String, Valve>): Int {
+
+            if (times.all { it >= targetTime } || closed.isEmpty()) {
                 return 0
             }
             // assume best case, that we can get from each valve in 1 step, whats the max possible remaining score
             // we can use this to prune
-            val rates = closed.map { Valve.valvesByName[it]!!.rate }.sortedDescending().toMutableList()
-            var remaining = targetTime - time
-            var result = (remaining-1) * rates.removeFirst()
-            remaining -= 2
-            while( remaining  > 0 && rates.isNotEmpty()) {
-                result += remaining * rates.removeFirst()
-                remaining -= 2
-            }
-            return result
-        }
+            val rates = closed.map { valves[it]!!.rate }.sortedDescending().toMutableList()
+            val remaining = times.map { targetTime - it }.toIntArray()
+            var result = 0
 
-        fun maxScore(targetTime: Int, level: Int = 0, moves: List<Pair<Int, String>>): Int {
-            val indent = " ".repeat(level)
-            if (time >= targetTime || closed.isEmpty()) {
-//                println("${indent}End state: $this")
-                if( score >= maxChild ) {
-                    println("New high score")
-                    println("Moves:")
-                    moves.forEach { println("Time ${it.first} Move: ${it.second}") }
-                }
-                return score
-            }
-
-            // perhaps prune
-            val maxPossible = maxPossible(targetTime)
-            if( score + maxPossible < maxChild ) {
-//                println("Pruning $this based on max possible score: ${score+maxPossible} vs $maxChild")
-                return maxChild
-            }
-//            println("${indent}Current: $this")
-            // Options are:
-            // if current is closed, we can open
-            // or we can move to one of the other closed valves to open that
-            val currentValve = Valve.valvesByName[pos]!!
-            if (pos in closed) {
-                // open it, and execute child
-                val nextTime = time + 1
-//                println("${indent}Opening valve $pos")
-                val result = State(
-                    pos,
-                    score + (currentValve.rate * (targetTime - nextTime)),
-                    nextTime,
-                    closed.minus(pos)
-                ).maxScore(targetTime, level + 1, moves.plus(time to "Open valve $pos"))
-//                println("${indent}Result $result")
-                if( result > maxChild ) {
-                    println("${indent}New max: $result vs $maxChild")
-                    maxChild = result
-                }
-            }
-            for (c in closed) {
-                // don't move to self
-                if(pos == c) {
-                    continue
-                }
-                // What time will it be when we get there
-                val nextTime = time + currentValve.distanceTo(c)
-//                println("${indent}Moving to $c by $nextTime")
-                val result = State(c, score, nextTime, closed).maxScore(targetTime, level+1, moves.plus(time to "Move to valve $c"))
-//                println("${indent}Result $result vs $maxChild")
-                if( result > maxChild ) {
-                    println("${level} New max: $result vs $maxChild")
-                    maxChild = result
-                }
-            }
-            return maxChild
-        }
-
-        companion object {
-            var maxChild = 0
-        }
-    }
-
-    /*
-    data class State2(val pos1: String, val time1: Int, val pos2: String, val time2: Int, val score: Int, val closed: Set<String>) {
-
-        fun maxPossible(targetTime: Int): Int {
-            if( (time1 >= targetTime && time2 >= targetTime) || closed.isEmpty()) {
-                return 0
-            }
-            // assume best case, that we can get from each valve in 1 step, whats the max possible remaining score
-            // we can use this to prune
-            val rates = closed.map { Valve.valvesByName[it]!!.rate }.sortedDescending().toMutableList()
-            val remaining = arrayOf(time1, time2)
-            while( (remaining[0] < targetTime || remaining[1] < targetTime) && closed.isNotEmpty()) {
+            while (remaining.any { it > 0 } && rates.isNotEmpty()) {
                 // take the next item with the longest time
-                val timeIndex = if(remaining[0] <= remaining[1]) 0 else 1
-            }
-
-            // my move
-            var result = (remaining-1) * rates.removeFirst()
-            // elephant move
-            if(rates.isNotEmpty() ) {
-                result += (remaining-1) * rates.removeFirst()
-            }
-            remaining -= 2
-            while( remaining  > 0 && rates.isNotEmpty()) {
-                result += remaining * rates.removeFirst()
-                if( rates.isNotEmpty()) {
-                    // elephant move
-                    result += remaining * rates.removeFirst()
-                }
-                remaining -= 2
+                val timeIndex = remaining.indices.maxBy { remaining[it] }
+                // move earliest time
+                result += (remaining[timeIndex] - 1) * rates.removeFirst()
+                // increment earliest time
+                remaining[timeIndex] -= 1
             }
             return result
         }
 
         fun maxScore(targetTime: Int, level: Int = 0, moves: List<Pair<Int, String>>): Int {
-            val indent = " ".repeat(level)
-            if (time >= targetTime || closed.isEmpty()) {
-//                println("${indent}End state: $this")
-                if( score >= maxChild ) {
+            if (times.all { it >= targetTime } || closed.isEmpty()) {
+                if (score > maxChild) {
                     println("New high score")
                     println("Moves:")
                     moves.forEach { println("Time ${it.first} Move: ${it.second}") }
@@ -246,57 +178,83 @@ Valve JJ has flow rate=21; tunnel leads to valve II"""
             }
 
             // perhaps prune
-            val maxPossible = maxPossible(time, targetTime, closed)
-            if( score + maxPossible < maxChild ) {
-//                println("Pruning $this based on max possible score: ${score+maxPossible} vs $maxChild")
+            val maxPossible = maxPossible(targetTime, Valve.valvesByName)
+            if (score + maxPossible < maxChild) {
                 return maxChild
             }
-//            println("${indent}Current: $this")
+
+            // Decide who to move - always move the earliest one first
+            val timeIndex = times.indices.minBy { times[it] }
             // Options are:
-            // if current is closed, we can open
+            // if current is closed, we should open
             // or we can move to one of the other closed valves to open that
-            val currentValve = Valve.valvesByName[pos]!!
-            if (pos in closed) {
+            val currentValve = Valve.valvesByName[positions[timeIndex]]!!
+            if (positions[timeIndex] in closed) {
                 // open it, and execute child
-                val nextTime = time + 1
-//                println("${indent}Opening valve $pos")
-                val result = State(
-                    pos,
-                    score + (currentValve.rate * (targetTime - nextTime)),
-                    nextTime,
-                    closed.minus(pos)
-                ).maxScore(targetTime, level + 1, moves.plus(time to "Open valve $pos"))
-//                println("${indent}Result $result")
-                if( result > maxChild ) {
-                    println("${indent}New max: $result vs $maxChild")
+                val nextTimes = times.copyOf()
+                nextTimes[timeIndex] += 1
+                val result = State2(
+                    positions,
+                    nextTimes,
+                    score + (currentValve.rate * (targetTime - nextTimes[timeIndex])),
+                    closed.minus(positions[timeIndex])
+                ).maxScore(
+                    targetTime,
+                    level + 1,
+                    moves.plus(times[timeIndex] to "$timeIndex Open valve ${positions[timeIndex]}")
+                )
+                if (result > maxChild) {
+                    println("New max: $result vs $maxChild")
                     maxChild = result
                 }
-            }
-            for (c in closed) {
-                // don't move to self
-                if(pos == c) {
-                    continue
-                }
-                // What time will it be when we get there
-                val nextTime = time + currentValve.distanceTo(c)
-//                println("${indent}Moving to $c by $nextTime")
-                val result = State(c, score, nextTime, closed).maxScore(targetTime, level+1, moves.plus(time to "Move to valve $c"))
-//                println("${indent}Result $result vs $maxChild")
-                if( result > maxChild ) {
-                    println("${level} New max: $result vs $maxChild")
-                    maxChild = result
+            } else {
+                // Now move instead
+                for (c in closed) {
+                    // don't move to self
+                    if (positions[timeIndex] == c) {
+                        continue
+                    }
+                    // What time will it be when we get there
+                    val nextTimes = times.copyOf()
+                    nextTimes[timeIndex] += currentValve.distanceTo(c)
+                    val nextPositions = positions.copyOf()
+                    nextPositions[timeIndex] = c
+                    val result = State2(nextPositions, nextTimes, score, closed).maxScore(
+                        targetTime, level + 1, moves.plus(times[timeIndex] to "$timeIndex Move to valve $c")
+                    )
+                    if (result > maxChild) {
+                        println("$level New max: $result vs $maxChild")
+                        maxChild = result
+                    }
                 }
             }
             return maxChild
         }
 
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as State2
+
+            if (!positions.contentEquals(other.positions)) return false
+            if (!times.contentEquals(other.times)) return false
+            if (score != other.score) return false
+            if (closed != other.closed) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = positions.contentHashCode()
+            result = 31 * result + times.contentHashCode()
+            result = 31 * result + score
+            result = 31 * result + closed.hashCode()
+            return result
+        }
+
         companion object {
             var maxChild = 0
         }
-    }
-    */
-
-    private fun solve(root: Valve, minutes: Int): Int {
-        return State(root.id, 0, 0, Valve.viableValves.map { it.id }.toSet()).maxScore(minutes, moves = listOf())
     }
 }
