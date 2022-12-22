@@ -45,7 +45,7 @@ class Day22KtTest {
         assertEquals(106094, solve(realData, false))
     }
 
-    fun solve(data: String, part2: Boolean): Long {
+    private fun solve(data: String, part2: Boolean): Long {
         val gridAndPath = parse(data)
         val grid = gridAndPath.first
         val path = gridAndPath.second
@@ -61,7 +61,7 @@ class Day22KtTest {
         return pos.pos.y * 1000 + pos.pos.x * 4 + dirValue[pos.delta]!!
     }
 
-    fun tracePath(grid: GridString, start: Vector, path: String, part2: Boolean): Vector {
+    private fun tracePath(grid: GridString, start: Vector, path: String, part2: Boolean): Vector {
         var pos = start
         val xRange = grid.getXRange()
         val yRange = grid.getYRange()
@@ -79,7 +79,6 @@ class Day22KtTest {
                     }
                 }
             }
-            println(pos)
         }
         grid[pos.pos] = 'e'
         println(grid.toString(nums = true))
@@ -129,7 +128,7 @@ class Day22KtTest {
         }
     }
 
-    fun findStart(grid: GridString): Coord {
+    private fun findStart(grid: GridString): Coord {
         val y = grid.getYMin()
         for (x in grid.getXRange()) {
             val c = Coord(x, y)
@@ -158,7 +157,7 @@ class Day22KtTest {
     fun testPart2real() {
         // 2697722344572 too low
         // 3451534022349 too high
-        assertEquals(3451534022348, solve(realData, true))
+        assertEquals(162038, solve(realData, true))
     }
 
     private val icons = mapOf(UpDown.U to '^', UpDown.R to '>', UpDown.D to 'v', UpDown.L to '<')
@@ -171,18 +170,17 @@ class Day22KtTest {
             // If we're on a seam, ask that for next pos
             val s = seams.filter { it.crossing(nextPos) }.toList()
             assert(s.size < 2)
-            if (s.isNotEmpty()) {
+            nextPos = if (s.isNotEmpty()) {
                 // cross the seam
-                nextPos = s.first().next(nextPos)
+                s.first().next(nextPos)
             } else {
-                nextPos = nextPos.next()
+                nextPos.next()
             }
 
             // Check if its valid
             val nextVal = grid[nextPos.pos]
             if (nextVal == '#') {
                 // Stop early
-                println(grid)
                 return current
             }
             if (nextVal == ' ') {
@@ -190,7 +188,6 @@ class Day22KtTest {
             }
             current = nextPos
         }
-        println(grid)
         return current
     }
 
@@ -267,23 +264,89 @@ xx123456789012
             )
         } else {
             // real data
+            // 2 - 3
+            seams.addAll(
+                Seam.create(
+                    Coord(101, 50).to(Coord(150, 50)),
+                    Coord(100, 51).to(Coord(100, 100)), UpDown.D, UpDown.R
+                )
+            )
+            // 2 - 5
+            seams.addAll(
+                Seam.create(
+                    Coord(150, 50).to(Coord(150, 1)),
+                    Coord(100, 101).to(Coord(100, 150)), UpDown.R, UpDown.R
+                )
+            )
+            // 3 - 4
+            seams.addAll(
+                Seam.create(
+                    Coord(51, 51).to(Coord(51, 100)),
+                    Coord(1, 101).to(Coord(50, 101)), UpDown.L, UpDown.U
+                )
+            )
+            // 1 - 4
+            seams.addAll(
+                Seam.create(
+                    Coord(51, 1).to(Coord(51, 50)),
+                    Coord(1, 150).to(Coord(1, 101)), UpDown.L, UpDown.L
+                )
+            )
+            // 5 - 6
+            seams.addAll(
+                Seam.create(
+                    Coord(51, 150).to(Coord(100, 150)),
+                    Coord(50, 151).to(Coord(50, 200)), UpDown.D, UpDown.R
+                )
+            )
+            // 1 - 6
+            seams.addAll(
+                Seam.create(
+                    Coord(51, 1).to(Coord(100, 1)),
+                    Coord(1, 151).to(Coord(1, 200)), UpDown.U, UpDown.L
+                )
+            )
+            // 2 - 6
+            seams.addAll(
+                Seam.create(
+                    Coord(101, 1).to(Coord(150, 1)),
+                    Coord(1, 200).to(Coord(50, 200)), UpDown.U, UpDown.D
+                )
+            )
         }
         return seams
     }
 
-    @Test
-    fun testSeam() {
-        val seams = Seam.create(
-            Coord(9, 1).to(Coord(12, 1)),
-            Coord(4, 5).to(Coord(1, 5)), UpDown.U, UpDown.U
-        )
-        assertEquals(2, seams.size)
-        val seamA = seams[0]
-        val seamB = seams[1]
-        assertTrue(seamA.crossing(Vector(Coord(10, 1), UpDown.U)))
-        assertFalse(seamA.crossing(Vector(Coord(10, 1), UpDown.R)))
-        assertEquals(Vector(Coord(3, 5), UpDown.D), seamA.next(Vector(Coord(10, 1), UpDown.U)))
-    }
+    /*
+1   55   11   1
+    01   00   5
+         01   0
+
+     1111122222     1
+     1111122222
+     1111122222
+     1111122222
+     1111122222     50
+     33333          51
+     33333
+     33333
+     33333
+     33333          100
+4444455555          101
+4444455555
+4444455555
+4444455555
+4444455555          150
+66666               151
+66666
+66666
+66666
+66666               200
+
+1   55   11   1
+    01   00   5
+         01   0
+    */
 }
 
 data class Seam(val coordMap: Map<Coord, Coord>, val inDir: Delta, val outDir: Delta) {
