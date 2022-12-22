@@ -111,7 +111,7 @@ class Day22KtTest {
         return Vector(next.pos.wrap(xRange, yRange), next.delta)
     }
 
-    fun operations(path: String) = sequence<String> {
+    private fun operations(path: String) = sequence<String> {
         var acc = ""
         for (c in path.toCharArray()) {
             if (c.isDigit()) {
