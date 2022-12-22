@@ -26,24 +26,60 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
         return abs(x - c.x) + abs(y - c.y)
     }
 
+    fun wrap(xRange: LongRange, yRange: LongRange): Coord {
+        return Coord(wrapValue(x, xRange), wrapValue(y, yRange))
+    }
+
+    /**
+     * All the coords of a line between these two points. Horizontal or vertical only
+     */
+    fun to(other: Coord) = sequence {
+        if (x == other.x) {
+            for (ly in if (y <= other.y) y..other.y else y downTo other.y) {
+                yield(Coord(x, ly))
+            }
+        } else if (y == other.y) {
+            for (lx in if (x <= other.x) x..other.x else x downTo other.x) {
+                yield(Coord(lx, y))
+            }
+        } else {
+            throw IllegalArgumentException("One of x or y must be the same between both coords: $this vs $other")
+        }
+    }
+
+    private fun wrapValue(v: Long, range: LongRange): Long {
+        return if (v in range) {
+            v
+        } else if (v < range.first) {
+            range.last
+        } else {
+            range.first
+        }
+    }
+
     inline fun distance(x: Long, y: Long): Long {
         return abs(this.x - x) + abs(this.y - y)
     }
 
-    fun rotate90(c: Int) : Coord {
-        var amount = c%4
-        if( amount < 0 ) amount = 4+amount
+    fun rotate90(c: Int): Coord {
+        var amount = c % 4
+        if (amount < 0) amount = 4 + amount
         var result = this
-        for( i in 1..amount ) {
+        for (i in 1..amount) {
             result = result.rotate90()
         }
         return result
     }
 
     // Rotate 90 degrees clockwise
-    fun rotate90() : Coord {
+    fun rotate90(): Coord {
         return Coord(-y, x)
     }
+}
+
+data class Vector(val pos: Coord, val delta: Delta) {
+    fun next(): Vector = Vector(pos.move(delta), delta)
+    fun rotate(c: Int): Vector = Vector(pos, delta.rotate(c))
 }
 
 data class Coord3(val x: Long, val y: Long, val z: Long) : Comparable<Coord3> {
