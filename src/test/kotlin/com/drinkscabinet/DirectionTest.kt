@@ -1,5 +1,7 @@
 package com.drinkscabinet
 
+import Direction
+import Direction8
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -23,6 +25,7 @@ class DirectionTest {
         assertEquals(Direction.E, Direction.N.rotate(-3))
         assertEquals(Direction.N, Direction.N.rotate(-4))
         assertEquals(Direction.N, Direction.N.rotate(-8))
+        assertEquals(Direction8.NW, Direction8.N.rotate(-1))
 
     }
 

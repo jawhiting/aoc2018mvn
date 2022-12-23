@@ -43,7 +43,9 @@ enum class Direction8(override val x: Int, override val y: Int) : Delta {
     NW(-1, -1);
 
     override fun rotate(c: Int): Direction8 {
-        return values()[(ordinal + c) % values().size]
+        var amount = c % values().size
+        if (c < 0) amount += values().size
+        return values()[(ordinal + amount) % values().size]
     }
 }
 

@@ -1,14 +1,14 @@
 import com.drinkscabinet.Coord
 import kotlin.math.abs
 
-class GridString(val default: Char = '.') {
+class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
 
     private val chars = mutableMapOf<Coord, Char>()
 
     private val supplemental = mutableMapOf<Long, String>()
 
-    fun copyOf() : GridString {
-        val copy = GridString(default)
+    fun copyOf(): GridString {
+        val copy = GridString(default, ignoreDefault)
         copy.chars.putAll(chars)
         copy.supplemental.putAll(supplemental)
         return copy
@@ -19,11 +19,19 @@ class GridString(val default: Char = '.') {
     }
 
     operator fun set(coord: Coord, char: Char) {
-        chars[coord] = char
+        if (ignoreDefault && char == default) {
+            chars.remove(coord)
+        } else {
+            chars[coord] = char
+        }
     }
 
     fun add(coord: Coord, char: Char): GridString {
-        chars[coord] = char
+        if (ignoreDefault && char == default) {
+            chars.remove(coord)
+        } else {
+            chars[coord] = char
+        }
         return this
     }
 
@@ -36,23 +44,27 @@ class GridString(val default: Char = '.') {
      * any non-default characters
      */
     fun overlaps(offset: Coord, shape: GridString): Boolean {
-        for( (pos, c) in shape.chars ) {
-            if( c == shape.default ) {
+        for ((pos, c) in shape.chars) {
+            if (c == shape.default) {
                 continue
             }
-            if( this[pos.move(offset)] != this.default ) {
+            if (this[pos.move(offset)] != this.default) {
                 return true
             }
         }
         return false
     }
 
-    fun getAll(c: Char) : Set<Coord> {
+    fun getAll(): Map<Coord, Char> {
+        return chars
+    }
+
+    fun getAll(c: Char): Set<Coord> {
         return chars.filterValues { it == c }.keys
     }
 
-    fun <T> addAll(m: Map<Coord, T>, transformer: (v: T) -> Char ): GridString {
-        m.entries.forEach{ chars[it.key] = transformer.invoke(it.value)}
+    fun <T> addAll(m: Map<Coord, T>, transformer: (v: T) -> Char): GridString {
+        m.entries.forEach { chars[it.key] = transformer.invoke(it.value) }
         return this
     }
 
@@ -239,19 +251,17 @@ class GridString(val default: Char = '.') {
     }
 
     companion object {
-        fun parse(s: String, default: Char = '.') : GridString {
-            return parse(s.lines(), default)
+        fun parse(s: String, default: Char = '.', ignoreDefault: Boolean = false): GridString {
+            return parse(s.lines(), default, ignoreDefault)
         }
 
-        fun parse(s: List<String>, default: Char = '.') : GridString {
-            val grid = GridString(default)
+        fun parse(s: List<String>, default: Char = '.', ignoreDefault: Boolean = false): GridString {
+            val grid = GridString(default, ignoreDefault)
             var x = 0
-            var y = 0
-            for (line in s) {
+            for ((y, line) in s.withIndex()) {
                 for (char in line.chars()) {
                     grid.add(Coord(x++, y), char.toChar())
                 }
-                ++y
                 x = 0
             }
             return grid
