@@ -13,7 +13,7 @@ class PathFinder {
             var count = 0
             while (unvisited.isNotEmpty()) {
 
-                if (count++ % 100 == 0) {
+                if (count++ % 100000 == 0) {
                     println("Count: $count Unvisited: ${unvisited.size}")
                 }
                 // get the closest node

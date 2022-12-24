@@ -44,19 +44,24 @@ class Day24KtTest {
     }
 
     private fun solve(data: String, part2: Boolean): Long {
-        return Solver(data).solve()
+        if( !part2 ) {
+            return Solver(data).solve1()
+        }
+        else {
+            return Solver(data).solve2()
+        }
     }
 
     @Test
     fun testPart2() {
-        assertEquals(20, solve(testData, true))
+        assertEquals(54, solve(testComplex, true))
     }
 
     @Test
     fun testPart2real() {
         // 2697722344572 too low
         // 3451534022349 too high
-        assertEquals(862, solve(realData, true))
+        assertEquals(723, solve(realData, true))
     }
 
     class Solver(data: String) {
@@ -66,6 +71,7 @@ class Day24KtTest {
         init {
             moveGrid.applyAll { _, c -> if (c == '#' || c == '.') c else '.' }
             moveGrid[Coord(0, -2)] = '#'
+            moveGrid[Coord(grid.getXMax() - 1, grid.getYMax()+1)] = '#'
         }
 
         val lcm = Utils.lcm(grid.getXMax(), grid.getYMax())
@@ -106,12 +112,28 @@ class Day24KtTest {
             }
         }
 
-        fun solve(): Long {
+        fun solve1(): Long {
+            val startState = State(0, Coord(0, -1))
+            val endState = State(-1, Coord(grid.getXMax() - 1, grid.getYMax()))
+            return solve(startState, endState)
+        }
+
+        fun solve2(): Long {
+            val start = Coord(0, -1)
+            val end = Coord(grid.getXMax()-1, grid.getYMax())
+            val first = solve(State(0, start), State(-1, end))
+            println("First part $first")
+            val second = solve(State(first, end), State(-1, start))
+            println("Second part $second")
+            val result = solve(State(first+second, start), State(-1, end))
+            println("Result $result")
+            return first+second+result
+        }
+
+        fun solve(startState: State, endState: State): Long {
             println("lcm is $lcm")
 //            simulate(lcm*2+1)
 //            println(State(9, Coord(5, 3)).nextStates())
-            val startState = State(0, Coord(0, -1))
-            val endState = State(-1, Coord(grid.getXMax() - 1, grid.getYMax()))
             val result = PathFinder.dijkstra2(startState, endState) { it.nextStates() }
             println(result.first.size)
 //            for( r in result.first ) {
