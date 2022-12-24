@@ -31,6 +31,13 @@ class Utils {
             return extractUInts(aoc.javaClass.simpleName)[0]
         }
 
+        fun lcm(a: Long, b: Long): Long {
+            var x = a
+            while (x % b != 0L) {
+                x += a
+            }
+            return x
+        }
     }
 }
 
