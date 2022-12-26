@@ -75,42 +75,13 @@ class Day24KtTest {
         }
 
         val lcm = Utils.lcm(grid.getXMax(), grid.getYMax())
-        val blizzards = Blizzard.parse(grid).toList()
-        val rowBlizzards: MutableMap<Long, List<Blizzard>> = mutableMapOf()
+        private val blizzards = Blizzard.parse(grid).toList()
 
-        init {
-            for (row in grid.getYRange()) {
-                rowBlizzards[row] = blizzards.filter { it.horizontal && it.position.pos.y == row }.toList()
-            }
-        }
+        val blizzardLocations: Map<Long, Set<Coord>> = LongRange(0L, lcm)
+            .map { it to blizzards.map { b -> b.positionAt(it) }.toSet()}.toMap()
 
-        val colBlizzards: MutableMap<Long, List<Blizzard>> = mutableMapOf()
-
-        init {
-            for (col in grid.getXRange()) {
-                colBlizzards[col] = blizzards.filter { it.vertical && it.position.pos.x == col }.toList()
-            }
-        }
 
         private val icons = mapOf(UpDown.U to '^', UpDown.R to '>', UpDown.D to 'v', UpDown.L to '<')
-
-
-        fun simulate(turns: Long) {
-            for (i in 0..turns) {
-                val grid2 = moveGrid.copyOf()
-                grid2.applyAll { _, c -> if (c == '#' || c == '.') c else '.' }
-                for (b in blizzards) {
-//                    println("Blizzard: $b")
-                    val icon = icons[b.position.delta]
-//                    println("Position at time $i is ${b.positionAt(i)} icon is $icon")
-                    grid2[b.positionAt(i)] = icons[b.position.delta]!!
-//                    println("Grid after is")
-//                    println(grid2.toString(nums = true))
-                }
-                println("After Turn $i")
-                println(grid2.toString(nums = true))
-            }
-        }
 
         fun solve1(): Long {
             val startState = State(0, Coord(0, -1))
@@ -161,22 +132,8 @@ class Day24KtTest {
                 }
                 // Filter out ones where there will be a blizzard
 //                return next
-                return next.filter { !it.first.inBlizzard() }
-            }
-
-            private fun inBlizzard(): Boolean {
-                // See if any of the blizzards hit this state
-                for (b in rowBlizzards.getOrDefault(pos.y, listOf())) {
-                    if (b.positionAt(time) == pos) {
-                        return true
-                    }
-                }
-                for (b in colBlizzards.getOrDefault(pos.x, listOf())) {
-                    if (b.positionAt(time) == pos) {
-                        return true
-                    }
-                }
-                return false
+//                return next.filter { !it.first.inBlizzard() }
+                return next.filter { it.first.pos !in blizzardLocations[nextTime]!! }
             }
 
             override fun equals(other: Any?): Boolean {
