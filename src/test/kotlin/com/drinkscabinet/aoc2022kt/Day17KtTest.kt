@@ -72,6 +72,10 @@ class Day17KtTest {
     @Test
     fun testPart1() {
         assertEquals(3068, part1(testData, 2022))
+    }
+
+    @Test
+    fun testPart1real() {
         assertEquals(3153, part1(realData, 2022))
     }
 
