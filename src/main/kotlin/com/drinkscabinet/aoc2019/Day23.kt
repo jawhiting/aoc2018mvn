@@ -55,6 +55,7 @@ private class Computer(val address: Long, val computer: IntCode, val router: Rou
 private class Router {
     val computers = mutableMapOf<Long, Computer>()
     var interrupt = false
+    var part1 = false
 
     private var nat = 0L to 0L
     private val queuedInput = mutableSetOf<Long>()
@@ -65,11 +66,13 @@ private class Router {
     }
 
     fun part1() {
+        part1 = true
         var i = 0L
         while (!interrupt) {
             println("Running computer $i")
             computers[i++ % computers.size]!!.exec()
         }
+        part1 = false
     }
 
     fun part2() {
@@ -100,7 +103,7 @@ private class Router {
         if (dest == 255L) {
             println("Packet for 255: $x $y")
             nat = x to y
-//            interrupt = true
+            interrupt = true
         } else {
             if (dest == 0L) {
                 if (lastY == y) {

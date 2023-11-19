@@ -37,7 +37,7 @@ internal data class Node(val position: Coord, val open: Boolean, var occupant: E
     }
 
     fun neighbours(nodes: Map<Coord, Node>): SortedSet<Node> {
-        return Direction.values().map { position.move(it) }.mapNotNull { nodes[it] }.filter(Node::open).toSortedSet()
+        return Direction.entries.map { position.move(it) }.mapNotNull { nodes[it] }.filter(Node::open).toSortedSet()
     }
 }
 
