@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.version>1.9.20</kotlin.version>
         <kotlin.code.style>official</kotlin.code.style>
-        <junit.version>5.5.2</junit.version>
+        <junit.version>5.10.1</junit.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <kotlin.compiler.jvmTarget>20</kotlin.compiler.jvmTarget>
         <maven.compiler.source>20</maven.compiler.source>
@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-junit</artifactId>
+            <artifactId>kotlin-test</artifactId>
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
