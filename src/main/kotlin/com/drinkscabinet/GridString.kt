@@ -81,7 +81,11 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
     }
 
     fun neighbours4(pos: Coord) : Iterable<Pair<Coord, Char>> {
-        return neighbours(pos, Direction.values().asIterable())
+        return neighbours(pos, Direction.entries.asIterable())
+    }
+
+    fun neighbours8(pos: Coord) : Iterable<Pair<Coord, Char>> {
+        return neighbours(pos, Direction8.entries.asIterable())
     }
 
     fun nextInDirection(pos: Coord, direction: Delta) : Pair<Coord, Char> {

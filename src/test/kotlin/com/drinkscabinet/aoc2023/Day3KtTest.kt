@@ -1,5 +1,8 @@
 package com.drinkscabinet.aoc2023
 
+import GridString
+import com.drinkscabinet.Coord
+import com.drinkscabinet.Grid
 import com.drinkscabinet.Utils
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -7,10 +10,16 @@ import org.junit.jupiter.api.Test
 
 class Day3KtTest {
 
-    private val testData = """1abc2
-pqr3stu8vwx
-a1b2c3d4e5f
-treb7uchet"""
+    private val testData = """467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598.."""
 
 
     // Get the year and day from the class
@@ -18,21 +27,102 @@ treb7uchet"""
 
     @Test
     fun testPart1() {
-        assertEquals(100, this.part1(testData))
-        assertEquals(100, this.part1(realData))
+        assertEquals(4361, this.calculate(testData, false))
+        // 334335 too low
+        // 334781 too low
+        assertEquals(529618, this.calculate(realData, false))
     }
 
     @Test
     fun testPart2() {
-        assertEquals(100, this.part2(testData))
-        assertEquals(100, this.part2(realData))
+        assertEquals(467835, this.calculate(testData, true))
+        assertEquals(77509019, this.calculate(realData, true))
     }
 
-    private fun part1(data: String): Int {
-        return 100
+    data class Num(val id: Int, val num: Int, val coords: Set<Coord>, val isPart: Boolean)
+
+    private fun calculate(data: String, part2: Boolean): Int {
+        var nextId = 0
+        val grid = GridString.parse(data)
+        val parts = mutableListOf<Int>()
+        val nonParts = mutableListOf<Int>()
+        val nums = mutableMapOf<Coord, Num>()
+        for(y in grid.getYRange()) {
+            var num = 0
+            var isPart = false
+            val coords = mutableSetOf<Coord>()
+            for (x in grid.getXRange()) {
+                // check if coord is a digit
+                val coord = Coord(x, y)
+                if(grid[coord] in '0'..'9') {
+                    val n = grid[coord].digitToInt()
+                    num = num * 10 + n
+                    coords.add(coord)
+                    if(!isPart) {
+                        // check neighbours for symbols
+                        val neighbours = grid.neighbours8(coord)
+                        if (!neighbours.all { it.second in '0'..'9' || it.second == '.' }) {
+                            isPart = true
+                        }
+                    }
+                }
+                else {
+                    // non numeric, so reset
+                    if(num > 0) {
+                        if(isPart) {
+                            parts.add(num)
+                        }
+                        else {
+                            nonParts.add(num)
+                        }
+                        // make a copy of coords set
+
+                        val n = Num(nextId++, num, coords.toSet(), isPart)
+                        for(c in coords) {
+                            nums[c] = n
+                        }
+                        coords.clear()
+                    }
+                    num = 0
+                    isPart = false
+                }
+            }
+            // end of row, reset
+            if(num > 0) {
+                if(isPart) {
+                    parts.add(num)
+                }
+                else {
+                    nonParts.add(num)
+                }
+                val n = Num(nextId++, num, coords.toSet(), isPart)
+                for(c in coords) {
+                    nums[c] = n
+                }
+                coords.clear()
+            }
+        }
+
+        return if(part2)
+            gears(grid, nums)
+        else
+            parts.sum()
     }
 
-    private fun part2(data: String): Int {
-        return 100
+    private fun gears(grid: GridString, nums: Map<Coord, Num>): Int {
+        val gears = grid.getAll('*')
+        var gearSum = 0
+        for(c in gears) {
+            val neighbors = grid.neighbours8(c)
+            val neighborsNums = neighbors.map{it.first}.filter{ nums.containsKey(it)}.map { nums[it]!! }.toSet()
+//            println("Gear at $c has $neighborsNums")
+            if(neighborsNums.size == 2) {
+                // multiply all of the num values together
+                val ratio = neighborsNums.map{it.num}.reduce{a, b -> a * b}
+//                println("Gear ratio$ratio")
+                gearSum += ratio
+            }
+        }
+        return gearSum
     }
 }
