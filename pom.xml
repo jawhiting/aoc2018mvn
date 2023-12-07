@@ -31,7 +31,7 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test</artifactId>
             <version>${kotlin.version}</version>
-            <scope>test</scope>
+            <scope>test</scope>Day6KtTest
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
