@@ -3,7 +3,7 @@ package com.drinkscabinet.aoc2023
 import com.drinkscabinet.Utils
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import kotlin.coroutines.coroutineContext
+import kotlinx.coroutines.*
 
 
 class Day5KtTest {
@@ -124,20 +124,38 @@ humidity-to-location map:
 
     @Test
     fun testPart2() {
-        assertEquals(46, part2(testData))
-        assertEquals(17729182, part2(realData))
+        assertEquals(46, part2p(testData))
+        assertEquals(17729182, part2p(realData))
     }
 
-    private fun part2(data: String): Long {
+    private fun part2(data: String) : Long {
         val seeds = FromToMap.seeds(data)
         val maps = FromToMap.parse(data)
 
         var result = Long.MAX_VALUE
+
         for(s in seeds.indices step 2) {
             result = minOf(result, convertRange(seeds[s], seeds[s+1], maps))
         }
 
         return result
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+    private fun part2p(data: String) = runBlocking<Long> {
+        val seeds = FromToMap.seeds(data)
+        val maps = FromToMap.parse(data)
+
+        var result = Long.MAX_VALUE
+
+        val rangeResults = mutableListOf<Deferred<Long>>()
+        // use coroutines to convert each value in the range in parallel then find the min
+        for(s in seeds.indices step 2) {
+            rangeResults += async(newSingleThreadContext("x")) { convertRange(seeds[s], seeds[s+1], maps) }
+        }
+        result = rangeResults.awaitAll().min()
+
+        return@runBlocking result
     }
 
     private fun part1(data: String): Long {
@@ -151,7 +169,9 @@ humidity-to-location map:
         println("Start: $start length: $length")
         val range = start..<start+length
         // use coroutines to convert each value in the range in parallel then find the min
-        return range.minOfOrNull { convert(it, maps) }!!
+        val result = range.minOfOrNull { convert(it, maps) }!!
+        println("Start: $start length: $length result: $result")
+        return result
     }
     private fun convert(seed: Long, maps: List<FromToMap>) : Long {
         var result = seed

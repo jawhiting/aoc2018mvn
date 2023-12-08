@@ -1,5 +1,7 @@
 package com.drinkscabinet
 
+import com.github.jsonldjava.shaded.com.google.common.math.LongMath
+
 class Utils {
 
     companion object {
@@ -37,6 +39,14 @@ class Utils {
                 x += a
             }
             return x
+        }
+
+        fun lcmList(numbers: List<Long>): Long {
+            var lcm = numbers[0]
+            for (i in 1 until numbers.size) {
+                lcm = lcm * numbers[i] / LongMath.gcd(lcm, numbers[i])
+            }
+            return lcm
         }
     }
 }
