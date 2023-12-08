@@ -4,6 +4,7 @@ import com.drinkscabinet.Utils
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlinx.coroutines.*
+import kotlin.math.min
 
 
 class Day5KtTest {
@@ -13,6 +14,7 @@ class Day5KtTest {
         operator fun contains(value: Long): Boolean {
             return value in start..<start + length
         }
+
         fun map(value: Long): Long {
             if (value in start..<start + length) {
                 return value + (destination - start)
@@ -24,13 +26,14 @@ class Day5KtTest {
     data class FromToMap(val id: String, val ranges: List<RangeMap>) {
 
 
-        fun map(seed: Long) : Long {
+        fun map(seed: Long): Long {
             val r = ranges.firstOrNull { seed in it }
-            if(r != null) {
+            if (r != null) {
                 return r.map(seed)
             }
             return seed
         }
+
         companion object {
 
             fun seeds(input: String): LongArray {
@@ -128,14 +131,14 @@ humidity-to-location map:
         assertEquals(17729182, part2p(realData))
     }
 
-    private fun part2(data: String) : Long {
+    private fun part2(data: String): Long {
         val seeds = FromToMap.seeds(data)
         val maps = FromToMap.parse(data)
 
         var result = Long.MAX_VALUE
 
-        for(s in seeds.indices step 2) {
-            result = minOf(result, convertRange(seeds[s], seeds[s+1], maps))
+        for (s in seeds.indices step 2) {
+            result = minOf(result, convertRange(seeds[s], seeds[s + 1], maps))
         }
 
         return result
@@ -150,8 +153,8 @@ humidity-to-location map:
 
         val rangeResults = mutableListOf<Deferred<Long>>()
         // use coroutines to convert each value in the range in parallel then find the min
-        for(s in seeds.indices step 2) {
-            rangeResults += async(newSingleThreadContext("x")) { convertRange(seeds[s], seeds[s+1], maps) }
+        for (s in seeds.indices step 2) {
+            rangeResults += async(Dispatchers.Default) { convertRange(seeds[s], seeds[s + 1], maps) }
         }
         result = rangeResults.awaitAll().min()
 
@@ -162,18 +165,26 @@ humidity-to-location map:
         val seeds = FromToMap.seeds(data)
         val maps = FromToMap.parse(data)
 
-        return seeds.map{convert(it, maps)}.min()
+        return seeds.map { convert(it, maps) }.min()
     }
 
-    private fun convertRange(start: Long, length: Long, maps: List<FromToMap>) : Long {
+    @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+
+    private fun convertRange(start: Long, length: Long, maps: List<FromToMap>) = runBlocking {
         println("Start: $start length: $length")
-        val range = start..<start+length
-        // use coroutines to convert each value in the range in parallel then find the min
-        val result = range.minOfOrNull { convert(it, maps) }!!
+        val range = start..<start + length
+        val calcs = mutableListOf<Deferred<Long>>()
+        val STEP = 100000L
+        for (r in range step STEP) {
+            val subRange = r..<min(r + STEP, start + length)
+            calcs += async(Dispatchers.Default) { subRange.minOf { convert(it, maps) } }
+        }
+        val result = calcs.awaitAll().min()
         println("Start: $start length: $length result: $result")
-        return result
+        return@runBlocking result
     }
-    private fun convert(seed: Long, maps: List<FromToMap>) : Long {
+
+    private fun convert(seed: Long, maps: List<FromToMap>): Long {
         var result = seed
         for (map in maps) {
             result = map.map(result)
