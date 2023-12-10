@@ -4,9 +4,6 @@ import Direction
 import GridString
 import com.drinkscabinet.Coord
 import com.drinkscabinet.Utils
-import com.drinkscabinet.Utils.Companion.lcm
-import com.drinkscabinet.Utils.Companion.lcmList
-import com.github.jsonldjava.shaded.com.google.common.math.LongMath.gcd
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -90,11 +87,11 @@ class Day10KtTest {
     private fun loop(start: Coord, grid: GridString): List<Coord> {
         var prev = start
         var current = findFirstPipe(grid, start)
-        val list = mutableListOf<Coord>(current)
+        val list = mutableListOf(current)
         do {
-            val currentChar = grid.get(current)
+            val currentChar = grid[current]
             val currentPipe = pipeMap[currentChar]!!
-            val next = grid.neighbours(current, currentPipe.directions).filter { it.first != prev }.first().first
+            val next = grid.neighbours(current, currentPipe.directions).first { it.first != prev }.first
             list.add(next)
             prev = current
             current = next
@@ -137,7 +134,7 @@ class Day10KtTest {
         return countInterior(stretched)
     }
 
-    fun stretch(grid: GridString): GridString {
+    private fun stretch(grid: GridString): GridString {
         val result = GridString()
         for (y in grid.getYRange()) {
             for (x in grid.getXRange()) {
@@ -154,7 +151,7 @@ class Day10KtTest {
         return result
     }
 
-    fun countInterior(grid: GridString) : Long {
+    private fun countInterior(grid: GridString) : Long {
         var count = 0L
         val xr = grid.getXRange()
         val yr = grid.getYRange()
@@ -166,7 +163,7 @@ class Day10KtTest {
         return count
     }
 
-    fun floodFill(grid: GridString): GridString {
+    private fun floodFill(grid: GridString): GridString {
         val toVisit = mutableSetOf<Coord>()
         // put in all the edge nodes
         for(x in arrayOf(grid.getXMin(), grid.getXMax())) {
