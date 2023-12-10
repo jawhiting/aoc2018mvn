@@ -10,7 +10,7 @@ fun main() {
         )
     }.toSet()
     // Part 1
-    val maxRadiusBotX = input.maxBy { it.r } ?: return
+    val maxRadiusBotX = input.maxBy { it.r }
     println(input.count { it.copy(r = 0).intersects(maxRadiusBotX) })
 
     // Part 2
@@ -45,7 +45,7 @@ fun main() {
         currentBotXs = newGeneration.filter { it.second == maxDistance }.map { it.first }.toSet()
     }
 
-    println(currentBotXs.minBy { startPosition.distanceTo(it.pos) }?.pos?.distanceTo(startPosition))
+    println(currentBotXs.minBy { startPosition.distanceTo(it.pos) }.pos?.distanceTo(startPosition))
 }
 
 inline fun <T> Iterable<T>.deltaBy(block: (T) -> Long): Long {
@@ -55,7 +55,7 @@ inline fun <T> Iterable<T>.deltaBy(block: (T) -> Long): Long {
 
 data class CoordX(val x: Long, val y: Long, val z: Long) {
     companion object {
-        public fun parse(input: String): CoordX {
+        fun parse(input: String): CoordX {
             val (x, y, z) = input
                 .split(",")
                 .map { it.filter { c -> c == '-' || c in '0'..'9' }.toLong() }

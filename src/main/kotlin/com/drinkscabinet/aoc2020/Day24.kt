@@ -3,6 +3,7 @@ package com.drinkscabinet.aoc2020
 import DirectionHex
 import GridString
 import com.drinkscabinet.Coord
+import java.util.*
 
 private fun main() {
     val grid = part1(input)
@@ -81,7 +82,7 @@ private fun mutate(g: GridString): GridString {
 }
 
 private fun parse(s: String): List<DirectionHex> {
-    val dirs = s.replace("\n", "").replace("e", "e,").replace("w", "w,").toUpperCase().split(",").filter { it.isNotEmpty() }
+    val dirs = s.replace("\n", "").replace("e", "e,").replace("w", "w,").uppercase(Locale.getDefault()).split(",").filter { it.isNotEmpty() }
     println(dirs)
     return dirs.map { DirectionHex.valueOf(it) }.toList()
 }

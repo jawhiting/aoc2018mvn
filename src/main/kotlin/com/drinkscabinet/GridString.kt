@@ -27,16 +27,12 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
     }
 
     fun add(coord: Coord, char: Char): GridString {
-        if (ignoreDefault && char == default) {
-            chars.remove(coord)
-        } else {
-            chars[coord] = char
-        }
+        this[coord] = char
         return this
     }
 
     fun add(coord: Coord, shape: GridString): GridString {
-        shape.chars.filter { it.value != shape.default }.forEach { (pos, c) -> add(pos.move(coord), c) }
+        shape.chars.filter { it.value != shape.default }.forEach { (pos, c) -> this[pos.move(coord)] = c }
         return this
     }
 
@@ -64,7 +60,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
     }
 
     fun <T> addAll(m: Map<Coord, T>, transformer: (v: T) -> Char): GridString {
-        m.entries.forEach { chars[it.key] = transformer.invoke(it.value) }
+        m.entries.forEach { this[it.key] = transformer.invoke(it.value) }
         return this
     }
 
@@ -104,7 +100,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
     fun <T> addAllExtra(m: Map<Coord, T>, transformer: (v: T) -> Pair<Char, String?> ): GridString {
         m.entries.forEach{
             val r = transformer.invoke(it.value)
-            chars[it.key] = r.first
+            this[it.key] = r.first
             if( r.second != null ) {
                 supplemental.merge(it.key.y, " ${r.second}") { a, b -> a+b }
             }

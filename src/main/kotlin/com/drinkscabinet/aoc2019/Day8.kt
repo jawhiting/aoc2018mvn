@@ -19,7 +19,7 @@ private fun main() {
     Layer.extractLayers(testInput, 3, 2).forEach { println(it) }
     val layers = Layer.extractLayers(input, 25, 6)
 
-    val layer = layers.minBy { it.count(0) }!!
+    val layer = layers.minBy { it.count(0) }
     println(layer.count(1) * layer.count(2))
 
     for( r in 0..5 ) {

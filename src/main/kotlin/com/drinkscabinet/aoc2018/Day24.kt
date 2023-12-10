@@ -1,5 +1,6 @@
 package com.drinkscabinet.aoc2018
 
+import java.util.*
 import kotlin.math.min
 
 private enum class Type {
@@ -75,16 +76,16 @@ private data class Group(val id: Int, val type: Type, val units: Int, val hp: In
             // 18 units each with 729 hit points (weak to fire; immune to cold, slashing)
             // with an attack that does 8 radiation damage at initiative 10
             val nums = extractInts(s)
-            val dmgType = Attack.valueOf("\\d+ ([a-z]+) damage".toRegex().find(s)!!.groupValues[1].toUpperCase())
+            val dmgType = Attack.valueOf("\\d+ ([a-z]+) damage".toRegex().find(s)!!.groupValues[1].uppercase(Locale.getDefault()))
             val imm = "immune to ([a-z, ]+)+[;)]".toRegex().find(s)
             val immunities = mutableSetOf<Attack>()
             if( imm != null ) {
-                imm.groupValues[1].split(", ").map { Attack.valueOf(it.toUpperCase()) }.forEach { immunities.add(it) }
+                imm.groupValues[1].split(", ").map { Attack.valueOf(it.uppercase(Locale.getDefault())) }.forEach { immunities.add(it) }
             }
             val weak = "weak to ([a-z, ]+)+[;)]".toRegex().find(s)
             val weaknesses = mutableSetOf<Attack>()
             if( weak != null ) {
-                weak.groupValues[1].split(", ").map { Attack.valueOf(it.toUpperCase()) }.forEach { weaknesses.add(it) }
+                weak.groupValues[1].split(", ").map { Attack.valueOf(it.uppercase(Locale.getDefault())) }.forEach { weaknesses.add(it) }
             }
             return Group(
                 id,

@@ -4,10 +4,10 @@ package com.drinkscabinet.aoc2019
 private fun main() {
     val computer = IntCode.parse(input)
 
-    val p = program2.toCharArray().map { it.toLong() }
+    val p = program2.toCharArray().map { it.code.toLong() }
 
     val result = computer.executeFromStart(p)
-    println(String(result.map{it.toChar()}.toCharArray()))
+    println(String(result.map{ it.toInt().toChar() }.toCharArray()))
     println(result.last())
 }
 

@@ -7,7 +7,7 @@ class Day1 {
 
     companion object {
         fun fuel(m: Int): Int {
-            return m / 3 - 2;
+            return m / 3 - 2
         }
 
         fun totalFuel(m: Int): Int {

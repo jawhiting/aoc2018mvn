@@ -98,7 +98,7 @@ fun winningScore2(playerCount: Int, lastBall: Int, log: Boolean = false): Long {
         currentPlayer = (currentPlayer+1)%playerCount
 
     }
-    return scores.max()!!
+    return scores.max()
 }
 
 fun winningScore(playerCount: Int, lastBall: Int): Int {
@@ -153,5 +153,5 @@ fun winningScore(playerCount: Int, lastBall: Int): Int {
     //scores.forEachIndexed{ i: Int, s: Int -> println("$i has $s")}
 
     //println("Winning score is: ${scores.max()}")
-    return scores.max()!!
+    return scores.max()
 }

@@ -4,7 +4,7 @@ import java.io.File
 
 fun main() {
     val deltas = File("/Users/jwhiting/IdeaProjects/aoc2018/src/Day1.txt").bufferedReader().lines()
-        .mapToInt({ Integer.valueOf(it) }).toArray();
+        .mapToInt({ Integer.valueOf(it) }).toArray()
 
     println("Part 1 ${deltas.sum()}")
 

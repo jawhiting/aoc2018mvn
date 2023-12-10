@@ -4,7 +4,7 @@ import com.drinkscabinet.Utils
 import java.util.*
 
 private fun main() {
-    var nums = Utils.extractInts(input).toSortedSet();
+    var nums = Utils.extractInts(input).toSortedSet()
     val result = findSum(2020, nums).get()
     println(result)
     val mult = result * (2020 - result)

@@ -2,7 +2,7 @@ package com.drinkscabinet
 
 import kotlin.math.abs
 
-class Ring<T>() {
+class Ring<T> {
 
     var size = 0L
     var root: Entry<T>? = null

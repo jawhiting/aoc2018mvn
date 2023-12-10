@@ -46,7 +46,7 @@ private fun toRegex(id: Int, rules: Map<Int, String>) : String {
     val rule = rules[id]!!
     var regex = rule
     if( rule.startsWith("\"")) {
-        return rule[1]!!.toString()
+        return rule[1].toString()
     }
     else {
         val ints = Utils.extractInts(rule)

@@ -3,7 +3,7 @@ package com.drinkscabinet.aoc2020
 import com.drinkscabinet.chunks
 
 private fun main() {
-    val acc = input.chunks().map { it.chars().filter { it in 'a'.toInt()..'z'.toInt() }.distinct().count() }.sum()
+    val acc = input.chunks().map { it.chars().filter { it in 'a'.code..'z'.code }.distinct().count() }.sum()
     println("Part1=$acc")
     // 6911
 

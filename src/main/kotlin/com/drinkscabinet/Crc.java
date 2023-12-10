@@ -34,7 +34,7 @@ public class Crc {
         for (int i = 1; i < Integer.MAX_VALUE; i++) {
             String postfix = calcPostfix(i);
             if( i % 1000 == 0 ) {
-                System.out.println("" + i + " " + postfix);
+                System.out.println(i + " " + postfix);
             }
             // Calculate postfix
 
@@ -60,7 +60,7 @@ public class Crc {
         for (int i = 1; i < Integer.MAX_VALUE; i++) {
             String postfix = calcPostfix(i);
             if( i % 1000 == 0 ) {
-                System.out.println("" + i + " " + postfix);
+                System.out.println(i + " " + postfix);
             }
             // Calculate postfix
 

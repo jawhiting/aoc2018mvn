@@ -109,20 +109,20 @@ private class Ring() {
         return result.toString()
     }
 
-    public fun getElement(v: Int) : RingElement {
+    fun getElement(v: Int) : RingElement {
         return elements.computeIfAbsent(v) { RingElement(v) }
     }
 
 
     companion object {
         fun parse(s: String) : Ring {
-            val ringValues = s.chars().map { it - '0'.toInt() }.toArray().toMutableList()
+            val ringValues = s.chars().map { it - '0'.code }.toArray().toMutableList()
             return Ring(ringValues)
         }
 
         fun init2(s: String) : Ring {
             val nums = mutableListOf<Int>()
-            nums.addAll(s.chars().map { it - '0'.toInt() }.toArray().toList())
+            nums.addAll(s.chars().map { it - '0'.code }.toArray().toList())
             // Now add the rest
             for( i in 10 .. 1000000 ) {
                 nums.add(i)

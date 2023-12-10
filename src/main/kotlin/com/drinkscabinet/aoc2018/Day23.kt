@@ -24,7 +24,7 @@ private data class Bot(val pos: Coord3, val range: Long) {
     }
 
     companion object {
-        public fun parse(s: String): Bot {
+        fun parse(s: String): Bot {
             val l = extractLongs(s)
             return Bot(
                 Coord3(
@@ -81,11 +81,11 @@ private fun part2(bots: List<Bot>) {
         }
         else {
             xMin = best!!.x - dist
-            yMin = best!!.y - dist
-            zMin = best!!.z - dist
-            xMax = best!!.x + dist
-            yMax = best!!.y + dist
-            zMax = best!!.z + dist
+            yMin = best.y - dist
+            zMin = best.z - dist
+            xMax = best.x + dist
+            yMax = best.y + dist
+            zMax = best.z + dist
             dist /= 2
         }
     }
@@ -99,7 +99,7 @@ fun main() {
     // 122591144 too low
     
     // find longest range
-    val longest = bots.maxBy { it.range }!!
+    val longest = bots.maxBy { it.range }
     println("Longest is $longest")
     val inRange = bots.filter { longest.inRange(it) }
     println("Count: ${inRange.size}")

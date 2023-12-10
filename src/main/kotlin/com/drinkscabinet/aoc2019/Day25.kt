@@ -10,9 +10,7 @@ private fun main() {
     Adventure(computer).part1()
 }
 
-private data class Room(val description: String) {
-
-}
+private data class Room(val description: String)
 
 private class Adventure(val computer: IntCode ) {
     private val data = mutableListOf<Long>()
@@ -39,7 +37,7 @@ private class Adventure(val computer: IntCode ) {
         fun explore(i : List<Long>) : List<State> {
             val output = computer.continueExecution(i)
 
-            val description = String(output.map { it.toChar() }.toCharArray())
+            val description = String(output.map { it.toInt().toChar() }.toCharArray())
 
             val dirs = availableDirections(description)
             val name = roomName(description)
@@ -62,7 +60,7 @@ private class Adventure(val computer: IntCode ) {
                 val items = availableItems(description)
                 items.forEach { itemLocations[it] = pos }
 
-                grid.add(pos, (items.count()+'0'.toInt()).toChar())
+                grid.add(pos, (items.count()+ '0'.code).toChar())
 
                 // now next move
                 for (dir in dirs) {
@@ -79,7 +77,7 @@ private class Adventure(val computer: IntCode ) {
         }
 
         private fun getMoveCommand(dir: Direction) : List<Long> {
-            return dirText[dir]!!.map { it.toLong() }.toList().plus(10L)
+            return dirText[dir]!!.map { it.code.toLong() }.toList().plus(10L)
         }
 
 //        private fun input() : Long? {

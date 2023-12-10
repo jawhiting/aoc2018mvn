@@ -93,14 +93,14 @@ private fun findAllXs(s: String) : Set<Int> {
     return result
 }
 
-private class Computer() {
+private class Computer {
     private var ip = 0
     private val memory = mutableMapOf<Long, Long>()
     private var mask = ""
     private var mask0 = 0L
     private var mask1 = 0L
 
-    public fun execute(program: List<String>) : Long {
+    fun execute(program: List<String>) : Long {
         for (instruction in program) {
             execute(instruction)
         }
@@ -108,7 +108,7 @@ private class Computer() {
         return memory.values.sum()
     }
 
-    public fun execute(instruction: String) {
+    fun execute(instruction: String) {
         if( instruction.startsWith("mask")) {
             println(instruction.count { it == 'X' })
             mask0 = get0Mask(instruction.substringAfter("= "))
@@ -122,7 +122,7 @@ private class Computer() {
         }
     }
 
-    public fun execute2(program: List<String>) : Long {
+    fun execute2(program: List<String>) : Long {
         for (instruction in program) {
             execute2(instruction)
         }
@@ -130,7 +130,7 @@ private class Computer() {
         return memory.values.sum()
     }
 
-    public fun execute2(instruction: String) {
+    fun execute2(instruction: String) {
         if( instruction.startsWith("mask")) {
             println(instruction.count { it == 'X' })
             mask = instruction.substringAfter("= ")

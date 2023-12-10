@@ -37,12 +37,12 @@ private fun main() {
     println("Part2 took ${System.currentTimeMillis()-start}")
 }
 
-class Console() {
+class Console {
     private var code = arrayOf<String>()
     private var ip = 0
     var acc = 0L
 
-    public fun load(p: Collection<String>) {
+    fun load(p: Collection<String>) {
         code = p.toTypedArray().clone()
         ip = 0
         acc = 0

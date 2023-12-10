@@ -124,7 +124,7 @@ public final class Crc32Forcer {
 
     /*---- Utilities ----*/
 
-    private static long POLYNOMIAL = 0x104C11DB7L;  // Generator polynomial. Do not modify, because there are many dependencies
+    private static final long POLYNOMIAL = 0x104C11DB7L;  // Generator polynomial. Do not modify, because there are many dependencies
 
 
     private static int getCrc32(RandomAccessFile raf) throws IOException {
@@ -191,7 +191,7 @@ public final class Crc32Forcer {
         for (int i = getDegree(x) - ydeg; i >= 0; i--) {
             if (((x >>> (i + ydeg)) & 1) != 0) {
                 x ^= y << i;
-                z |= 1 << i;
+                z |= 1L << i;
             }
         }
         return new long[]{z, x};

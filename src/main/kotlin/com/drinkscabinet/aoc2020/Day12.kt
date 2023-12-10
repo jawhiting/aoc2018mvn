@@ -10,8 +10,7 @@ private class Ship {
 
     fun move(instruction: String) : Coord {
         val param = Utils.extractInts(instruction).first()
-        val action = instruction[0]
-        when( action ) {
+        when(val action = instruction[0]) {
             'F' -> {
                 for( i in 1..param) position = position.move(facing)
             }
@@ -31,8 +30,7 @@ private class Ship {
 
     fun move2(instruction: String) : Coord {
         val param = Utils.extractInts(instruction).first()
-        val action = instruction[0]
-        when( action ) {
+        when(val action = instruction[0]) {
             'F' -> {
                 for( i in 1..param) position = position.move(waypoint)
             }

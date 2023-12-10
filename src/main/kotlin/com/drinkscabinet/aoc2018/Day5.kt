@@ -27,7 +27,7 @@ fun compact(s: String) : Int {
     while( current.length < len) {
         len = current.length
         for (i in 'a'..'z') {
-            val toRemove = "" + i + (i.toUpperCase())
+            val toRemove = "" + i + (i.uppercaseChar())
             current = current.replace(toRemove, "")
             current = current.replace(toRemove.reversed(), "")
         }

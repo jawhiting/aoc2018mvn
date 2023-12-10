@@ -93,9 +93,7 @@ private class Calculator(val depth: Long, val start: Coord, val target: Coord) {
         }
     }
 
-    data class Position(val c: Coord, val e: Equip) {
-
-    }
+    data class Position(val c: Coord, val e: Equip)
 
     private fun nextMoves(current: Position): List<Pair<Position, Int>> {
         val moves = mutableListOf<Pair<Position, Int>>()
