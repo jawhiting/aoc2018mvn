@@ -16,6 +16,10 @@ enum class Direction(override val x: Int, override val y: Int) : Delta {
         if (c < 0) amount += 4
         return values()[(ordinal + amount) % values().size]
     }
+
+    fun opposite(): Direction {
+        return entries[(ordinal + 2) % entries.size]
+    }
 }
 
 enum class UpDown(override val x: Int, override val y: Int) : Delta {
