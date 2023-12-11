@@ -68,54 +68,76 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         chars.replaceAll(updater)
     }
 
-    fun neighbours(pos: Coord, directions: Iterable<Delta>) : Iterable<Pair<Coord, Char>> {
-        return directions.map{ pos.move(it) }.map{ it to  get(it)}
+    fun neighbours(pos: Coord, directions: Iterable<Delta>): Iterable<Pair<Coord, Char>> {
+        return directions.map { pos.move(it) }.map { it to get(it) }
     }
 
-    fun neighboursMatch(pos: Coord, directions: Iterable<Delta>, filter: (Char) -> Boolean) : Int {
-        return directions.map{ pos.move(it) }.filter{ filter(get(it)) }.count()
+    fun neighboursMatch(pos: Coord, directions: Iterable<Delta>, filter: (Char) -> Boolean): Int {
+        return directions.map { pos.move(it) }.filter { filter(get(it)) }.count()
     }
 
-    fun neighbours4(pos: Coord) : Iterable<Pair<Coord, Char>> {
+    fun neighbours4(pos: Coord): Iterable<Pair<Coord, Char>> {
         return neighbours(pos, Direction.entries.asIterable())
     }
 
-    fun neighbours8(pos: Coord) : Iterable<Pair<Coord, Char>> {
+    fun neighbours8(pos: Coord): Iterable<Pair<Coord, Char>> {
         return neighbours(pos, Direction8.entries.asIterable())
     }
 
-    fun nextInDirection(pos: Coord, direction: Delta) : Pair<Coord, Char> {
+    fun nextInDirection(pos: Coord, direction: Delta): Pair<Coord, Char> {
         // Ignore default char. If we hit the edge, return default char
         var current = pos.move(direction)
         val maxX = getXMax()
         val maxY = getYMax()
         val minX = getXMin()
         val minY = getYMin()
-        while( get(current) == default && current.x in minX..maxX && current.y in minY..maxY) {
+        while (get(current) == default && current.x in minX..maxX && current.y in minY..maxY) {
             current = current.move(direction)
         }
         return current to get(current)
     }
 
-    fun <T> addAllExtra(m: Map<Coord, T>, transformer: (v: T) -> Pair<Char, String?> ): GridString {
-        m.entries.forEach{
+    fun isRowEmpty(y: Long): Boolean {
+        chars.entries.forEach {
+            if (it.key.y == y) {
+                if (it.value != default) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    fun isColumnEmpty(x: Long): Boolean {
+        chars.entries.forEach {
+            if (it.key.x == x) {
+                if (it.value != default) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    fun <T> addAllExtra(m: Map<Coord, T>, transformer: (v: T) -> Pair<Char, String?>): GridString {
+        m.entries.forEach {
             val r = transformer.invoke(it.value)
             this[it.key] = r.first
-            if( r.second != null ) {
-                supplemental.merge(it.key.y, " ${r.second}") { a, b -> a+b }
+            if (r.second != null) {
+                supplemental.merge(it.key.y, " ${r.second}") { a, b -> a + b }
             }
         }
         return this
     }
 
-    fun flipH() : GridString {
+    fun flipH(): GridString {
         val target = chars.map { Coord(-it.key.x, it.key.y) to it.value }.toMap()
         chars.clear()
         chars.putAll(target)
         return this
     }
 
-    fun flipV() : GridString {
+    fun flipV(): GridString {
         val target = chars.map { Coord(it.key.x, -it.key.y) to it.value }.toMap()
         chars.clear()
         chars.putAll(target)
@@ -125,7 +147,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
     /**
      * Translate all cells in this grid by the specified coordinate
      */
-    fun translate(c: Coord) : GridString {
+    fun translate(c: Coord): GridString {
         val target = chars.map { it.key.move(c) to it.value }.toMap()
         chars.clear()
         chars.putAll(target)
@@ -135,7 +157,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
     /**
      * Translate the grid so that the top left corner is 0,0
      */
-    fun normalise() : GridString {
+    fun normalise(): GridString {
         val c = Coord(-getXMin(), -getYMin())
         translate(c)
         return this
@@ -144,7 +166,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
     /**
      * Rotate right 90 degrees the specified number of times
      */
-    fun rotate90(count: Int) : GridString {
+    fun rotate90(count: Int): GridString {
         val target = chars.map { it.key.rotate90(count) to it.value }.toMap()
         chars.clear()
         chars.putAll(target)
@@ -155,19 +177,19 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         return toString(false)
     }
 
-    fun getXMin() : Long {
+    fun getXMin(): Long {
         return chars.keys.map(Coord::x).minOrNull() ?: 0
     }
 
-    fun getXMax() : Long {
+    fun getXMax(): Long {
         return chars.keys.map(Coord::x).maxOrNull() ?: 0
     }
 
-    fun getYMin() : Long {
+    fun getYMin(): Long {
         return chars.keys.map(Coord::y).minOrNull() ?: 0
     }
 
-    fun getYMax() : Long {
+    fun getYMax(): Long {
         return chars.keys.map(Coord::y).maxOrNull() ?: 0
     }
 
@@ -180,8 +202,8 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
     }
 
     fun getCoords() = sequence {
-        for( x in getXRange()) {
-            for( y in getYRange()) {
+        for (x in getXRange()) {
+            for (y in getYRange()) {
                 yield(Coord(x, y))
             }
         }
@@ -192,7 +214,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
     }
 
     fun toString(nums: Boolean = false, invertV: Boolean = false): String {
-        if( chars.isEmpty() ) return ""
+        if (chars.isEmpty()) return ""
         val xMin = getXMin()
         val xMax = getXMax()
         val yMin = getYMin()
@@ -201,48 +223,48 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
 
         val result = StringBuilder()
 
-        if( nums ) {
+        if (nums) {
             // print minuses
-            if( xMin < 0 ) {
+            if (xMin < 0) {
                 result.append("    ")
-                for( x in xMin..xMax ) {
-                    result.append(if(x < 0) "-" else " ")
+                for (x in xMin..xMax) {
+                    result.append(if (x < 0) "-" else " ")
                 }
                 result.append(System.lineSeparator())
             }
             // print header
-            if( xMax > 99 ) {
+            if (xMax > 99) {
                 result.append("    ")
-                for( x in xMin..xMax ) {
-                    result.append((x /100) % 10)
+                for (x in xMin..xMax) {
+                    result.append((x / 100) % 10)
                 }
                 result.append(System.lineSeparator())
             }
-            if( xMax > 9 ) {
+            if (xMax > 9) {
                 result.append("    ")
-                for( x in xMin..xMax ) {
-                    result.append((x /10) % 10)
+                for (x in xMin..xMax) {
+                    result.append((x / 10) % 10)
                 }
                 result.append(System.lineSeparator())
             }
             result.append("    ")
-            for( x in xMin..xMax ) {
+            for (x in xMin..xMax) {
                 result.append(abs(x % 10))
             }
             result.append(System.lineSeparator())
 
         }
 
-        val yRange = if(invertV) yMax downTo yMin else yMin .. yMax
+        val yRange = if (invertV) yMax downTo yMin else yMin..yMax
 
-        for( y in yRange ) {
-            if( nums ) {
+        for (y in yRange) {
+            if (nums) {
                 result.append(" %2d ".format(y))
             }
-            for( x in xMin..xMax ) {
-                result.append( chars[Coord(x, y)] ?: default)
+            for (x in xMin..xMax) {
+                result.append(chars[Coord(x, y)] ?: default)
             }
-            if( supplemental.containsKey(y)) {
+            if (supplemental.containsKey(y)) {
                 result.append(supplemental[y])
             }
             result.append(System.lineSeparator())
@@ -278,7 +300,7 @@ fun main() {
 
     println(gs.toString(true))
 
-    for( i in 1 .. 4 ) {
+    for (i in 1..4) {
         gs.rotate90(1).normalise()
         println(gs.toString(true))
     }
