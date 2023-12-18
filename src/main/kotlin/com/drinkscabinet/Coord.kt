@@ -14,12 +14,20 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
         return xs
     }
 
-    fun move(d: Delta): Coord {
-        return Coord(this.x + d.x, this.y + d.y)
+    fun move(d: Delta, times: Long = 1): Coord {
+        return Coord(this.x + d.x * times, this.y + d.y * times)
     }
 
-    fun move(c: Coord): Coord {
-        return Coord(this.x + c.x, this.y + c.y)
+    fun move(c: Coord, times: Long = 1): Coord {
+        return Coord(this.x + c.x * times, this.y + c.y * times)
+    }
+
+    operator fun plus(d: Delta) : Coord {
+        return move(d)
+    }
+
+    operator fun plus(c: Coord) : Coord {
+        return move(c)
     }
 
     fun distance(c: Coord): Long {

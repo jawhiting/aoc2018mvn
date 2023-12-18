@@ -31,7 +31,7 @@ class PathFinder {
                 for (neighbor in neighbors) {
 
                     val dist = n.second + neighbor.second
-                    if (dist < distances[neighbor.first] ?: Integer.MAX_VALUE) {
+                    if (dist < (distances[neighbor.first] ?: Integer.MAX_VALUE)) {
                         distances[neighbor.first] = dist
                         prev[neighbor.first] = n.first
                         unvisited.add(neighbor.first to dist)
