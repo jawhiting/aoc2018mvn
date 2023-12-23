@@ -4,7 +4,7 @@ import kotlin.math.abs
 class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
 
     private val chars = mutableMapOf<Coord, Char>()
-
+    private val extra = mutableMapOf<Coord, Long>()
     private val supplemental = mutableMapOf<Long, String>()
 
     fun copyOf(): GridString {
@@ -26,8 +26,28 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         }
     }
 
-    fun add(coord: Coord, char: Char): GridString {
+    operator fun plus(gridString: GridString) : GridString {
+        gridString.chars.forEach { (coord, c) -> this[coord] = c }
+        gridString.extra.forEach { (coord, e) -> this.setExtra(coord, e) }
+        return this
+    }
+
+    fun setExtra(coord: Coord, e: Long?) {
+        if(e != null) {
+            extra[coord] = e
+        }
+        else {
+            extra.remove(coord)
+        }
+    }
+
+    fun getExtra(coord: Coord): Long? {
+        return extra[coord]
+    }
+    fun add(coord: Coord, char: Char, e: Long? = null): GridString {
         this[coord] = char
+        setExtra(coord, e)
+
         return this
     }
 
