@@ -1,6 +1,7 @@
 package com.drinkscabinet
 
 import Delta
+import Delta3
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -10,7 +11,7 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
 
     override fun compareTo(other: Coord): Int {
         val xs = y.compareTo(other.y)
-        if( xs == 0 ) return x.compareTo(other.x)
+        if (xs == 0) return x.compareTo(other.x)
         return xs
     }
 
@@ -22,11 +23,11 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
         return Coord(this.x + c.x * times, this.y + c.y * times)
     }
 
-    operator fun plus(d: Delta) : Coord {
+    operator fun plus(d: Delta): Coord {
         return move(d)
     }
 
-    operator fun plus(c: Coord) : Coord {
+    operator fun plus(c: Coord): Coord {
         return move(c)
     }
 
@@ -83,6 +84,10 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
     fun rotate90(): Coord {
         return Coord(-y, x)
     }
+
+    operator fun unaryMinus(): Coord {
+        return Coord(-x, -y)
+    }
 }
 
 data class Vector(val pos: Coord, val delta: Delta) {
@@ -90,9 +95,32 @@ data class Vector(val pos: Coord, val delta: Delta) {
     fun rotate(c: Int): Vector = Vector(pos, delta.rotate(c))
 }
 
-data class Coord3(val x: Long, val y: Long, val z: Long) : Comparable<Coord3> {
+data class Vector3(val pos: Coord3, val delta: Delta3) {
+    fun next(): Vector3 = Vector3(pos.move(delta), delta)
+    fun rebase(vector: Vector3): Vector3 {
+        return Vector3(pos - vector.pos, delta)
+    }
+
+}
+
+data class Coord3(override val x: Long, override val y: Long, override val z: Long) : Delta3, Comparable<Coord3> {
 
     constructor(x: Int, y: Int, z: Int) : this(x.toLong(), y.toLong(), z.toLong())
+
+    val up: Coord3 get() = Coord3(x, y, z + 1)
+    val down: Coord3 get() = Coord3(x, y, z - 1)
+    val left: Coord3 get() = Coord3(x - 1, y, z)
+    val right: Coord3 get() = Coord3(x + 1, y, z)
+    val forward: Coord3 get() = Coord3(x, y + 1, z)
+    val backward: Coord3 get() = Coord3(x, y - 1, z)
+
+    operator fun plus(d: Delta3): Coord3 {
+        return Coord3(x + d.x, y + d.y, z + d.z)
+    }
+
+    operator fun minus(d: Delta3): Coord3 {
+        return Coord3(x - d.x, y - d.y, z - d.z)
+    }
 
     override fun compareTo(other: Coord3): Int {
         var xs = z.compareTo(other.z)
@@ -103,6 +131,10 @@ data class Coord3(val x: Long, val y: Long, val z: Long) : Comparable<Coord3> {
 
     fun distance(other: Coord3): Long {
         return abs(x - other.x) + abs(y - other.y) + abs(z - other.z)
+    }
+
+    fun move(d: Delta3, times: Long = 1): Coord3 {
+        return Coord3(x + d.x * times, y + d.y * times, z + d.z * times)
     }
 
     fun elements() = sequence {
@@ -133,15 +165,22 @@ data class Coord3(val x: Long, val y: Long, val z: Long) : Comparable<Coord3> {
         }
         return result
     }
+
+    companion object {
+        fun of(data: String): Coord3 {
+            val nums = Utils.extractLongs(data)
+            return Coord3(nums[0], nums[1], nums[2])
+        }
+    }
 }
 
 data class Coord4(val x: Long, val y: Long, val z: Long, val w: Long) : Comparable<Coord4> {
 
     override fun compareTo(other: Coord4): Int {
         var xs = w.compareTo(other.w)
-        if( xs == 0 ) xs = z.compareTo(other.z)
-        if( xs == 0 ) xs = y.compareTo(other.y)
-        if( xs == 0 ) return x.compareTo(other.x)
+        if (xs == 0) xs = z.compareTo(other.z)
+        if (xs == 0) xs = y.compareTo(other.y)
+        if (xs == 0) return x.compareTo(other.x)
         return xs
     }
 
@@ -149,12 +188,12 @@ data class Coord4(val x: Long, val y: Long, val z: Long, val w: Long) : Comparab
         return abs(x - other.x) + abs(y - other.y) + abs(z - other.z) + abs(w - other.w)
     }
 
-    fun neighbours80() : Set<Coord4> {
+    fun neighbours80(): Set<Coord4> {
         val result = mutableSetOf<Coord4>()
-        for( x in -1..1) {
-            for( y in -1..1) {
-                for ( z in -1..1) {
-                    for( w in -1..1 ) {
+        for (x in -1..1) {
+            for (y in -1..1) {
+                for (z in -1..1) {
+                    for (w in -1..1) {
                         if (x == 0 && y == 0 && z == 0 && w == 0) continue   // dont add self
                         result.add(Coord4(this.x + x, this.y + y, this.z + z, this.w + w))
                     }
@@ -172,17 +211,18 @@ class Rect(val c1: Coord, val c2: Coord) {
     val bottomRight: Coord =
         Coord(max(c1.x, c2.x), max(c1.y, c2.y))
 
-    constructor(topLeft: Coord, width: Long, height: Long) : this(topLeft,
+    constructor(topLeft: Coord, width: Long, height: Long) : this(
+        topLeft,
         Coord(topLeft.x + width, topLeft.y + height)
     )
 
-    val area: Long get() = abs((bottomRight.x-topLeft.x) * (bottomRight.y-topLeft.y))
+    val area: Long get() = abs((bottomRight.x - topLeft.x) * (bottomRight.y - topLeft.y))
 
-    fun overlap(other: Rect) : Boolean {
+    fun overlap(other: Rect): Boolean {
         return inside(other.topLeft) || inside(other.bottomRight)
     }
 
-    fun inside(c: Coord) : Boolean {
+    fun inside(c: Coord): Boolean {
         return c.x >= topLeft.x && c.x <= bottomRight.x && c.y >= topLeft.y && c.y <= bottomRight.y
     }
 }

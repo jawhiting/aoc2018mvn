@@ -5,6 +5,13 @@ interface Delta {
     fun rotate(c: Int): Delta
 }
 
+interface Delta3 {
+
+    val x: Long
+    val y: Long
+    val z: Long
+}
+
 enum class Direction(override val x: Int, override val y: Int) : Delta {
     N(0, -1),
     E(1, 0),

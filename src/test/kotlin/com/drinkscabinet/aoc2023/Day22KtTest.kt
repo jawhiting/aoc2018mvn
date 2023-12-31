@@ -119,6 +119,34 @@ class Day22KtTest {
             return !targetGrid.overlaps(Coord(0, 0), brick.grid)
         }
 
+        fun validate() {
+            validateBricks()
+            validateLayout()
+        }
+
+        fun validateBricks() {
+            // every brick must have at least 1 below it or have z rank 1
+            for (brick in bricks.values) {
+                if (brick.below.isEmpty() && brick.z.first != 1) {
+                    println("Brick is invalid $brick")
+                }
+            }
+        }
+
+        fun validateLayout() {
+            // For each layer, make sure every brick has metadata
+            for ((z, grid) in layout) {
+                for ((coord, c) in grid.getAll()) {
+                    if (c == '#') {
+                        if(grid.getExtra(coord) == null) {
+                            println("Grid is invalid: $grid")
+                            throw RuntimeException("Grid is invalid: $grid")
+                        }
+                    }
+                }
+            }
+        }
+
         companion object {
             fun parse(input: String): Stack {
                 return Stack(input.lines().mapIndexed { index: Int, s: String -> Brick.parse(s, index.toLong()) }
@@ -183,6 +211,7 @@ class Day22KtTest {
                 canDestroy++
             }
         }
+        settledStack.validate()
         return canDestroy
     }
 
@@ -190,7 +219,7 @@ class Day22KtTest {
     fun testPart1() {
 //        assertEquals(5, part1(testData))
         assertEquals(4, part1(test2))
-        // 451 too high
-//        assertEquals(5, part1(realData))
+        // 451 too high, 450 too high
+        assertEquals(5, part1(realData))
     }
 }
