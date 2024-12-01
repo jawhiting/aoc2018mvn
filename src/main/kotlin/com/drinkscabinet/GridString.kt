@@ -24,11 +24,13 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         } else {
             chars[coord] = char
         }
+        invalidateRanges()
     }
 
     operator fun plus(gridString: GridString): GridString {
         gridString.chars.forEach { (coord, c) -> this[coord] = c }
         gridString.extra.forEach { (coord, e) -> this.setExtra(coord, e) }
+        invalidateRanges()
         return this
     }
 
@@ -93,7 +95,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
     }
 
     fun neighboursMatch(pos: Coord, directions: Iterable<Delta>, filter: (Char) -> Boolean): Int {
-        return directions.map { pos.move(it) }.filter { filter(get(it)) }.count()
+        return directions.map { pos.move(it) }.count { filter(get(it)) }
     }
 
     fun neighbours4(pos: Coord): Iterable<Pair<Coord, Char>> {
@@ -154,6 +156,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         val target = chars.map { Coord(-it.key.x, it.key.y) to it.value }.toMap()
         chars.clear()
         chars.putAll(target)
+        invalidateRanges()
         return this
     }
 
@@ -161,6 +164,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         val target = chars.map { Coord(it.key.x, -it.key.y) to it.value }.toMap()
         chars.clear()
         chars.putAll(target)
+        invalidateRanges()
         return this
     }
 
@@ -171,6 +175,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         val target = chars.map { it.key.move(c) to it.value }.toMap()
         chars.clear()
         chars.putAll(target)
+        invalidateRanges()
         return this
     }
 
@@ -180,6 +185,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
     fun normalise(): GridString {
         val c = Coord(-getXMin(), -getYMin())
         translate(c)
+        invalidateRanges()
         return this
     }
 
@@ -190,6 +196,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         val target = chars.map { it.key.rotate90(count) to it.value }.toMap()
         chars.clear()
         chars.putAll(target)
+        invalidateRanges()
         return this
     }
 
@@ -197,20 +204,44 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         return toString(false)
     }
 
+    private var xMin : Long? = null
+    private var yMin : Long? = null
+    private var xMax : Long? = null
+    private var yMax : Long? = null
+
+    private fun invalidateRanges() {
+        xMin = null
+        xMax = null
+        yMin = null
+        yMax = null
+    }
+
     fun getXMin(): Long {
-        return chars.keys.map(Coord::x).minOrNull() ?: 0
+        if (xMin == null) {
+            xMin = chars.keys.minOfOrNull(Coord::x) ?: 0
+        }
+        return xMin!!
     }
 
     fun getXMax(): Long {
-        return chars.keys.map(Coord::x).maxOrNull() ?: 0
+        if (xMax == null) {
+            xMax = chars.keys.maxOfOrNull(Coord::x) ?: 0
+        }
+        return xMax!!
     }
 
     fun getYMin(): Long {
-        return chars.keys.map(Coord::y).minOrNull() ?: 0
+        if (yMin == null) {
+            yMin = chars.keys.minOfOrNull(Coord::y) ?: 0
+        }
+        return yMin!!
     }
 
     fun getYMax(): Long {
-        return chars.keys.map(Coord::y).maxOrNull() ?: 0
+        if (yMax == null) {
+            yMax = chars.keys.maxOfOrNull(Coord::y) ?: 0
+        }
+        return yMax!!
     }
 
     fun getXRange(): LongRange {
@@ -317,16 +348,21 @@ fun main() {
     gs.add(Coord(0, 0), 'x')
     gs.add(Coord(1, 1), 'y')
     gs.add(Coord(3, 3), 'Z')
+    gs.add(Coord(4, 3), 'q')
 
     println(gs.toString(true))
 
     for (i in 1..4) {
         gs.rotate90(1).normalise()
         println(gs.toString(true))
+        println(gs.getXRange())
+        println(gs.getYRange())
     }
 
     gs.flipH()
     println(gs.toString(true))
     gs.normalise()
     println(gs.toString(true))
+    println(gs.getXRange())
+    println(gs.getYRange())
 }
