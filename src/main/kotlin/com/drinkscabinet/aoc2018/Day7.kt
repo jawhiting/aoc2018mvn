@@ -4,7 +4,7 @@ private data class Node7(val id: Char, val inputs: MutableSet<Char>, var complet
 
     fun available(): Boolean {
         // available if not complete and all inputs are complete
-        if( !complete ) {
+        if (!complete) {
             return inputs.count { !nodes7[it]!!.complete } == 0
         }
         return false
@@ -26,7 +26,8 @@ fun main() {
             )
         })
         // make sure com.drinkscabinet.aoc2018.input node exists
-        nodes7.putIfAbsent(i,
+        nodes7.putIfAbsent(
+            i,
             Node7(i, mutableSetOf())
         )
         node.inputs.add(i)
@@ -36,7 +37,7 @@ fun main() {
 
     var availableNodes = nodes7.values.filter { it.available() }
 
-    while( availableNodes.isNotEmpty() ) {
+    while (availableNodes.isNotEmpty()) {
         // just
         // output in alphabetical
         val firstNode = availableNodes.map { it.id }.sorted().first()
@@ -47,7 +48,6 @@ fun main() {
         availableNodes = nodes7.values.filter { it.available() }
     }
 }
-
 
 
 private val testInput = "Step C must be finished before step A can begin.\n" +

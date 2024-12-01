@@ -3,7 +3,6 @@ package com.drinkscabinet.aoc2020
 fun main() {
     val testNumbers = testInput.lines().map { it.toLong() }.toLongArray()
     val numbers = input.lines().map { it.toLong() }.toLongArray()
-    val preamble = 25
 
 //    findOutlier(numbers, preamble)
 
@@ -12,19 +11,19 @@ fun main() {
 }
 
 private fun findContiguousSum(nums: LongArray, target: Long) {
-    for( i in nums.indices ) {
+    for (i in nums.indices) {
         var sum = nums[i]
-        var j = i+1
-        while( sum <= target && j <= nums.lastIndex) {
+        var j = i + 1
+        while (sum <= target && j <= nums.lastIndex) {
             sum += nums[j]
 
-            if( sum == target ) {
+            if (sum == target) {
                 println("Found sum: $i to $j")
                 val min = nums.slice(i..j).minOrNull()!!
                 println("Min=$min")
                 val max = nums.slice(i..j).maxOrNull()!!
                 println("Max=$max")
-                println("Sum=${min+max}")
+                println("Sum=${min + max}")
                 return
             }
             ++j
@@ -34,19 +33,19 @@ private fun findContiguousSum(nums: LongArray, target: Long) {
 
 private fun findOutlier(nums: LongArray, preamble: Int) {
     // start from preamble
-    for( i in preamble..nums.lastIndex) {
+    for (i in preamble..nums.lastIndex) {
         // take the last <preamble>
         val target = nums[i]
-        val lastX = nums.sliceArray(i-preamble until i)
-        if( !findSum9(target, lastX.toSet())) {
+        val lastX = nums.sliceArray(i - preamble until i)
+        if (!findSum9(target, lastX.toSet())) {
             println("Found outlier $target at position $i")
         }
     }
 }
 
 
-private fun findSum9(target: Long, nums: Collection<Long>) : Boolean {
-    return nums.parallelStream().filter { nums.contains( target - it ) }.findAny().isPresent
+private fun findSum9(target: Long, nums: Collection<Long>): Boolean {
+    return nums.parallelStream().filter { nums.contains(target - it) }.findAny().isPresent
 }
 
 

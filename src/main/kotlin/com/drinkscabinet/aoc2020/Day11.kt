@@ -3,7 +3,6 @@ package com.drinkscabinet.aoc2020
 import Direction8
 import GridString
 import com.drinkscabinet.Coord
-import kotlin.system.measureTimeMillis
 
 fun main() {
     val start = GridString.parse(input)
@@ -12,12 +11,11 @@ fun main() {
 }
 
 
-
 private fun part1(g: GridString) {
     var count = 0
     var current = g
     var changed = true
-    while( changed ) {
+    while (changed) {
         val result = mutate(current)
         changed = result.second
         current = result.first
@@ -38,9 +36,9 @@ private fun part2(g: GridString) {
     var changed = true
     val start = System.currentTimeMillis()
     val visibility = calcNeighbours(g)
-    println("Visibility took ${System.currentTimeMillis()-start}")
+    println("Visibility took ${System.currentTimeMillis() - start}")
     return
-    while( changed ) {
+    while (changed) {
         val result = mutate2(current, visibility)
         changed = result.second
         current = result.first
@@ -55,40 +53,38 @@ private fun part2(g: GridString) {
     println("Part2=${current.getAll('#').size}")
 }
 
-private fun calcNeighbours(g: GridString) : Map<Coord, Set<Coord>> {
+private fun calcNeighbours(g: GridString): Map<Coord, Set<Coord>> {
     val result = mutableMapOf<Coord, Set<Coord>>()
     val dir8 = Direction8.values().toList()
 
     for (coord in g.getAll('L')) {
-        val visible = dir8.map{ g.nextInDirection(coord, it) }
-                .filter { it.second == 'L' }.map{ it.first }.toSet()
+        val visible = dir8.map { g.nextInDirection(coord, it) }
+            .filter { it.second == 'L' }.map { it.first }.toSet()
         result[coord] = visible
     }
     return result
 }
 
-private fun mutate(g: GridString) : Pair<GridString, Boolean> {
+private fun mutate(g: GridString): Pair<GridString, Boolean> {
     val result = GridString('.')
     val dir8 = Direction8.values().toList()
     var changed = false
-    for( coord in g.getAll('.')) result.add(coord, '.')
+    for (coord in g.getAll('.')) result.add(coord, '.')
     for (coord in g.getAll('#')) {
-        val occupiedNeighbours = g.neighboursMatch(coord, dir8) { it == '#'}
-        if( occupiedNeighbours >= 4) {
+        val occupiedNeighbours = g.neighboursMatch(coord, dir8) { it == '#' }
+        if (occupiedNeighbours >= 4) {
             result.add(coord, 'L')
             changed = true
-        }
-        else {
+        } else {
             result.add(coord, '#')
         }
     }
     for (coord in g.getAll('L')) {
-        val occupiedNeighbours = g.neighboursMatch(coord, dir8) { it == '#'}
-        if( occupiedNeighbours == 0) {
+        val occupiedNeighbours = g.neighboursMatch(coord, dir8) { it == '#' }
+        if (occupiedNeighbours == 0) {
             result.add(coord, '#')
             changed = true
-        }
-        else {
+        } else {
             result.add(coord, 'L')
         }
     }
@@ -96,34 +92,31 @@ private fun mutate(g: GridString) : Pair<GridString, Boolean> {
     return result to changed
 }
 
-private fun mutate2(g: GridString, visibility: Map<Coord, Set<Coord>>) : Pair<GridString, Boolean> {
+private fun mutate2(g: GridString, visibility: Map<Coord, Set<Coord>>): Pair<GridString, Boolean> {
     val result = GridString('.')
     var changed = false
-    for( coord in g.getAll('.')) result.add(coord, '.')
+    for (coord in g.getAll('.')) result.add(coord, '.')
     for (coord in g.getAll('#')) {
-        val occupiedNeighbours = visibility[coord]!!.count { g.get(it) == '#'}
-        if( occupiedNeighbours >= 5) {
+        val occupiedNeighbours = visibility[coord]!!.count { g.get(it) == '#' }
+        if (occupiedNeighbours >= 5) {
             result.add(coord, 'L')
             changed = true
-        }
-        else {
+        } else {
             result.add(coord, '#')
         }
     }
     for (coord in g.getAll('L')) {
-        val occupiedNeighbours = visibility[coord]!!.count { g.get(it) == '#'}
-        if( occupiedNeighbours == 0) {
+        val occupiedNeighbours = visibility[coord]!!.count { g.get(it) == '#' }
+        if (occupiedNeighbours == 0) {
             result.add(coord, '#')
             changed = true
-        }
-        else {
+        } else {
             result.add(coord, 'L')
         }
     }
 
     return result to changed
 }
-
 
 
 private val testInput = """

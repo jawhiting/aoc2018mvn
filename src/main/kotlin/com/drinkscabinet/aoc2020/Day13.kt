@@ -30,7 +30,7 @@ private fun main() {
     println(measureTimeMillis { part2a("67,7,x,59,61") })
     println(measureTimeMillis { part2a("1789,37,47,1889") })
 //    val startingPoint = 100_000_000_000_000
-    println(measureTimeMillis { part2a(input2) } )
+    println(measureTimeMillis { part2a(input2) })
 }
 
 private fun nextAfter(time: Long, period: Long): Long {
@@ -52,9 +52,8 @@ private fun part2a(s: String, tStart: Long = 1) {
     }
     println(buses)
     val busesToMatch = buses.map { it.first }.toMutableSet()
-    var t = 1
     // find max pair
-    val maxPair = buses.maxByOrNull { it.first }!!
+    buses.maxByOrNull { it.first }!!
     val firstPair = buses.minByOrNull { it.second }!!
 
     var increment = firstPair.first

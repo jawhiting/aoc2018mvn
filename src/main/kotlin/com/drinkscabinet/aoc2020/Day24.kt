@@ -10,7 +10,7 @@ private fun main() {
     part2(grid)
 }
 
-private fun part1(s: String) : GridString {
+private fun part1(s: String): GridString {
     val grid = GridString(' ')
 
     for (line in s.lines()) {
@@ -28,12 +28,12 @@ private fun part1(s: String) : GridString {
     return grid
 }
 
-private fun part2(startingGrid : GridString) {
+private fun part2(startingGrid: GridString) {
     var grid = startingGrid
 
-    for( i in 1..100) {
-       grid = mutate(grid)
-       println("Day $i: ${grid.getAll('b').count()}")
+    for (i in 1..100) {
+        grid = mutate(grid)
+        println("Day $i: ${grid.getAll('b').count()}")
     }
 
 }
@@ -50,7 +50,6 @@ private fun getTile(s: String): Coord {
 private fun mutate(g: GridString): GridString {
     val result = GridString(' ')
     val dir6 = DirectionHex.values().toList()
-    var changed = false
 
     val whitesToCheck = mutableSetOf<Coord>()
 
@@ -82,7 +81,8 @@ private fun mutate(g: GridString): GridString {
 }
 
 private fun parse(s: String): List<DirectionHex> {
-    val dirs = s.replace("\n", "").replace("e", "e,").replace("w", "w,").uppercase(Locale.getDefault()).split(",").filter { it.isNotEmpty() }
+    val dirs = s.replace("\n", "").replace("e", "e,").replace("w", "w,").uppercase(Locale.getDefault()).split(",")
+        .filter { it.isNotEmpty() }
     println(dirs)
     return dirs.map { DirectionHex.valueOf(it) }.toList()
 }

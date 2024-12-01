@@ -26,7 +26,6 @@ internal data class Node(val position: Coord, val open: Boolean, var occupant: E
         }
 
 
-
     fun emptyNeighbours(nodes: Map<Coord, Node>): SortedSet<Node> {
         return neighbours(nodes).filter(Node::canEnter).toSortedSet()
     }
@@ -57,8 +56,10 @@ internal data class Entity(val race: Race, var position: Coord, var hp: Int = 20
 
     fun getTarget(nodes: Map<Coord, Node>): Entity? {
         // ordered by hp then position
-        return nodes[position]!!.occupiedNeighbours(nodes).mapNotNull(Node::occupant).filterNot { it.race == race }.sortedWith(
-            compareBy( { it.hp }, {it.position})).firstOrNull()
+        return nodes[position]!!.occupiedNeighbours(nodes).mapNotNull(Node::occupant).filterNot { it.race == race }
+            .sortedWith(
+                compareBy({ it.hp }, { it.position })
+            ).firstOrNull()
     }
 
     fun emptyNeighbours(nodes: Map<Coord, Node>): SortedSet<Node> {
@@ -67,18 +68,20 @@ internal data class Entity(val race: Race, var position: Coord, var hp: Int = 20
 
     fun move(battle: Battle) {
         // can I move?
-        if( !canMove(battle.nodes)) return
+        if (!canMove(battle.nodes)) return
         // find all enemies with empty neighbours
-        val targets = battle.entities.filter(Entity::alive).filterNot { it.race == race }.flatMap { it.emptyNeighbours(battle.nodes) }.map{ it.position} .toSortedSet()
+        val targets = battle.entities.filter(Entity::alive).filterNot { it.race == race }
+            .flatMap { it.emptyNeighbours(battle.nodes) }.map { it.position }.toSortedSet()
         // No viable targets
-        if( targets.isEmpty() ) return
+        if (targets.isEmpty()) return
 
         // find closest empty neighbour
         val paths = dijkstra(position, battle.nodes)
         // combine targets with distances to find closest
-        val closestTarget = targets.map{ it to paths.first[it] }.filter { it.second != null }.minBy { it.second ?: Int.MAX_VALUE }
+        val closestTarget =
+            targets.map { it to paths.first[it] }.filter { it.second != null }.minBy { it.second ?: Int.MAX_VALUE }
         // can't get to target
-        if((closestTarget.second ?: Int.MAX_VALUE) == Int.MAX_VALUE) return
+        if ((closestTarget.second ?: Int.MAX_VALUE) == Int.MAX_VALUE) return
 
         // step towards, making sure to account for equal options
         // Get the com.drinkscabinet.aoc2018.path to this target
@@ -95,24 +98,24 @@ internal data class Entity(val race: Race, var position: Coord, var hp: Int = 20
 private fun dijkstra(start: Coord, nodes: Map<Coord, Node>): Pair<Map<Coord, Int>, Map<Coord, Coord>> {
     val distances = mutableMapOf<Coord, Int>()
 
-    nodes.keys.forEach{ distances.put(it, Integer.MAX_VALUE)}
+    nodes.keys.forEach { distances.put(it, Integer.MAX_VALUE) }
     distances[start] = 0
     val prev = mutableMapOf<Coord, Coord>()
     val unvisited = nodes.keys.toMutableSet()
 
-    while( unvisited.isNotEmpty() ) {
+    while (unvisited.isNotEmpty()) {
         // get the closest node
-        val n = unvisited.map { it to distances[it]!! }.sortedWith(compareBy({ it.second }, {it.first })).first()
+        val n = unvisited.map { it to distances[it]!! }.sortedWith(compareBy({ it.second }, { it.first })).first()
 
-        if( n.second == Int.MAX_VALUE ) {
+        if (n.second == Int.MAX_VALUE) {
             // finished
             break
         }
         // find available neighbours
         val neighbors = nodes[n.first]!!.emptyNeighbours(nodes)
-        val dist = n.second+1
+        val dist = n.second + 1
         for (neighbor in neighbors) {
-            if( dist < distances[neighbor.position] ?: Integer.MAX_VALUE ) {
+            if (dist < distances[neighbor.position] ?: Integer.MAX_VALUE) {
                 distances[neighbor.position] = dist
                 prev[neighbor.position] = n.first
             }
@@ -128,11 +131,11 @@ private fun dijkstra(start: Coord, nodes: Map<Coord, Node>): Pair<Map<Coord, Int
     return distances to prev
 }
 
-private fun path(start: Coord, end: Coord, prev: Map<Coord, Coord>) : List<Coord> {
+private fun path(start: Coord, end: Coord, prev: Map<Coord, Coord>): List<Coord> {
     val result = LinkedList<Coord>()
 
     var current = end
-    while( current != start ) {
+    while (current != start) {
         result.addFirst(current)
         current = prev[current]!!
     }
@@ -143,28 +146,28 @@ private fun path(start: Coord, end: Coord, prev: Map<Coord, Coord>) : List<Coord
 
 internal class Battle(val nodes: Map<Coord, Node>, val entities: List<Entity>) {
 
-    fun part1():Int {
+    fun part1(): Int {
         val score = run()
         println(score)
         return score
     }
 
-    fun part2(elfAttack: Int, log: Boolean = false) : Int? {
+    fun part2(elfAttack: Int, log: Boolean = false): Int? {
         println("Starting with attack power $elfAttack")
         var cycles = 0
         val frames = mutableListOf<BufferedImage>()
         val elves = entities.filter { it.race == Race.E }
 
-        while(tick(elfAttack)) {
+        while (tick(elfAttack)) {
             println("Cycle $cycles")
 
-            if( elves.filterNot( Entity::alive).isNotEmpty() ) {
+            if (elves.filterNot(Entity::alive).isNotEmpty()) {
                 println("Elf died on power $elfAttack")
                 GridImage.animate(frames, "elf$elfAttack.gif")
                 return null
             }
-            if( log) println("Ended cycle $cycles")
-            if( log) println(this)
+            if (log) println("Ended cycle $cycles")
+            if (log) println(this)
             frames.add(toImage().toImage())
             cycles++
 
@@ -179,11 +182,11 @@ internal class Battle(val nodes: Map<Coord, Node>, val entities: List<Entity>) {
         var cycles = 0
         val frames = mutableListOf<BufferedImage>()
 
-        while(tick(elfAttack)) {
+        while (tick(elfAttack)) {
             println("Cycle $cycles")
 
-            if( log) println("Ended cycle $cycles")
-            if( log) println(this)
+            if (log) println("Ended cycle $cycles")
+            if (log) println(this)
             frames.add(toImage().toImage())
             cycles++
 
@@ -193,32 +196,32 @@ internal class Battle(val nodes: Map<Coord, Node>, val entities: List<Entity>) {
         println(this)
         return cycles * entities.filter(Entity::alive).map { it.hp }.sum()
     }
-    
+
     fun tick(elfAttack: Int = 3): Boolean {
         // get all entities in order
         var toAct = entities.filter(Entity::alive).sorted()
 
         for (entity in toAct) {
             // skip if dead
-            if( !entity.alive ) continue
+            if (!entity.alive) continue
             // Are there any targets for me
-            if( entities.filter(Entity::alive).filterNot{ entity.race == it.race }.isEmpty() ) {
+            if (entities.filter(Entity::alive).filterNot { entity.race == it.race }.isEmpty()) {
                 println("Combat over")
                 println(this)
                 return false
             }
             // does it need to move?
-            if( entity.getTarget(nodes) == null ) {
+            if (entity.getTarget(nodes) == null) {
                 // move
                 entity.move(this)
             }
 
             val target = entity.getTarget(nodes)
-            if( target != null ) {
+            if (target != null) {
 
                 // attack
-                target.hp -= if( entity.race == Race.E) elfAttack else 3
-                if( !target.alive ) {
+                target.hp -= if (entity.race == Race.E) elfAttack else 3
+                if (!target.alive) {
                     println("Killed $target")
                     nodes[target.position]!!.occupant = null
                 }
@@ -245,6 +248,7 @@ internal class Battle(val nodes: Map<Coord, Node>, val entities: List<Entity>) {
                                 nodes[coord] =
                                     Node(coord, true, entities[coord])
                             }
+
                             '#', '.' -> nodes[coord] =
                                 Node(coord, c == '.')
                         }
@@ -260,13 +264,12 @@ internal class Battle(val nodes: Map<Coord, Node>, val entities: List<Entity>) {
 
     override fun toString(): String {
         return GridString().addAllExtra(nodes) {
-            if( !it.open ) {
+            if (!it.open) {
                 Pair('#', null)
             } else {
-                if( it.occupant != null ) {
+                if (it.occupant != null) {
                     Pair(it.occupant!!.race.name.first(), "${it.occupant!!.hp}")
-                }
-                else {
+                } else {
                     Pair('.', null)
                 }
             }
@@ -277,16 +280,15 @@ internal class Battle(val nodes: Map<Coord, Node>, val entities: List<Entity>) {
     fun toImage(): GridImage {
         val grid = GridImage(10)
         grid.addAll(nodes) {
-            if( !it.open ) {
+            if (!it.open) {
                 Color.DARK_GRAY
             } else {
-                if( it.occupant != null ) {
-                    when(it.occupant!!.race) {
+                if (it.occupant != null) {
+                    when (it.occupant!!.race) {
                         Race.E -> Color.GREEN
                         Race.G -> Color.RED
                     }
-                }
-                else {
+                } else {
                     Color.LIGHT_GRAY
                 }
             }
@@ -301,11 +303,11 @@ fun main() {
 }
 
 private fun part2() {
-    for( ap in 4..100 ) {
+    for (ap in 4..100) {
         val b =
             Battle.parse(input)
         val score = b.part2(ap)
-        if( score != null ) {
+        if (score != null) {
             println("com.drinkscabinet.aoc2018.Attack $ap Score $score")
             break
         }
@@ -343,9 +345,9 @@ private fun testMovement() {
 private fun testCombat() {
     val b =
         Battle.parse(testCombat1)
-    b.entities.forEach{ it.hp = 2}
+    b.entities.forEach { it.hp = 2 }
     b.entities.find { it.position == Coord(2, 1) }!!.hp = 4
-    b.entities.filter { it.race == Race.E }.forEach{ it.hp = 200}
+    b.entities.filter { it.race == Race.E }.forEach { it.hp = 200 }
     println(b)
     b.tick()
     println(b)

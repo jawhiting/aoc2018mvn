@@ -12,49 +12,49 @@ private fun main() {
 }
 
 
-private fun makeCode(s: String) : String {
+private fun makeCode(s: String): String {
     val code = s.replace('+', 'a').replace('*', 'm')
-            .replace(Regex("[1-9]")) { "MyLong(${it.value})" }
+        .replace(Regex("[1-9]")) { "MyLong(${it.value})" }
 
     return "result += $code"
 }
 
-private fun makeCode2(s: String) : String {
+private fun makeCode2(s: String): String {
     val code = s.replace('+', '/').replace('*', '-')
-            .replace(Regex("[1-9]")) { "MyLong(${it.value})" }
+        .replace(Regex("[1-9]")) { "MyLong(${it.value})" }
 
     return "result += $code"
 }
 
 private fun generated2() {
-    var result = MyLong(0)
+    MyLong(0)
 
 }
 
 private data class MyLong(var l: Long) {
 
-    operator fun plus(v: MyLong) : MyLong {
+    operator fun plus(v: MyLong): MyLong {
         return MyLong(l + v.l)
     }
 
-    operator fun times(v: MyLong) : MyLong {
+    operator fun times(v: MyLong): MyLong {
         return MyLong(l * v.l)
     }
 
-    infix fun a(v: MyLong) : MyLong {
+    infix fun a(v: MyLong): MyLong {
         return this + v
     }
 
-    infix fun m(v: MyLong) : MyLong {
+    infix fun m(v: MyLong): MyLong {
         return this * v
     }
 
     // Special precedence ones :-)
-    operator fun div(v: MyLong) : MyLong {
+    operator fun div(v: MyLong): MyLong {
         return this + v
     }
 
-    operator fun minus(v: MyLong) : MyLong {
+    operator fun minus(v: MyLong): MyLong {
         return this * v
     }
 
@@ -63,28 +63,28 @@ private data class MyLong(var l: Long) {
 //    }
 }
 
-private fun Int.plus(a: Int) : Int {
+private fun Int.plus(a: Int): Int {
     return this * a
 }
 
-private infix fun Int.a(d: Int) : Int {
+private infix fun Int.a(d: Int): Int {
     return this + d
 }
 
-private infix fun Int.m(d: Int) : Int {
+private infix fun Int.m(d: Int): Int {
     return this * d
 }
 
-private infix fun Long.a(d: Long) : Long {
+private infix fun Long.a(d: Long): Long {
     return this + d
 }
 
-private infix fun Long.m(d: Long) : Long {
+private infix fun Long.m(d: Long): Long {
     return this * d
 }
 
 private fun generatedPrint() {
-    var result = MyLong(0L)
+    MyLong(0L)
 
 
 }

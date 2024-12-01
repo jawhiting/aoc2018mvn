@@ -1,39 +1,37 @@
 package com.drinkscabinet.aoc2018
 
-import java.lang.RuntimeException
-
 private class Machine {
     val r = IntArray(4)
 
-    var opMappings = IntArray(16, {it})
+    var opMappings = IntArray(16, { it })
 
     val ops = arrayListOf<(a: Int, b: Int) -> Int>(
-        {a,b -> r[a] + r[b]} ,   // addr
-        {a,b -> r[a] + b} ,   // addi
-        {a,b -> r[a] * r[b]} ,   // mulr
-        {a,b -> r[a] * b} ,   // muli
-        {a,b -> r[a] and r[b]} ,   // banr
-        {a,b -> r[a] and b} ,   // bani
-        {a,b -> r[a] or r[b]} ,   // borr
-        {a,b -> r[a] or b} ,   // bori
-        {a,b -> r[a]} ,   // setr
-        {a,b -> a} ,   // seti
-        {a,b -> if( a > r[b]) 1 else 0} ,   // gtir
-        {a,b -> if( r[a] > b) 1 else 0} ,   // gtri
-        {a,b -> if( r[a] > r[b]) 1 else 0} ,   // gtrr
-        {a,b -> if( a == r[b]) 1 else 0} ,   // eqir
-        {a,b -> if( r[a] == b) 1 else 0} ,   // eqri
-        {a,b -> if( r[a] == r[b]) 1 else 0}   // eqrr
+        { a, b -> r[a] + r[b] },   // addr
+        { a, b -> r[a] + b },   // addi
+        { a, b -> r[a] * r[b] },   // mulr
+        { a, b -> r[a] * b },   // muli
+        { a, b -> r[a] and r[b] },   // banr
+        { a, b -> r[a] and b },   // bani
+        { a, b -> r[a] or r[b] },   // borr
+        { a, b -> r[a] or b },   // bori
+        { a, b -> r[a] },   // setr
+        { a, b -> a },   // seti
+        { a, b -> if (a > r[b]) 1 else 0 },   // gtir
+        { a, b -> if (r[a] > b) 1 else 0 },   // gtri
+        { a, b -> if (r[a] > r[b]) 1 else 0 },   // gtrr
+        { a, b -> if (a == r[b]) 1 else 0 },   // eqir
+        { a, b -> if (r[a] == b) 1 else 0 },   // eqri
+        { a, b -> if (r[a] == r[b]) 1 else 0 }   // eqrr
     )
 
     fun execute(op: Int, a: Int, b: Int, c: Int) {
-        r[c] = ops[opMappings[op]].invoke(a,b)
+        r[c] = ops[opMappings[op]].invoke(a, b)
     }
 
     fun possibleCodes(s: Sample): Set<Int> {
         val result = mutableSetOf<Int>()
-        for( op in ops.indices ) {
-            if( test(s, op)) {
+        for (op in ops.indices) {
+            if (test(s, op)) {
                 result.add(op)
             }
         }
@@ -43,11 +41,11 @@ private class Machine {
     fun test(s: Sample, opCode: Int): Boolean {
         val mappedOp = s.op.copyOf()
         mappedOp[0] = opCode
-        return test(s.init,mappedOp, s.expected)
+        return test(s.init, mappedOp, s.expected)
     }
 
     fun test(init: IntArray, inst: IntArray, expected: IntArray): Boolean {
-        for( i in r.indices) r[i] = init[i]
+        for (i in r.indices) r[i] = init[i]
         execute(inst[0], inst[1], inst[2], inst[3])
 
         return r.contentEquals(expected)
@@ -62,10 +60,10 @@ private data class Sample(val init: IntArray, val op: IntArray, val expected: In
         }
 
     companion object {
-        fun parse(s: String) : List<Sample> {
+        fun parse(s: String): List<Sample> {
             val samples = mutableListOf<Sample>()
             val lines = s.lines()
-            for( i in 0..lines.size/4-1) {
+            for (i in 0..lines.size / 4 - 1) {
                 samples.add(
                     Sample(
                         extractInts(lines[i * 4]),
@@ -89,7 +87,7 @@ fun main() {
     val m = Machine()
     println(m.possibleCodes(samples[0]))
 
-    val mappings = Array(16) { mutableSetOf<Int>(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)}
+    val mappings = Array(16) { mutableSetOf<Int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) }
 
     var count = 0
 
@@ -98,19 +96,19 @@ fun main() {
     for (sample in samples) {
         var c = m.possibleCodes(sample)
         mappings[sample.opCode].retainAll(c)
-        if( c.size >= 3) ++count
+        if (c.size >= 3) ++count
     }
     // 437 too low
     println(count)
 
-    mappings.forEachIndexed {
-        i, s -> println("$i -> $s")
+    mappings.forEachIndexed { i, s ->
+        println("$i -> $s")
     }
 
     val opMappings = simplify(mappings)
 
-    mappings.forEachIndexed {
-            i, s -> println("$i -> $s")
+    mappings.forEachIndexed { i, s ->
+        println("$i -> $s")
     }
 
     // Apply the mappings to a new machine
@@ -127,19 +125,19 @@ fun main() {
 private fun simplify(m: Array<MutableSet<Int>>): IntArray {
     // look for singles
     val unresolved = m.indices.toMutableSet()
-    while(unresolved.isNotEmpty()) {
+    while (unresolved.isNotEmpty()) {
         var found = false
         // find a single entry
-        for( i in m.indices ) {
-            if( m[i].size == 1 && unresolved.contains(i)) {
+        for (i in m.indices) {
+            if (m[i].size == 1 && unresolved.contains(i)) {
                 found = true
                 println("Found single mapping for $i to ${m[i].first()}")
                 // remove i.first from all entries except this
-                m.filterIndexed{ index, s -> index != i}.forEach{ it.remove(m[i].first())}
+                m.filterIndexed { index, s -> index != i }.forEach { it.remove(m[i].first()) }
                 unresolved.remove(i)
             }
         }
-        if( !found ) {
+        if (!found) {
             println("No more reduction possible")
             throw RuntimeException("Can't com.drinkscabinet.aoc2018.simplify")
         }
@@ -147,7 +145,7 @@ private fun simplify(m: Array<MutableSet<Int>>): IntArray {
     return m.map { it.first() }.toIntArray()
 }
 
-private fun extractInts(s: String) : IntArray {
+private fun extractInts(s: String): IntArray {
     return "(-?\\d+)".toRegex().findAll(s).map { it.value.toInt() }.toList().toIntArray()
 }
 

@@ -3,9 +3,6 @@ package com.drinkscabinet.aoc2023
 import GridString
 import com.drinkscabinet.Coord
 import com.drinkscabinet.Utils
-import com.drinkscabinet.Utils.Companion.lcm
-import com.drinkscabinet.Utils.Companion.lcmList
-import com.github.jsonldjava.shaded.com.google.common.math.LongMath.gcd
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

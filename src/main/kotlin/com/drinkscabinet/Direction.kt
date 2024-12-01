@@ -1,3 +1,7 @@
+import Direction8.values
+import DirectionHex.values
+import UpDown.values
+
 interface Delta {
     val x: Int
     val y: Int

@@ -1,9 +1,9 @@
 package com.drinkscabinet.aoc2019
 
 import Direction
+import Direction8
 import GridString
 import com.drinkscabinet.Coord
-import java.lang.Exception
 
 private fun main() {
     val computer = IntCode.parse(input)
@@ -12,29 +12,29 @@ private fun main() {
 
 private data class Room(val description: String)
 
-private class Adventure(val computer: IntCode ) {
+private class Adventure(val computer: IntCode) {
     private val data = mutableListOf<Long>()
     private val grid = GridString()
 
     private val itemLocations = mutableMapOf<String, Coord>()
     private val visitedRooms = mutableSetOf<String>()
-    private var pos = Coord(0,0)
+    private var pos = Coord(0, 0)
     private val dirText = mapOf(
         Direction.N to "north",
         Direction.E to "east",
         Direction.W to "west",
         Direction.S to "south"
-        )
+    )
 
     fun part1() {
-        State(Coord(0,0), computer.clone()).explore(emptyList())
+        State(Coord(0, 0), computer.clone()).explore(emptyList())
         println(grid)
     }
 
     private inner class State(val pos: Coord, val computer: IntCode) {
         private val outputBuffer = mutableListOf<Char>()
 
-        fun explore(i : List<Long>) : List<State> {
+        fun explore(i: List<Long>): List<State> {
             val output = computer.continueExecution(i)
 
             val description = String(output.map { it.toInt().toChar() }.toCharArray())
@@ -43,7 +43,7 @@ private class Adventure(val computer: IntCode ) {
             val name = roomName(description)
             val result = mutableListOf<State>()
 
-            if( visitedRooms.add(name) ) {
+            if (visitedRooms.add(name)) {
                 println("Visiting $name at $pos")
                 println(description)
                 // update grid
@@ -60,7 +60,7 @@ private class Adventure(val computer: IntCode ) {
                 val items = availableItems(description)
                 items.forEach { itemLocations[it] = pos }
 
-                grid.add(pos, (items.count()+ '0'.code).toChar())
+                grid.add(pos, (items.count() + '0'.code).toChar())
 
                 // now next move
                 for (dir in dirs) {
@@ -69,14 +69,13 @@ private class Adventure(val computer: IntCode ) {
                     result.add(nextState)
                     nextState.explore(getMoveCommand(dir))
                 }
-            }
-            else {
+            } else {
                 println("Skipping already visited room $name")
             }
             return result
         }
 
-        private fun getMoveCommand(dir: Direction) : List<Long> {
+        private fun getMoveCommand(dir: Direction): List<Long> {
             return dirText[dir]!!.map { it.code.toLong() }.toList().plus(10L)
         }
 
@@ -97,30 +96,30 @@ private class Adventure(val computer: IntCode ) {
 //        }
     }
 
-    fun roomName(s: String) : String {
+    fun roomName(s: String): String {
         try {
             return s.lines().filter { it.startsWith("==") }.first()
-        } catch( e: Exception ) {
+        } catch (e: Exception) {
             println("Can't extract name from $s")
         }
         return "ERROR"
     }
 
-    fun availableDirections(s: String) : Set<Direction> {
+    fun availableDirections(s: String): Set<Direction> {
         val result = mutableSetOf<Direction>()
-        if( s.contains("- north")) result.add(Direction.N)
-        if( s.contains("- south")) result.add(Direction.S)
-        if( s.contains("- east")) result.add(Direction.E)
-        if( s.contains("- west")) result.add(Direction.W)
+        if (s.contains("- north")) result.add(Direction.N)
+        if (s.contains("- south")) result.add(Direction.S)
+        if (s.contains("- east")) result.add(Direction.E)
+        if (s.contains("- west")) result.add(Direction.W)
         return result
     }
 
-    fun availableItems(s: String) : Set<String> {
+    fun availableItems(s: String): Set<String> {
         val result = mutableSetOf<String>()
-        if(!s.contains("Items here")) return emptySet()
+        if (!s.contains("Items here")) return emptySet()
         val itemList = s.substringAfter("Items here:")
         for (line in itemList.lines()) {
-            if( line.startsWith('-')) {
+            if (line.startsWith('-')) {
                 result.add(line.substringAfter("- ").trim())
             }
         }
@@ -128,9 +127,7 @@ private class Adventure(val computer: IntCode ) {
     }
 
 
-
 }
-
 
 
 private val input = """

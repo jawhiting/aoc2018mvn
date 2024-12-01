@@ -1,11 +1,11 @@
 package com.drinkscabinet.aoc2020
 
 import com.drinkscabinet.Utils
-import java.lang.Exception
 import java.util.*
 
 private fun main() {
-    val deck1 = LinkedList<Int>(Utils.extractInts(input.substringAfter("Player 1:").substringBefore("Player 2:")).toList())
+    val deck1 =
+        LinkedList<Int>(Utils.extractInts(input.substringAfter("Player 1:").substringBefore("Player 2:")).toList())
     val deck2 = LinkedList<Int>(Utils.extractInts(input.substringAfter("Player 2:")).toList())
 
     println(deck1)
@@ -50,7 +50,7 @@ private class Game(val level: Int, val deck1: LinkedList<Int>, val deck2: Linked
         val card1 = deck1.pop()
         val card2 = deck2.pop()
 
-        if( globalRoundCounter++ % 1000000L == 0L) {
+        if (globalRoundCounter++ % 1000000L == 0L) {
             println("$globalRoundCounter Playing $level $round with cards $card1 vs $card2")
         }
         val winner: Boolean
@@ -58,13 +58,12 @@ private class Game(val level: Int, val deck1: LinkedList<Int>, val deck2: Linked
             // recurse
             // see if we can avoid the subgame
             val cacheResult = gameCache.result(deck1, deck2)
-            if( cacheResult == null ) {
+            if (cacheResult == null) {
                 val subGame = Game(level + 1, LinkedList(deck1.subList(0, card1)), LinkedList(deck2.subList(0, card2)))
                 winner = subGame.play()
                 // store for later
                 gameCache.record(deck1, deck2, winner)
-            }
-            else {
+            } else {
 //                println("Cache hit")
                 winner = cacheResult
             }
@@ -132,7 +131,8 @@ private fun seenPreviously(deck1: LinkedList<Int>, deck2: LinkedList<Int>): Bool
 }
 
 private fun part1() {
-    val deck1 = LinkedList<Int>(Utils.extractInts(input.substringAfter("Player 1:").substringBefore("Player 2:")).toList())
+    val deck1 =
+        LinkedList<Int>(Utils.extractInts(input.substringAfter("Player 1:").substringBefore("Player 2:")).toList())
     val deck2 = LinkedList<Int>(Utils.extractInts(input.substringAfter("Player 2:")).toList())
 
     println(deck1)

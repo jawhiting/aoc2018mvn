@@ -18,10 +18,10 @@ private fun main() {
     // 9172 too high
 }
 
-private fun process(size: Int, instructions: String) : IntArray {
+private fun process(size: Int, instructions: String): IntArray {
     var current = deck(size)
     for (instruction in instructions.lines()) {
-        current = if( instruction.startsWith("cut")) {
+        current = if (instruction.startsWith("cut")) {
             cut(current, Utils.extractInts(instruction).first())
         } else if (instruction.endsWith("stack")) {
             newStack(current)
@@ -32,33 +32,32 @@ private fun process(size: Int, instructions: String) : IntArray {
     return current
 }
 
-private fun deck(size: Int ) : IntArray {
+private fun deck(size: Int): IntArray {
     return IntArray(size) { it }
 }
 
-private fun newStack(arr: IntArray) : IntArray {
+private fun newStack(arr: IntArray): IntArray {
     return arr.reversedArray()
 }
 
-private fun cut(arr: IntArray, n: Int) : IntArray {
+private fun cut(arr: IntArray, n: Int): IntArray {
     val result = IntArray(arr.size)
-    if( n >= 0 ) {
+    if (n >= 0) {
         arr.copyInto(result, 0, n)
-        arr.copyInto(result, arr.size-n, 0, n)
-    }
-    else {
+        arr.copyInto(result, arr.size - n, 0, n)
+    } else {
         // negative
         val offset = arr.size + n
         arr.copyInto(result, 0, offset)
-        arr.copyInto(result, arr.size-offset, 0, offset)
+        arr.copyInto(result, arr.size - offset, 0, offset)
     }
     return result
 }
 
-private fun increment(arr: IntArray, n: Int) : IntArray {
+private fun increment(arr: IntArray, n: Int): IntArray {
     val result = IntArray(arr.size)
-    for( i in arr.indices) {
-        result[i*n % arr.size] = arr[i]
+    for (i in arr.indices) {
+        result[i * n % arr.size] = arr[i]
     }
     return result
 }

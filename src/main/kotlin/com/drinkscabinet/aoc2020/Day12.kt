@@ -1,48 +1,55 @@
 package com.drinkscabinet.aoc2020
 
+import Direction
 import com.drinkscabinet.Coord
 import com.drinkscabinet.Utils
 
 private class Ship {
-    var position = Coord(0,0)
+    var position = Coord(0, 0)
     var facing = Direction.E
-    var waypoint = Coord(10, -1 )
+    var waypoint = Coord(10, -1)
 
-    fun move(instruction: String) : Coord {
+    fun move(instruction: String): Coord {
         val param = Utils.extractInts(instruction).first()
-        when(val action = instruction[0]) {
+        when (val action = instruction[0]) {
             'F' -> {
-                for( i in 1..param) position = position.move(facing)
+                for (i in 1..param) position = position.move(facing)
             }
+
             'L' -> {
-                facing = facing.rotate(param/90 * -1)
+                facing = facing.rotate(param / 90 * -1)
             }
+
             'R' -> {
-                facing = facing.rotate(param/90)
+                facing = facing.rotate(param / 90)
             }
+
             else -> {
                 val dir = Direction.valueOf(action.toString())
-                for( i in 1..param ) position = position.move(dir)
+                for (i in 1..param) position = position.move(dir)
             }
         }
         return position
     }
 
-    fun move2(instruction: String) : Coord {
+    fun move2(instruction: String): Coord {
         val param = Utils.extractInts(instruction).first()
-        when(val action = instruction[0]) {
+        when (val action = instruction[0]) {
             'F' -> {
-                for( i in 1..param) position = position.move(waypoint)
+                for (i in 1..param) position = position.move(waypoint)
             }
+
             'L' -> {
-                waypoint = waypoint.rotate90(param/90 * -1)
+                waypoint = waypoint.rotate90(param / 90 * -1)
             }
+
             'R' -> {
-                waypoint = waypoint.rotate90(param/90)
+                waypoint = waypoint.rotate90(param / 90)
             }
+
             else -> {
                 val dir = Direction.valueOf(action.toString())
-                for( i in 1..param ) waypoint = waypoint.move(dir)
+                for (i in 1..param) waypoint = waypoint.move(dir)
             }
         }
         return position
@@ -57,13 +64,13 @@ private fun main() {
 private fun part1() {
     val ship = Ship()
     input.lines().forEach { ship.move(it) }
-    println("Position=${ship.position} Distance=${ship.position.distance(Coord(0,0))}")
+    println("Position=${ship.position} Distance=${ship.position.distance(Coord(0, 0))}")
 }
 
 private fun part2() {
     val ship = Ship()
     input.lines().forEach { ship.move2(it) }
-    println("Position=${ship.position} Distance=${ship.position.distance(Coord(0,0))}")
+    println("Position=${ship.position} Distance=${ship.position.distance(Coord(0, 0))}")
 }
 
 private val testInput = """

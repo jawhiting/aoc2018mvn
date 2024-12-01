@@ -1,32 +1,30 @@
 package com.drinkscabinet.aoc2020
 
 
-
 fun main() {
     val passports = parse(input)
     val validCount = passports.filter { it.isValid() }.count()
     println("Part1=$validCount")
 
-    val validCount2 = passports.filter{ it.isValid(true) }.count()
+    val validCount2 = passports.filter { it.isValid(true) }.count()
     println("Part2=$validCount2")
 }
 
 
-private fun parse(s: String) : List<Passport> {
+private fun parse(s: String): List<Passport> {
     val result = mutableListOf<Passport>()
     var passport = mutableMapOf<String, String>()
 
     for (line in s.lines()) {
-        if( line.trim().isEmpty() ) {
+        if (line.trim().isEmpty()) {
             // next passport
             result.add(Passport(passport))
             passport = mutableMapOf()
-        }
-        else {
+        } else {
             line.split(" ").map { it.substringBefore(":").trim() to it.substringAfter(":").trim() }.toMap(passport)
         }
     }
-    if( passport.isNotEmpty() ) result.add(Passport(passport))
+    if (passport.isNotEmpty()) result.add(Passport(passport))
     println("Parsed ${result.size} passports")
     return result
 }
@@ -37,35 +35,34 @@ data class Passport(val data: Map<String, String>) {
         private val optionalFields = listOf("cid")
         private val eyeColours = setOf("amb", "blu", "brn", "gry", "grn", "hzl", "oth")
 
-        fun parse(data: String) : Passport {
+        fun parse(data: String): Passport {
             return Passport(
                 data.split("\n", " ").map { it.substringBefore(":").trim() to it.substringAfter(":").trim() }.toMap()
             )
         }
 
-        fun contentValid(field: String, value: String) : Boolean {
+        fun contentValid(field: String, value: String): Boolean {
             return try {
                 when (field) {
                     "byr" -> value.toInt() in 1920..2002
                     "iyr" -> value.toInt() in 2010..2020
                     "eyr" -> value.toInt() in 2020..2030
                     "hgt" -> {
-                        if( value.endsWith("in")) {
+                        if (value.endsWith("in")) {
                             value.substringBefore("i").toInt() in 59..76
-                        }
-                        else if( value.endsWith("cm")) {
+                        } else if (value.endsWith("cm")) {
                             value.substringBefore("c").toInt() in 150..193
-                        }
-                        else {
+                        } else {
                             false
                         }
                     }
+
                     "hcl" -> "#[0-9a-f]{6}".toRegex().matches(value)
                     "ecl" -> eyeColours.contains(value)
                     "pid" -> "[0-9]{9}".toRegex().matches(value)
                     else -> true
                 }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 false
             }
         }
@@ -81,9 +78,9 @@ data class Passport(val data: Map<String, String>) {
     pid (Passport ID)
     cid (Country ID)
      */
-    fun isValid(checkContent: Boolean = false) : Boolean {
-        val validFields =  mandatoryFields.filterNot { data.containsKey(it) }.isEmpty()
-        if( !validFields || !checkContent ) return validFields
+    fun isValid(checkContent: Boolean = false): Boolean {
+        val validFields = mandatoryFields.filterNot { data.containsKey(it) }.isEmpty()
+        if (!validFields || !checkContent) return validFields
         // Check content
         val validContent = mandatoryFields.filterNot { contentValid(it, data[it]!!) }.isEmpty()
         return validContent

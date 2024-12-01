@@ -1,8 +1,10 @@
 package com.drinkscabinet.aoc2020
 
-import javax.print.DocFlavor
-
-private data class Bag(val colour: String, val contains : MutableMap<String, Int> = mutableMapOf(), val containedBy: MutableMap<String, Int> = mutableMapOf()) {
+private data class Bag(
+    val colour: String,
+    val contains: MutableMap<String, Int> = mutableMapOf(),
+    val containedBy: MutableMap<String, Int> = mutableMapOf()
+) {
 
     fun addContained(col: String, qty: Int) {
         contains[col] = qty
@@ -11,8 +13,8 @@ private data class Bag(val colour: String, val contains : MutableMap<String, Int
         containedBag.containedBy[this.colour] = qty
     }
 
-    fun bagsContained() : Long {
-        if( contains.isEmpty() ) return 0
+    fun bagsContained(): Long {
+        if (contains.isEmpty()) return 0
         var acc = 0L
         for ((containedColour, qty) in contains) {
             val containedBag = bags[containedColour]!!
@@ -28,7 +30,7 @@ private fun main() {
 
     input.lines().forEach { parse(it) }
 
-    bags.forEach{ println(it)}
+    bags.forEach { println(it) }
 
     part1("shiny gold")
     println("Part2=${bags["shiny gold"]!!.bagsContained()}")
@@ -39,7 +41,7 @@ private fun part1(colour: String) {
     println(parents(colour).size)
 }
 
-private fun parents(colour: String) : Set<String> {
+private fun parents(colour: String): Set<String> {
     val parents = mutableSetOf<String>()
     val bag = bags[colour]!!
     val immediateParents = bag.containedBy.keys
@@ -51,7 +53,7 @@ private fun parents(colour: String) : Set<String> {
 }
 
 val bagReg = "(\\d+) ([a-z ]+) bag".toRegex()
-private fun parse(s: String) : Bag {
+private fun parse(s: String): Bag {
     val colour = s.substringBefore(" bags contain")
     val bag = bags.computeIfAbsent(colour) { Bag(it) }
 

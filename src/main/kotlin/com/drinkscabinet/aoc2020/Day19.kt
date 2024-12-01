@@ -16,7 +16,7 @@ private fun main() {
     // 296 too low
 
     val actualMatches = mutableSetOf<String>()
-    for( i in 1..10) {
+    for (i in 1..10) {
         val regexN = regex2N(rules, i).toRegex()
         println(regexN.pattern)
         actualMatches.addAll(inputs.lines().filter { regexN.matches(it) }.toSet())
@@ -25,14 +25,14 @@ private fun main() {
     println(actualMatches.size)
 }
 
-private fun regex2N(rules: Map<Int, String>, n: Int) : String {
+private fun regex2N(rules: Map<Int, String>, n: Int): String {
     val reg42 = toRegex(42, rules)
     val reg31 = toRegex(31, rules)
     return "$reg42+$reg42{$n}$reg31{$n}"
 }
 
 
-private fun readRules(s: String) : Map<Int, String> {
+private fun readRules(s: String): Map<Int, String> {
     val result = mutableMapOf<Int, String>()
     for (line in s.lines()) {
         val id = line.substringBefore(":").toInt()
@@ -42,26 +42,23 @@ private fun readRules(s: String) : Map<Int, String> {
     return result
 }
 
-private fun toRegex(id: Int, rules: Map<Int, String>) : String {
+private fun toRegex(id: Int, rules: Map<Int, String>): String {
     val rule = rules[id]!!
     var regex = rule
-    if( rule.startsWith("\"")) {
+    if (rule.startsWith("\"")) {
         return rule[1].toString()
-    }
-    else {
+    } else {
         val ints = Utils.extractInts(rule)
         ints.sortDescending()
         for (int in ints) {
-            if( id == 11 ) {
+            if (id == 11) {
                 regex = "(${toRegex(42, rules)})+(${toRegex(31, rules)})+"
-            }
-            else if( id == 8 ) {
+            } else if (id == 8) {
                 regex = "(${toRegex(42, rules)})+"
-            }
-            else {
+            } else {
                 val r = toRegex(int, rules)
                 regex = regex.replace(int.toString(), r)
-                if( !regex.startsWith("(") || !regex.endsWith(")")) {
+                if (!regex.startsWith("(") || !regex.endsWith(")")) {
                     regex = "($regex)"
                 }
             }

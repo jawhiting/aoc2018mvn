@@ -1,5 +1,6 @@
 package com.drinkscabinet.aoc2019
 
+import UpDown
 import com.drinkscabinet.Coord
 import java.lang.Math.abs
 
@@ -8,12 +9,12 @@ class Wire(val path: List<Coord>) {
     companion object {
         fun parse(s: String): Wire {
             val dirs = s.split(",")
-            var current = Coord(0,0)
+            var current = Coord(0, 0)
             val visited = mutableListOf<Coord>()
             dirs.forEach {
                 val delta = UpDown.valueOf(it[0].toString())
-                val count = (it[1]-'0').toInt()
-                for( i in 1..count ) {
+                val count = (it[1] - '0').toInt()
+                for (i in 1..count) {
                     current = current.move(delta)
                     visited.add(current)
                 }
@@ -26,7 +27,7 @@ class Wire(val path: List<Coord>) {
         return "Wire(path=$path)"
     }
 
-    fun crossings(w: Wire) : Set<Coord> {
+    fun crossings(w: Wire): Set<Coord> {
         return path.toSet().intersect(w.path.toSet())
     }
 

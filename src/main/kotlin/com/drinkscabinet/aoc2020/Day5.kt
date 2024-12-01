@@ -4,11 +4,11 @@ fun main() {
     println(convert("FBFBBFFRLR"))
     println(input.lines().map { convert(it) }.maxOrNull())
     val sorted = input.lines().map { convert(it) }.toSortedSet()
-    println(sorted.filter { sorted.contains(it+2) && !sorted.contains(it+1) }.first() +1)
+    println(sorted.filter { sorted.contains(it + 2) && !sorted.contains(it + 1) }.first() + 1)
 }
 
 
-fun convert(s: String) : Int {
+fun convert(s: String): Int {
     return s.replace("[FL]".toRegex(), "0").replace("[BR]".toRegex(), "1").toInt(2)
 }
 

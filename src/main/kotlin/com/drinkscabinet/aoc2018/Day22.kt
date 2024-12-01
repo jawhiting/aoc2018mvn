@@ -44,8 +44,8 @@ private class Calculator(val depth: Long, val start: Coord, val target: Coord) {
     fun part1() {
         var total = 0
 
-        for( x in start.x..target.x) {
-            for( y in start.y..target.y) {
+        for (x in start.x..target.x) {
+            for (y in start.y..target.y) {
                 val c = Coord(x, y)
                 val risk = risk(c, depth)
                 total += risk.ordinal
@@ -70,10 +70,12 @@ private class Calculator(val depth: Long, val start: Coord, val target: Coord) {
             ),
             this::nextMoves
         )
-        println(result.first[Position(
-            target,
-            Equip.TORCH
-        )])
+        println(
+            result.first[Position(
+                target,
+                Equip.TORCH
+            )]
+        )
         // 995 too low
         // 1003 too low
         // 1004 is correct
@@ -83,7 +85,7 @@ private class Calculator(val depth: Long, val start: Coord, val target: Coord) {
                 Equip.TORCH
             )
         val route = LinkedList<Position>()
-        while( pos != null ) {
+        while (pos != null) {
             val nextPos = result.second[pos]
             route.addFirst(pos)
             pos = nextPos
@@ -100,13 +102,13 @@ private class Calculator(val depth: Long, val start: Coord, val target: Coord) {
         val currentRegion = risk(current.c, depth)
         for (direction in Direction.values()) {
             val nextCell = current.c.move(direction)
-            if( nextCell.x < 0 || nextCell.y < 0 ) continue
-            if( nextCell.x > target.x*2 || nextCell.y > target.y*2) continue
+            if (nextCell.x < 0 || nextCell.y < 0) continue
+            if (nextCell.x > target.x * 2 || nextCell.y > target.y * 2) continue
             val nextRegion = risk(nextCell, depth)
             for (equip in nextRegion.equip.intersect(currentRegion.equip)) {
                 val nextPosition = Position(nextCell, equip)
-                val cost = if(current.e == equip ) 1 else 8
-                moves.add( nextPosition to cost)
+                val cost = if (current.e == equip) 1 else 8
+                moves.add(nextPosition to cost)
             }
         }
         return moves
@@ -122,7 +124,8 @@ private class Calculator(val depth: Long, val start: Coord, val target: Coord) {
                 c.x * 16807L
             } else {
                 erosion(Coord(c.x - 1, c.y), d) * erosion(
-                    Coord(c.x, c.y - 1), d)
+                    Coord(c.x, c.y - 1), d
+                )
             }
 
         geoScores[c] = s2
@@ -140,7 +143,7 @@ private class Calculator(val depth: Long, val start: Coord, val target: Coord) {
 
     private fun risk(c: Coord, depth: Long): Region {
         val r = risks[c]
-        if( r != null ) return r
+        if (r != null) return r
         val r2 = erosion(c, depth) % 3L
         val r3 = Region.values()[r2.toInt()]
         risks[c] = r3

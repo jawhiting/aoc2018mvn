@@ -7,10 +7,9 @@ private fun main() {
     val p = program2.toCharArray().map { it.code.toLong() }
 
     val result = computer.executeFromStart(p)
-    println(String(result.map{ it.toInt().toChar() }.toCharArray()))
+    println(String(result.map { it.toInt().toChar() }.toCharArray()))
     println(result.last())
 }
-
 
 
 private val program1 = """

@@ -19,7 +19,7 @@ class PathFinder {
                 // get the closest node
                 val n = unvisited.poll()!!
 
-                if( n.first == target ) {
+                if (n.first == target) {
                     break
                 }
                 if (n.second == Int.MAX_VALUE) {

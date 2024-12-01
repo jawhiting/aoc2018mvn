@@ -3,14 +3,14 @@ package com.drinkscabinet.aoc2019
 data class Layer(val pixels: IntArray, val width: Int, val height: Int) {
 
 
-    fun count(i: Int) : Int {
+    fun count(i: Int): Int {
         return pixels.count { it == i }
     }
 
     companion object {
-        fun extractLayers(input: String, width: Int, height: Int) : List<Layer> {
-            val count = width*height
-            return input.map { it - '0'}.chunked(count) { Layer(it.toIntArray(), width, height)}
+        fun extractLayers(input: String, width: Int, height: Int): List<Layer> {
+            val count = width * height
+            return input.map { it - '0' }.chunked(count) { Layer(it.toIntArray(), width, height) }
         }
     }
 }
@@ -22,9 +22,9 @@ private fun main() {
     val layer = layers.minBy { it.count(0) }
     println(layer.count(1) * layer.count(2))
 
-    for( r in 0..5 ) {
+    for (r in 0..5) {
         for (c in 0..24) {
-            print(if(layers.map { it.pixels[r*25+c] }.first { it != 2 } == 0) " " else "*")
+            print(if (layers.map { it.pixels[r * 25 + c] }.first { it != 2 } == 0) " " else "*")
         }
         println()
     }

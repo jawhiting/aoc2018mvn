@@ -57,17 +57,16 @@ private fun part2(bots: List<Bot>) {
                 for (z in zMin..zMax step dist) {
                     var count = 0
                     for (bot in bots) {
-                        if( bot.inRange(Coord3(x, y, z))) {
+                        if (bot.inRange(Coord3(x, y, z))) {
                             ++count
                         }
                     }
-                    if( count > targetCount) {
+                    if (count > targetCount) {
                         targetCount = count
                         bestVal = abs(x) + abs(y) + abs(z)
                         best = Coord3(x, y, z)
-                    }
-                    else if( count == targetCount ) {
-                        if( (abs(x) + abs(y) + abs(z) ) < bestVal ?: Long.MAX_VALUE ) {
+                    } else if (count == targetCount) {
+                        if ((abs(x) + abs(y) + abs(z)) < bestVal ?: Long.MAX_VALUE) {
                             bestVal = abs(x) + abs(y) + abs(z)
                             best = Coord3(x, y, z)
                         }
@@ -75,11 +74,10 @@ private fun part2(bots: List<Bot>) {
                 }
             }
         }
-        if( dist == 1L) {
+        if (dist == 1L) {
             println("$best $bestVal")
             return
-        }
-        else {
+        } else {
             xMin = best!!.x - dist
             yMin = best.y - dist
             zMin = best.z - dist
@@ -97,7 +95,7 @@ fun main() {
     part2(bots)
 
     // 122591144 too low
-    
+
     // find longest range
     val longest = bots.maxBy { it.range }
     println("Longest is $longest")

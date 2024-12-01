@@ -21,18 +21,18 @@ private fun main() {
 }
 
 
-fun transform(subject: Long, loopSize: Int ) : Long {
+fun transform(subject: Long, loopSize: Int): Long {
     var current = 1L
-    for( i in 1..loopSize) {
+    for (i in 1..loopSize) {
         current = (current * subject) % 20201227
     }
     return current
 }
 
-fun transformWithTarget(subject: Long, target: Long) : Int {
+fun transformWithTarget(subject: Long, target: Long): Int {
     var loopCount = 0
     var current = 1L
-    while( current != target ) {
+    while (current != target) {
         current = (current * subject) % 20201227
         ++loopCount
     }

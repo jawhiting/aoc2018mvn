@@ -19,8 +19,8 @@ private fun main() {
     println(2020 - result2.first - result2.second.get())
 }
 
-private fun findSum(target: Int, nums: Set<Int>) : Optional<Int> {
-    return nums.parallelStream().filter { nums.contains( target - it ) }.findAny()
+private fun findSum(target: Int, nums: Set<Int>): Optional<Int> {
+    return nums.parallelStream().filter { nums.contains(target - it) }.findAny()
 }
 
 private val input = """

@@ -1,7 +1,5 @@
 package com.drinkscabinet.aoc2018
 
-import java.util.*
-
 fun main() {
 //    println(com.drinkscabinet.aoc2018.winningScore(9, 25))
 //    println(com.drinkscabinet.aoc2018.winningScore(10, 1618))
@@ -36,14 +34,14 @@ private class Marble(val value: Int) {
     }
 
     fun nextX(count: Int): Marble {
-        if( count == 0 ) return this
-        return next.nextX(count-1)
+        if (count == 0) return this
+        return next.nextX(count - 1)
     }
 
     fun prevX(count: Int): Marble {
 //        println("Prev: $count Val: $value")
-        if( count == 0 ) return this
-        return prev.prevX(count-1)
+        if (count == 0) return this
+        return prev.prevX(count - 1)
     }
 
     fun remove(): Marble {
@@ -62,9 +60,9 @@ fun winningScore2(playerCount: Int, lastBall: Int, log: Boolean = false): Long {
     val scores = LongArray(playerCount)
 
 
-    for( ball in 1..lastBall ) {
-        if( ball % 100000 == 0 ) println("Ball $ball")
-        if( ball % 23 == 0 ) {
+    for (ball in 1..lastBall) {
+        if (ball % 100000 == 0) println("Ball $ball")
+        if (ball % 23 == 0) {
             scores[currentPlayer] += ball.toLong()
             // 7 counterclockwise
             current = current.prevX(7)
@@ -73,14 +71,13 @@ fun winningScore2(playerCount: Int, lastBall: Int, log: Boolean = false): Long {
 
             current = current.remove()
 
-        }
-        else {
+        } else {
             // put between 1 and 2 clockwise
             current = current.nextX(1)
             current.insertAfter(Marble(ball))
             current = current.nextX(1)
         }
-        if( log ) {
+        if (log) {
             val sb = StringBuffer()
             sb.append(ball).append('\t')
             var toLog = root
@@ -91,11 +88,11 @@ fun winningScore2(playerCount: Int, lastBall: Int, log: Boolean = false): Long {
                 }
                 sb.append(out).append('\t')
                 toLog = toLog.nextX(1)
-            } while( toLog != root )
+            } while (toLog != root)
 
             println(sb)
         }
-        currentPlayer = (currentPlayer+1)%playerCount
+        currentPlayer = (currentPlayer + 1) % playerCount
 
     }
     return scores.max()
@@ -113,29 +110,28 @@ fun winningScore(playerCount: Int, lastBall: Int): Int {
 
 
 
-    for( ball in 1..lastBall ) {
-        if( ball % 100000 == 0 ) println("Ball $ball")
-        if( ball % 23 == 0 ) {
+    for (ball in 1..lastBall) {
+        if (ball % 100000 == 0) println("Ball $ball")
+        if (ball % 23 == 0) {
             scores[currentPlayer] += ball
             // 7 counterclockwise
             var removePos = (current - 7) % marbles.size
-            if( removePos < 0 ) {
-                removePos = marbles.size+removePos
+            if (removePos < 0) {
+                removePos = marbles.size + removePos
             }
             scores[currentPlayer] += marbles[removePos]
             marbles.removeAt(removePos)
             current = removePos
-            if( current > marbles.lastIndex ) {
+            if (current > marbles.lastIndex) {
                 current = 0
             }
-        }
-        else {
+        } else {
             // put between 1 and 2 clockwise
             val insertPos = (current + 2) % marbles.size
             marbles.add(insertPos, ball)
             current = insertPos
         }
-        if( log ) {
+        if (log) {
             val sb = StringBuffer()
             sb.append(ball).append('\t')
             for (i in marbles.indices) {
@@ -147,7 +143,7 @@ fun winningScore(playerCount: Int, lastBall: Int): Int {
             }
             println(sb)
         }
-        currentPlayer = (currentPlayer+1)%playerCount
+        currentPlayer = (currentPlayer + 1) % playerCount
 
     }
     //scores.forEachIndexed{ i: Int, s: Int -> println("$i has $s")}

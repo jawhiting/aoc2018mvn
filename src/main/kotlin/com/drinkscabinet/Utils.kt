@@ -1,6 +1,6 @@
 package com.drinkscabinet
 
-import com.github.jsonldjava.shaded.com.google.common.math.LongMath
+import com.google.common.math.LongMath
 
 class Utils {
 

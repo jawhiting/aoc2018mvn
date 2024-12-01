@@ -3,8 +3,6 @@ package com.drinkscabinet.aoc2020
 import com.drinkscabinet.Utils
 
 
-
-
 fun main() {
     println(saidAtTurn(testInput, 2020))
     println(saidAtTurn("1,3,2", 2020))
@@ -18,7 +16,7 @@ fun main() {
     println(saidAtTurn(input, 30000000))
 }
 
-fun saidAtTurn(s: String, t: Long) : Long {
+fun saidAtTurn(s: String, t: Long): Long {
 
     val whenLastSaid = LongArray(t.toInt())
     val initial = Utils.extractLongs(s)
@@ -33,20 +31,18 @@ fun saidAtTurn(s: String, t: Long) : Long {
     while (true) {
         // if the last iteration was first time said, we say 0
         var toSay = 0L
-        if( firstTimeSaid ) {
+        if (firstTimeSaid) {
             toSay = 0
             firstTimeSaid = false
-        }
-        else {
+        } else {
             // determine difference
-            toSay = turn-1 - previouslySaid
+            toSay = turn - 1 - previouslySaid
         }
 
         // Now examine what we're about to say
-        if( whenLastSaid[toSay.toInt()] == 0L) {
+        if (whenLastSaid[toSay.toInt()] == 0L) {
             firstTimeSaid = true
-        }
-        else {
+        } else {
             previouslySaid = whenLastSaid[toSay.toInt()]
         }
         whenLastSaid[toSay.toInt()] = turn

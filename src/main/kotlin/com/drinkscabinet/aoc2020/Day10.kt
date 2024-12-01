@@ -1,7 +1,5 @@
 package com.drinkscabinet.aoc2020
 
-import java.lang.Math.pow
-import java.util.function.BiFunction
 import kotlin.math.pow
 
 fun main() {
@@ -10,7 +8,7 @@ fun main() {
     // Add start
     adaptors.add(0, 0)
     // Add end
-    adaptors.add(adaptors.maxOrNull()!!+3)
+    adaptors.add(adaptors.maxOrNull()!! + 3)
 
     println(adaptors)
 
@@ -18,13 +16,12 @@ fun main() {
 
     val diffs = mutableMapOf<Int, Int>()
     var runLengths = mutableMapOf<Int, Int>()
-    for( i in 0..adaptors.lastIndex-1) {
-        val diff = adaptors[i+1] - adaptors[i]
-        if( diff == 3 ) {
+    for (i in 0..adaptors.lastIndex - 1) {
+        val diff = adaptors[i + 1] - adaptors[i]
+        if (diff == 3) {
             runLengths.merge(runLength, 1) { a, b -> a + b }
             runLength = 0
-        }
-        else {
+        } else {
             runLength++
         }
         diffs.merge(diff, 1) { a, b -> a + b }

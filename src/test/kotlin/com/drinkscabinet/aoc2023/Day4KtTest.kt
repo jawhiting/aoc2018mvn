@@ -1,10 +1,9 @@
 package com.drinkscabinet.aoc2023
 
 import com.drinkscabinet.Utils
-import com.github.jsonldjava.shaded.com.google.common.math.IntMath.pow
+import com.google.common.math.IntMath.pow
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import kotlin.properties.Delegates
 
 
 class Day4KtTest {

@@ -8,7 +8,7 @@ private fun main() {
     val map = HashMap<String, MutableSet<String>>()
     pairs.forEach { map.getOrPut(it.first) { mutableSetOf() }.add(it.second) }
     println(map)
-    println(count(map, "COM", 0 ))
+    println(count(map, "COM", 0))
 
     val pathToYou = path(map, "COM", "YOU")
     println(pathToYou)
@@ -22,23 +22,22 @@ private fun main() {
 
 }
 
-private fun path(orbits: HashMap<String, MutableSet<String>>, body: String, toFind: String) : List<String> {
-    if( orbits[body].isNullOrEmpty()) return emptyList()
-    if( orbits[body]!!.contains(toFind)) return listOf(body)
+private fun path(orbits: HashMap<String, MutableSet<String>>, body: String, toFind: String): List<String> {
+    if (orbits[body].isNullOrEmpty()) return emptyList()
+    if (orbits[body]!!.contains(toFind)) return listOf(body)
     val path = orbits[body]!!.map { path(orbits, it, toFind) }.find { it.isNotEmpty() }
-    if( path != null ) {
+    if (path != null) {
         return path.plus(body)
     }
     return emptyList()
 }
 
-private fun count(orbits: HashMap<String, MutableSet<String>>, body: String, depth: Int) : Int {
+private fun count(orbits: HashMap<String, MutableSet<String>>, body: String, depth: Int): Int {
     // myCount = depth + count(children)
-    if( orbits[body].isNullOrEmpty() ) {
+    if (orbits[body].isNullOrEmpty()) {
         return depth
-    }
-    else {
-        return depth + orbits[body]!!.map { count(orbits, it, depth+1) }.sum()
+    } else {
+        return depth + orbits[body]!!.map { count(orbits, it, depth + 1) }.sum()
     }
 }
 

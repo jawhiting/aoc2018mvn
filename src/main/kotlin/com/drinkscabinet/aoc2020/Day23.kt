@@ -8,18 +8,18 @@ private fun part1() {
     val ring = Ring.parse(input)
     println(ring)
 
-    for( i in 1..100 ) {
+    for (i in 1..100) {
         // pick up 3 next cups
         val nextCups = mutableListOf<RingElement>()
         println("Move $i")
         println("Cups: $ring")
-        for( c in 0..2 ) nextCups.add(ring.top!!.removeNext())
+        for (c in 0..2) nextCups.add(ring.top!!.removeNext())
         println("Cups2: $ring")
         println("Picked up ${nextCups.toList()}")
         var destinationVal = ring.top!!.value - 1
         if (destinationVal == 0) destinationVal = 9
         val unavailable = nextCups.map { it.value }.toSet()
-        while( unavailable.contains(destinationVal)) {
+        while (unavailable.contains(destinationVal)) {
             destinationVal -= 1
             if (destinationVal == 0) destinationVal = 9
         }
@@ -27,7 +27,7 @@ private fun part1() {
         val destinationPos = ring.getElement(destinationVal)
         println("Destination val: $destinationVal")
         // now insert the values after destination
-        for( c in 2 downTo 0) destinationPos.insertAfter(nextCups[c])
+        for (c in 2 downTo 0) destinationPos.insertAfter(nextCups[c])
 
         // now shuffle current to the start
         //its always the next to the right of current, so just shift
@@ -41,31 +41,31 @@ private fun part2() {
     println(ring)
 
     val start = System.currentTimeMillis()
-    for( i in 1..10_000_000 ) {
+    for (i in 1..10_000_000) {
         // pick up 3 next cups
         val nextCups = mutableListOf<RingElement>()
-        if( i % 100000 == 0 ) {
-            println("${System.currentTimeMillis()-start} Move $i")
+        if (i % 100000 == 0) {
+            println("${System.currentTimeMillis() - start} Move $i")
             println("Cups: $ring")
         }
-        for( c in 0..2 ) nextCups.add(ring.top!!.removeNext())
+        for (c in 0..2) nextCups.add(ring.top!!.removeNext())
         var destinationVal = ring.top!!.value - 1
         if (destinationVal == 0) destinationVal = 1000000
         val unavailable = nextCups.map { it.value }.toSet()
-        while( unavailable.contains(destinationVal)) {
+        while (unavailable.contains(destinationVal)) {
             destinationVal -= 1
             if (destinationVal == 0) destinationVal = 1000000
         }
         // Find destination pos
         val destinationPos = ring.getElement(destinationVal)
         // now insert the values after destination
-        for( c in 2 downTo 0) destinationPos.insertAfter(nextCups[c])
+        for (c in 2 downTo 0) destinationPos.insertAfter(nextCups[c])
 
         // now shuffle current to the start
         //its always the next to the right of current, so just shift
         ring.setTopElement(ring.top!!.next)
     }
-    println("${System.currentTimeMillis()-start} Final: $ring")
+    println("${System.currentTimeMillis() - start} Final: $ring")
     // cups to right of 1
     val one = ring.getElement(1)
     val next = one.next
@@ -78,16 +78,15 @@ private fun part2() {
 private class Ring() {
 
     private val elements = mutableMapOf<Int, RingElement>()
-    var top : RingElement? = null
+    var top: RingElement? = null
 
     private constructor(values: List<Int>) : this() {
         //
-        for( v in values ) {
+        for (v in values) {
             val element = getElement(v)
-            if( top == null ) {
+            if (top == null) {
                 top = element
-            }
-            else {
+            } else {
                 top!!.insertBefore(element)
             }
         }
@@ -97,7 +96,7 @@ private class Ring() {
         top = e
     }
 
-    override fun toString() : String {
+    override fun toString(): String {
         val result = StringBuilder()
         var count = 0
         var current = top!!
@@ -105,26 +104,26 @@ private class Ring() {
             result.append("${current.value} ")
             ++count
             current = current.next
-        } while( current != top && count < 11)
+        } while (current != top && count < 11)
         return result.toString()
     }
 
-    fun getElement(v: Int) : RingElement {
+    fun getElement(v: Int): RingElement {
         return elements.computeIfAbsent(v) { RingElement(v) }
     }
 
 
     companion object {
-        fun parse(s: String) : Ring {
+        fun parse(s: String): Ring {
             val ringValues = s.chars().map { it - '0'.code }.toArray().toMutableList()
             return Ring(ringValues)
         }
 
-        fun init2(s: String) : Ring {
+        fun init2(s: String): Ring {
             val nums = mutableListOf<Int>()
             nums.addAll(s.chars().map { it - '0'.code }.toArray().toList())
             // Now add the rest
-            for( i in 10 .. 1000000 ) {
+            for (i in 10..1000000) {
                 nums.add(i)
             }
             println("Created first list")
@@ -146,7 +145,7 @@ private data class RingElement(val value: Int) {
         next = r
     }
 
-    fun removeNext() : RingElement {
+    fun removeNext(): RingElement {
         val n = next
         next = n.next
         n.next.prev = this
@@ -156,11 +155,11 @@ private data class RingElement(val value: Int) {
     }
 
     // Remove the next X items from the ring
-    fun removeNext(x : Int) : RingElement {
+    fun removeNext(x: Int): RingElement {
         val n = next
         // calculate beyond
         var beyond = n
-        for( i in 1..x ) beyond = beyond.next
+        for (i in 1..x) beyond = beyond.next
         next = beyond
         // close the removed loop
         beyond.prev.next = n

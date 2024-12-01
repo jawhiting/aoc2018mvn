@@ -15,30 +15,35 @@ class GridImage(val cellSize: Int = 1, val defaultColor: Color = Color.WHITE) {
         data.put(coord, color)
     }
 
-    fun <T> addAll(m: Map<Coord, T>, transformer: (v: T) -> Color ) {
-        m.entries.forEach{ data[it.key] = transformer.invoke(it.value)}
+    fun <T> addAll(m: Map<Coord, T>, transformer: (v: T) -> Color) {
+        m.entries.forEach { data[it.key] = transformer.invoke(it.value) }
     }
 
     fun toImage(): BufferedImage {
-        if( data.isEmpty() ) throw IllegalStateException("No data")
+        if (data.isEmpty()) throw IllegalStateException("No data")
         var xMin = data.keys.map(Coord::x).minOrNull()!!
         var xMax = data.keys.map(Coord::x).maxOrNull()!!
         var yMin = data.keys.map(Coord::y).minOrNull()!!
         var yMax = data.keys.map(Coord::y).maxOrNull()!!
-        val cellSize3d = cellSize+1
+        val cellSize3d = cellSize + 1
 
-        val image = BufferedImage(((xMax-xMin+1)*cellSize3d).toInt(), ((yMax-yMin+1)*cellSize3d).toInt(), BufferedImage.TYPE_INT_RGB)
+        val image = BufferedImage(
+            ((xMax - xMin + 1) * cellSize3d).toInt(),
+            ((yMax - yMin + 1) * cellSize3d).toInt(),
+            BufferedImage.TYPE_INT_RGB
+        )
 
         val graphics = image.createGraphics()
-        if( graphics != null ) {
+        if (graphics != null) {
             graphics.background = defaultColor
-            graphics.clearRect(0, 0, image.width*cellSize3d, image.height*cellSize3d)
+            graphics.clearRect(0, 0, image.width * cellSize3d, image.height * cellSize3d)
 
-            data.forEach {
-                coord, color ->
-                    graphics.color = color
-                    graphics.fill3DRect((coord.x*cellSize3d).toInt(),
-                        (coord.y*cellSize3d).toInt(), cellSize3d, cellSize3d, true)
+            data.forEach { coord, color ->
+                graphics.color = color
+                graphics.fill3DRect(
+                    (coord.x * cellSize3d).toInt(),
+                    (coord.y * cellSize3d).toInt(), cellSize3d, cellSize3d, true
+                )
 //                    graphics.draw3DRect(coord.x*cellSize3d, coord.y*cellSize3d, cellSize3d, cellSize3d, true)
             }
         }
@@ -50,12 +55,12 @@ class GridImage(val cellSize: Int = 1, val defaultColor: Color = Color.WHITE) {
     }
 
     companion object {
-        fun animate(frames: List<BufferedImage>, filename: String, rateMillis:Int = 100) {
+        fun animate(frames: List<BufferedImage>, filename: String, rateMillis: Int = 100) {
             // create a new BufferedOutputStream with the last argument
             val output = FileImageOutputStream(File(filename))
 
             val writer = GifSequenceWriter(output, frames.first().type, rateMillis, true)
-            frames.forEach{
+            frames.forEach {
                 writer.writeToSequence(it)
             }
             writer.close()
@@ -66,7 +71,7 @@ class GridImage(val cellSize: Int = 1, val defaultColor: Color = Color.WHITE) {
 
 fun main() {
     val frames = mutableListOf<BufferedImage>()
-    for( i in 0..10 ) {
+    for (i in 0..10) {
         val g = GridImage(20)
         for (x in 0L..3) {
             for (y in 0L..3) {

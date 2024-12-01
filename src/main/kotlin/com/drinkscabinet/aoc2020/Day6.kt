@@ -7,14 +7,14 @@ private fun main() {
     println("Part1=$acc")
     // 6911
 
-    val acc2 = input.chunks().map{ intersect2(it) }.sum()
+    val acc2 = input.chunks().map { intersect2(it) }.sum()
     println("Part2=$acc2")
     // 4589 too high
     // 3473 correct
 }
 
-private fun intersect2(s: String) : Int {
-    return s.lines().map{ it.chars().toArray().toSet() }.reduce{ a,b -> a.intersect(b)}.size
+private fun intersect2(s: String): Int {
+    return s.lines().map { it.chars().toArray().toSet() }.reduce { a, b -> a.intersect(b) }.size
 }
 
 private val testInput = """

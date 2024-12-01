@@ -1,7 +1,6 @@
 package com.drinkscabinet.aoc2020
 
 import com.drinkscabinet.Utils
-import java.lang.RuntimeException
 
 private fun main() {
     val console = Console()
@@ -11,30 +10,28 @@ private fun main() {
     val start = System.currentTimeMillis()
     // Part2 - just keep changing one line
     val toRun = input.lines().toMutableList()
-    for( i in input.lines().indices) {
+    for (i in input.lines().indices) {
         val instruction = toRun[i].substring(0..2)
-        if( instruction == "acc") continue
+        if (instruction == "acc") continue
         val oldInstruction = toRun[i]
-        if( instruction == "jmp") {
+        if (instruction == "jmp") {
             val newInstruction = toRun[i].replace("jmp", "nop")
             toRun[i] = newInstruction
-        }
-        else if( instruction == "nop") {
+        } else if (instruction == "nop") {
             val newInstruction = toRun[i].replace("nop", "jmp")
             toRun[i] = newInstruction
         }
         // See if it runs
         console.load(toRun)
-        if( console.run() ) {
+        if (console.run()) {
             println("Terminated correctly after changing $i acc=${console.acc}")
             break
-        }
-        else {
+        } else {
             println("Detected repeat after changing $i")
             toRun[i] = oldInstruction
         }
     }
-    println("Part2 took ${System.currentTimeMillis()-start}")
+    println("Part2 took ${System.currentTimeMillis() - start}")
 }
 
 class Console {
@@ -52,43 +49,45 @@ class Console {
      * Run until we encounter an instruction twice or terminate
      * True -> Terminated, False -> dup instruction
      */
-    fun run() : Boolean {
+    fun run(): Boolean {
         val visited = mutableSetOf<Int>()
         var count = 0
-        while( !visited.contains(ip) && ip < code.size ) {
-            if( count % 100 == 0) println("Instruction count: $count")
+        while (!visited.contains(ip) && ip < code.size) {
+            if (count % 100 == 0) println("Instruction count: $count")
             visited.add(ip)
             executeInstruction()
             ++count
         }
-        if( visited.contains(ip)) {
+        if (visited.contains(ip)) {
             println("Revisited instruction $ip acc=$acc")
             return false
-        }
-        else {
+        } else {
             println("Program terminated normally acc=$acc")
             return true
         }
     }
 
     // Returns next instruction pointer to execute
-    private fun executeInstruction() : Int {
+    private fun executeInstruction(): Int {
         val line = code[ip]
         val inst = line.substring(0..2)
         val value = Utils.extractInts(line)[0]
 //        println("Executing $ip")
-        when( inst ) {
+        when (inst) {
             "nop" -> {
                 // do nothing
                 ++ip
             }
+
             "jmp" -> {
                 ip += value
             }
+
             "acc" -> {
                 acc += value
                 ++ip
             }
+
             else -> {
                 throw RuntimeException("No such instruction $inst $value at $ip")
             }

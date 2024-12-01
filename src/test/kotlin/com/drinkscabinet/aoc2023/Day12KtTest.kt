@@ -1,10 +1,8 @@
 package com.drinkscabinet.aoc2023
 
 import com.drinkscabinet.Utils
-import com.github.jsonldjava.shaded.com.google.common.collect.Table
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import kotlin.math.exp
 
 class Day12KtTest {
 

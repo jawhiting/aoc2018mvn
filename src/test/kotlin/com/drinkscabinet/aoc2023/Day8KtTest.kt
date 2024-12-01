@@ -1,9 +1,7 @@
 package com.drinkscabinet.aoc2023
 
 import com.drinkscabinet.Utils
-import com.drinkscabinet.Utils.Companion.lcm
 import com.drinkscabinet.Utils.Companion.lcmList
-import com.github.jsonldjava.shaded.com.google.common.math.LongMath.gcd
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

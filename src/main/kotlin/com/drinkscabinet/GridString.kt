@@ -26,17 +26,16 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         }
     }
 
-    operator fun plus(gridString: GridString) : GridString {
+    operator fun plus(gridString: GridString): GridString {
         gridString.chars.forEach { (coord, c) -> this[coord] = c }
         gridString.extra.forEach { (coord, e) -> this.setExtra(coord, e) }
         return this
     }
 
     fun setExtra(coord: Coord, e: Long?) {
-        if(e != null) {
+        if (e != null) {
             extra[coord] = e
-        }
-        else {
+        } else {
             extra.remove(coord)
         }
     }
@@ -44,6 +43,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
     fun getExtra(coord: Coord): Long? {
         return extra[coord]
     }
+
     fun add(coord: Coord, char: Char, e: Long? = null): GridString {
         this[coord] = char
         setExtra(coord, e)

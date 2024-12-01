@@ -10,9 +10,9 @@ fun main() {
 
     val seen = HashSet<Int>()
     var current = 0
-    for( i in 1..1000000 ) {
-        current += deltas[i%deltas.size]
-        if( !seen.add(current) ) {
+    for (i in 1..1000000) {
+        current += deltas[i % deltas.size]
+        if (!seen.add(current)) {
             println("Part 2 ${current} in ${i}")
             break
         }

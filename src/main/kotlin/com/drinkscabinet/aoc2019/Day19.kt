@@ -8,16 +8,16 @@ private fun main() {
     val comp = IntCode.parse(input)
 
     val grid = GridString()
-    for( x in 0L..9) {
-        for( y in 0L..9 ) {
+    for (x in 0L..9) {
+        for (y in 0L..9) {
 
-            grid.add(Coord(x, y), if( test(comp, x, y) )'#' else '.')
+            grid.add(Coord(x, y), if (test(comp, x, y)) '#' else '.')
         }
     }
     println(grid)
 }
 
-private fun test(comp: IntCode, x: Long, y: Long) : Boolean {
+private fun test(comp: IntCode, x: Long, y: Long): Boolean {
     return comp.clone().executeFromStart(listOf(x, y)).first() == 1L
 }
 

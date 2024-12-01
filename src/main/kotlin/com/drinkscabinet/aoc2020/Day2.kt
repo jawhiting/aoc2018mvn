@@ -15,20 +15,20 @@ fun main() {
 data class Rule(val c: Char, val min: Int, val max: Int, val s: String) {
 
     companion object {
-        fun parse(s: String) : Rule {
+        fun parse(s: String): Rule {
             val bounds = Utils.extractInts(s)
             return Rule(s.substringBefore(":").last(), abs(bounds[0]), abs(bounds[1]), s.substringAfter(":").trim())
         }
     }
 
-    fun valid() : Boolean {
+    fun valid(): Boolean {
         //val freqs = s.groupingBy { it }.eachCount()
         val occurs = s.count { it == c }
         return occurs in min..max
     }
 
-    fun valid2() :Boolean {
-        return (s[min-1] == c) xor (s[max-1] == c)
+    fun valid2(): Boolean {
+        return (s[min - 1] == c) xor (s[max - 1] == c)
     }
 }
 

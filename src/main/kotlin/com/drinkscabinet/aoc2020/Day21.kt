@@ -13,20 +13,21 @@ private fun main() {
         }
     }
 
-    allergenIndex.forEach { println(it)}
+    allergenIndex.forEach { println(it) }
 
     val allergenToIngredient = mutableMapOf<String, String>()
-    val ingredientsToMap = recipes.flatMap{ it.ingredients }.toMutableSet()
-    val allergensToMap = recipes.flatMap{ it.allergens }.toMutableSet()
+    val ingredientsToMap = recipes.flatMap { it.ingredients }.toMutableSet()
+    val allergensToMap = recipes.flatMap { it.allergens }.toMutableSet()
 
-    while( allergensToMap.isNotEmpty() ) {
+    while (allergensToMap.isNotEmpty()) {
         val candidates = mutableMapOf<String, Set<String>>()
         for (allergen in allergensToMap) {
             // Find all the candidates for this by intersecting the recipes, and the remaining ingredients
             val recipesForAllergen = allergenIndex[allergen]!!
-            candidates[allergen] = recipesForAllergen.map { it.ingredients }.fold(ingredientsToMap, { a,b -> a.intersect(b).toMutableSet()})
+            candidates[allergen] = recipesForAllergen.map { it.ingredients }
+                .fold(ingredientsToMap, { a, b -> a.intersect(b).toMutableSet() })
         }
-        candidates.forEach{ println("Allergen ${it.key} has ${it.value.size} candidates")}
+        candidates.forEach { println("Allergen ${it.key} has ${it.value.size} candidates") }
         // Find any that have just 1 answer and map them
         candidates.filter { it.value.size == 1 }.forEach {
             val ingredient = it.value.first()
@@ -48,12 +49,11 @@ private fun main() {
 }
 
 
-
 private data class Recipe(val ingredients: Set<String>, val allergens: Set<String>) {
     companion object {
-        fun parse(s: String) : Recipe {
+        fun parse(s: String): Recipe {
             val ingredients = s.substringBefore(" (")
-            if( ingredients.isEmpty() ) throw IllegalArgumentException("Missing allergens in $s")
+            if (ingredients.isEmpty()) throw IllegalArgumentException("Missing allergens in $s")
             val ingSet = ingredients.split(" ").toSet()
 
             val allergens = s.substringAfter("(contains ").substringBefore(")")
@@ -62,7 +62,6 @@ private data class Recipe(val ingredients: Set<String>, val allergens: Set<Strin
         }
     }
 }
-
 
 
 private val testInput = """

@@ -5,7 +5,7 @@ import com.drinkscabinet.Utils
 data class TicketField(val name: String, val permittedValues: List<IntRange>) {
 
     companion object {
-        fun parse(s: String) : TicketField {
+        fun parse(s: String): TicketField {
             val name = s.substringBefore(":")
             val range1 = s.substringAfter(": ").substringBefore(" or ")
             val range2 = s.substringAfter(": ").substringAfter(" or ")
@@ -15,11 +15,11 @@ data class TicketField(val name: String, val permittedValues: List<IntRange>) {
         }
     }
 
-    fun permitted() : Set<Int> {
-        return permittedValues.fold(setOf<Int>(), { s, r -> s.union(r)})
+    fun permitted(): Set<Int> {
+        return permittedValues.fold(setOf<Int>(), { s, r -> s.union(r) })
     }
 
-    fun canAccept(v: Set<Int>) : Boolean {
+    fun canAccept(v: Set<Int>): Boolean {
         return permitted().containsAll(v)
     }
 }
@@ -30,14 +30,14 @@ fun main() {
     println(field.permitted())
 
     val parsedFields = fields.lines().map { TicketField.parse(it) }.toList()
-    val allPermittedValues = parsedFields.fold(setOf<Int>(), { s, r -> s.union(r.permitted())})
+    val allPermittedValues = parsedFields.fold(setOf<Int>(), { s, r -> s.union(r.permitted()) })
     val invalidValues = mutableListOf<Int>()
     val validTickets = mutableListOf<String>()
     for (testTicket in tickets.lines()) {
         val values = Utils.extractInts(testTicket)
         val elements = values.filter { !allPermittedValues.contains(it) }.toList()
         invalidValues.addAll(elements)
-        if( elements.isEmpty() ) {
+        if (elements.isEmpty()) {
             validTickets.add(testTicket)
         }
     }
@@ -46,14 +46,14 @@ fun main() {
 
     // now split into columns per field
     val valuesByField = ArrayList<MutableSet<Int>>(parsedFields.size)
-    for( i in parsedFields.indices) {
+    for (i in parsedFields.indices) {
         valuesByField.add(mutableSetOf<Int>())
 
     }
     // Parse the valid tickets
     for (validTicket in validTickets) {
         val values = Utils.extractInts(validTicket)
-        for( i in values.indices) {
+        for (i in values.indices) {
             valuesByField[i].add(values[i])
         }
     }
@@ -65,11 +65,11 @@ fun main() {
     columnsToMatch.addAll(valuesByField.indices)
     val fieldToColumn = mutableMapOf<TicketField, Int>()
 
-    while( fieldsToMatch.isNotEmpty() ) {
+    while (fieldsToMatch.isNotEmpty()) {
         for (i in columnsToMatch) {
             val possibilities = fieldsToMatch.filter { it.canAccept(valuesByField[i]) }.toList()
             println("Field $i has ${possibilities.count()} possibilities: $possibilities")
-            if( possibilities.size == 1) {
+            if (possibilities.size == 1) {
                 println("Found match for column $i as field $possibilities")
                 fieldToColumn[possibilities[0]] = i
                 // remove field and column
@@ -84,7 +84,8 @@ fun main() {
 
     // All now matched - find the answer
     val myTicketValues = Utils.extractInts(ticket)
-    val result = fieldToColumn.filter { it.key.name.startsWith("departure") }.map { myTicketValues[it.value].toLong() }.fold(1, { acc: Long, i: Long -> acc * i })
+    val result = fieldToColumn.filter { it.key.name.startsWith("departure") }.map { myTicketValues[it.value].toLong() }
+        .fold(1, { acc: Long, i: Long -> acc * i })
     // 37050 is too low
     // need to look at my ticket now
 

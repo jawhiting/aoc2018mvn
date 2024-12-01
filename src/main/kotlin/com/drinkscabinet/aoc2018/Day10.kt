@@ -5,7 +5,7 @@ import com.drinkscabinet.Coord
 data class Point(val initial: Coord, val velocity: Coord) {
     var position: Coord = initial
 
-    fun tick(count: Int) : Coord {
+    fun tick(count: Int): Coord {
         position = Coord(
             position.x + velocity.x * count,
             position.y + velocity.y * count
@@ -36,24 +36,24 @@ fun main() {
 
     println(point.tick(3))
 
-    for( i in 0..10 ) {
-        points.forEach{it.tick(1)}
+    for (i in 0..10) {
+        points.forEach { it.tick(1) }
         println("$i rows: ${yCount(points)}")
     }
 
 }
 
-private fun yCount(points: List<Point>) : Int {
-    points.map { it.position.y }.forEach{print("$it,")}
+private fun yCount(points: List<Point>): Int {
+    points.map { it.position.y }.forEach { print("$it,") }
     println()
     return points.map { it.position.y }.toSet().size
 }
 
-private fun extractInts(s: String) : IntArray {
+private fun extractInts(s: String): IntArray {
     return "(\\d+)".toRegex().findAll(s).asIterable().map { it.value.toInt() }.toIntArray()
 }
 
-private fun extractLongs(s: String) : LongArray {
+private fun extractLongs(s: String): LongArray {
     return "(\\d+)".toRegex().findAll(s).asIterable().map { it.value.toLong() }.toLongArray()
 }
 

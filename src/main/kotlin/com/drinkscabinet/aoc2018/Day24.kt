@@ -16,19 +16,28 @@ private enum class Attack {
     BLUDGEONING
 }
 
-private fun extractInts(s: String) : IntArray {
+private fun extractInts(s: String): IntArray {
     return "(-?\\d+)".toRegex().findAll(s).asIterable().map { it.value.toInt() }.toIntArray()
 }
 
 private var boost = 0
 
-private data class Group(val id: Int, val type: Type, val units: Int, val hp: Int, val dmg: Int, val attack: Attack, val initiative: Int, val weaknesses: Set<Attack>,
-                         val immunities: Set<Attack>) {
+private data class Group(
+    val id: Int,
+    val type: Type,
+    val units: Int,
+    val hp: Int,
+    val dmg: Int,
+    val attack: Attack,
+    val initiative: Int,
+    val weaknesses: Set<Attack>,
+    val immunities: Set<Attack>
+) {
     var remaining = units
 
     val effectivePower: Int
         get() {
-            return remaining * (if( type == Type.IMMUNE) dmg+ boost else dmg)
+            return remaining * (if (type == Type.IMMUNE) dmg + boost else dmg)
         }
 
     val name: String
@@ -40,21 +49,23 @@ private data class Group(val id: Int, val type: Type, val units: Int, val hp: In
     fun selectTarget(opponents: List<Group>): Group? {
         // find one
         val firstOrNull = opponents.filter { it.predictedDamage(effectivePower, attack) > 0 }
-            .sortedWith(compareBy<Group>(
+            .sortedWith(
+                compareBy<Group>(
                 { it.predictedDamage(effectivePower, attack) },
                 { it.effectivePower },
-                { it.initiative }).reversed())
+                { it.initiative }).reversed()
+            )
             .firstOrNull()
 //        println("$name selected target ${firstOrNull?.name}")
         return firstOrNull
     }
 
-    fun predictedDamage(dmg: Int, type: Attack) : Int {
-        if( immunities.contains(type ) ) return 0
-        return if( weaknesses.contains(type) ) dmg*2 else dmg
+    fun predictedDamage(dmg: Int, type: Attack): Int {
+        if (immunities.contains(type)) return 0
+        return if (weaknesses.contains(type)) dmg * 2 else dmg
     }
 
-    fun applyDamage(dmg: Int, type: Attack) : Int {
+    fun applyDamage(dmg: Int, type: Attack): Int {
         val d = predictedDamage(dmg, type)
         val unitsToRemove = min(remaining, d / hp)
         remaining -= unitsToRemove
@@ -67,25 +78,27 @@ private data class Group(val id: Int, val type: Type, val units: Int, val hp: In
         var immId = 1
         fun parse(type: Type, s: String): Group {
             var id = 0
-            if( type == Type.INFECT) {
+            if (type == Type.INFECT) {
                 id = infId++
-            }
-            else {
+            } else {
                 id = immId++
             }
             // 18 units each with 729 hit points (weak to fire; immune to cold, slashing)
             // with an attack that does 8 radiation damage at initiative 10
             val nums = extractInts(s)
-            val dmgType = Attack.valueOf("\\d+ ([a-z]+) damage".toRegex().find(s)!!.groupValues[1].uppercase(Locale.getDefault()))
+            val dmgType =
+                Attack.valueOf("\\d+ ([a-z]+) damage".toRegex().find(s)!!.groupValues[1].uppercase(Locale.getDefault()))
             val imm = "immune to ([a-z, ]+)+[;)]".toRegex().find(s)
             val immunities = mutableSetOf<Attack>()
-            if( imm != null ) {
-                imm.groupValues[1].split(", ").map { Attack.valueOf(it.uppercase(Locale.getDefault())) }.forEach { immunities.add(it) }
+            if (imm != null) {
+                imm.groupValues[1].split(", ").map { Attack.valueOf(it.uppercase(Locale.getDefault())) }
+                    .forEach { immunities.add(it) }
             }
             val weak = "weak to ([a-z, ]+)+[;)]".toRegex().find(s)
             val weaknesses = mutableSetOf<Attack>()
-            if( weak != null ) {
-                weak.groupValues[1].split(", ").map { Attack.valueOf(it.uppercase(Locale.getDefault())) }.forEach { weaknesses.add(it) }
+            if (weak != null) {
+                weak.groupValues[1].split(", ").map { Attack.valueOf(it.uppercase(Locale.getDefault())) }
+                    .forEach { weaknesses.add(it) }
             }
             return Group(
                 id,
@@ -112,22 +125,22 @@ private class Battle24(val groups: List<Group>) {
         var imm = remaining.filter { it.alive }.filter { it.type == Type.IMMUNE }
 
         var round = 1
-        var totalUnits = remaining.map{ it.remaining}.sum()
-        while( inf.isNotEmpty() && imm.isNotEmpty() ) {
+        var totalUnits = remaining.map { it.remaining }.sum()
+        while (inf.isNotEmpty() && imm.isNotEmpty()) {
             println("Starting round ${round++}")
             inf.forEach { println("${it.name} has ${it.remaining} ep ${it.effectivePower} ini ${it.initiative}") }
             imm.forEach { println("${it.name} has ${it.remaining} ep ${it.effectivePower} ini ${it.initiative}") }
             val targets = selectTargets(imm, inf)
             // attack order
-            val attackOrder = remaining.sortedByDescending{ it.initiative }
+            val attackOrder = remaining.sortedByDescending { it.initiative }
 
             for (group in attackOrder) {
-                if( !group.alive) continue
+                if (!group.alive) continue
                 val target = targets[group]
-                if( target != null ) {
-                    val killed = target.applyDamage(group.effectivePower, group.attack)
+                if (target != null) {
+                    target.applyDamage(group.effectivePower, group.attack)
 //                    println("${group.name} attacks ${target.name} for ${target.predictedDamage(group.effectivePower, group.attack)} killing ${killed}")
-                    if( !target.alive){
+                    if (!target.alive) {
                         // remove from remaining
 //                        println("Killed: ${target.name}")
                         remaining.remove(target)
@@ -136,10 +149,10 @@ private class Battle24(val groups: List<Group>) {
             }
             inf = remaining.filter { it.alive }.filter { it.type == Type.INFECT }
             imm = remaining.filter { it.alive }.filter { it.type == Type.IMMUNE }
-            val tu2 = remaining.map{ it.remaining}.sum()
+            val tu2 = remaining.map { it.remaining }.sum()
 
             // noone killed
-            if( totalUnits == tu2) return Type.INFECT
+            if (totalUnits == tu2) return Type.INFECT
             totalUnits = tu2
         }
         // battle over
@@ -147,7 +160,7 @@ private class Battle24(val groups: List<Group>) {
         for (group in remaining) {
             println("${group.remaining} left in $group")
         }
-        println(" " + remaining.map{ it.remaining }.sum())
+        println(" " + remaining.map { it.remaining }.sum())
         return remaining.first().type
     }
 
@@ -155,14 +168,13 @@ private class Battle24(val groups: List<Group>) {
         var min = 0
         var max = 97
 
-        while( max-min > 1) {
-            val t = min + (max-min)/2
+        while (max - min > 1) {
+            val t = min + (max - min) / 2
             println("$min $t $max")
-            if( testBoost(t)) {
+            if (testBoost(t)) {
                 println("$t is a win")
                 max = t
-            }
-            else {
+            } else {
                 println("$t is a loss")
                 min = t
             }
@@ -176,14 +188,14 @@ private class Battle24(val groups: List<Group>) {
     fun selectTargets(imm: List<Group>, inf: List<Group>): Map<Group, Group?> {
         val result = mutableMapOf<Group, Group?>()
         val availableInf = inf.toMutableList()
-        for (group in imm.sortedWith( compareBy<Group>({it.effectivePower}, {it.initiative}).reversed() )) {
+        for (group in imm.sortedWith(compareBy<Group>({ it.effectivePower }, { it.initiative }).reversed())) {
             val t = group.selectTarget(availableInf)
             result[group] = t
             availableInf.remove(t)
         }
 
         val availableImm = imm.toMutableList()
-        for( group in inf.sortedWith(compareBy<Group>({it.effectivePower}, {it.initiative}).reversed() )) {
+        for (group in inf.sortedWith(compareBy<Group>({ it.effectivePower }, { it.initiative }).reversed())) {
             val t = group.selectTarget(availableImm)
             result[group] = t
             availableImm.remove(t)

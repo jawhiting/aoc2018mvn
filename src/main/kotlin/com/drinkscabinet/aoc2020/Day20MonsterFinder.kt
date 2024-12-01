@@ -19,8 +19,8 @@ private fun main() {
     val grid = GridString.parse(input)
     val activeGridCells = grid.getAll('#')
     // For every position in the grid
-    for (x in grid.getXMin()-20..grid.getXMax()+20) {
-        for (y in grid.getYMin()-20..grid.getYMax()+20) {
+    for (x in grid.getXMin() - 20..grid.getXMax() + 20) {
+        for (y in grid.getYMin() - 20..grid.getYMax() + 20) {
             // try all the monsters
             val c = Coord(x, y)
             for (monster in monsters) {
@@ -28,7 +28,7 @@ private fun main() {
                 val toTest = monster.copyOf().translate(c)
                 // Now test if all the monster cells are in
                 val activeMonsterCells = toTest.getAll('#')
-                if( activeGridCells.containsAll(activeMonsterCells)) {
+                if (activeGridCells.containsAll(activeMonsterCells)) {
                     println("Found monster at $c")
                     // replace the found monster cells with 'O'
                     activeMonsterCells.forEach { grid.add(it, 'O') }

@@ -2,7 +2,6 @@ package com.drinkscabinet.aoc2020
 
 import com.drinkscabinet.Utils
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.pow
 
 private fun main() {
@@ -36,23 +35,23 @@ private fun part2() {
     println("Part2=${Computer().execute2(input.lines())}")
 }
 
-fun apply(l: Long, mask0: Long, mask1: Long) : Long {
+fun apply(l: Long, mask0: Long, mask1: Long): Long {
     // set the 1s
     var result = l or mask1
     return result and mask0
 }
 
 // OR this to set the 1
-fun get1Mask(s: String) : Long {
+fun get1Mask(s: String): Long {
     return s.replace('X', '0').toLong(2)
 }
 
 // AND this to set the 0
-fun get0Mask(s: String) : Long {
+fun get0Mask(s: String): Long {
     return s.replace('X', '1').toLong(2)
 }
 
-private fun addresses(addr: Long, mask: String) : Set<Long> {
+private fun addresses(addr: Long, mask: String): Set<Long> {
     // Get all the addresses resulting from the current mask applied to this address
     val mask1 = get1Mask(mask)
 //    val mask0 = get0Mask(mask)
@@ -70,13 +69,13 @@ private fun addresses(addr: Long, mask: String) : Set<Long> {
     println(xPos)
     val combinations = 2.0.pow(xCount.toDouble()).toInt()
     println(startAddr.toString(2))
-    for( i in 0 until combinations) {
+    for (i in 0 until combinations) {
         // apply the bits to the startAddr
         val bits = BitSet.valueOf(longArrayOf(startAddr))
 
         // Now manipulate the bits
         val applyBits = BitSet.valueOf(longArrayOf(i.toLong()))
-        for( b in 0 until xCount) {
+        for (b in 0 until xCount) {
             // get the bit, apply it to the corresponding main bit
             bits[xPos[b]] = applyBits[b]
         }
@@ -87,9 +86,9 @@ private fun addresses(addr: Long, mask: String) : Set<Long> {
     return result
 }
 
-private fun findAllXs(s: String) : Set<Int> {
+private fun findAllXs(s: String): Set<Int> {
     val result = mutableSetOf<Int>()
-    s.toCharArray().forEachIndexed { index, c -> if( c == 'X') result.add(s.lastIndex - index) }
+    s.toCharArray().forEachIndexed { index, c -> if (c == 'X') result.add(s.lastIndex - index) }
     return result
 }
 
@@ -100,7 +99,7 @@ private class Computer {
     private var mask0 = 0L
     private var mask1 = 0L
 
-    fun execute(program: List<String>) : Long {
+    fun execute(program: List<String>): Long {
         for (instruction in program) {
             execute(instruction)
         }
@@ -109,12 +108,11 @@ private class Computer {
     }
 
     fun execute(instruction: String) {
-        if( instruction.startsWith("mask")) {
+        if (instruction.startsWith("mask")) {
             println(instruction.count { it == 'X' })
             mask0 = get0Mask(instruction.substringAfter("= "))
             mask1 = get1Mask(instruction.substringAfter("= "))
-        }
-        else {
+        } else {
             val values = Utils.extractLongs(instruction)
             val address = values[0]
             val value = values[1]
@@ -122,7 +120,7 @@ private class Computer {
         }
     }
 
-    fun execute2(program: List<String>) : Long {
+    fun execute2(program: List<String>): Long {
         for (instruction in program) {
             execute2(instruction)
         }
@@ -131,11 +129,10 @@ private class Computer {
     }
 
     fun execute2(instruction: String) {
-        if( instruction.startsWith("mask")) {
+        if (instruction.startsWith("mask")) {
             println(instruction.count { it == 'X' })
             mask = instruction.substringAfter("= ")
-        }
-        else {
+        } else {
             val values = Utils.extractLongs(instruction)
             val address = values[0]
             val value = values[1]
@@ -144,7 +141,6 @@ private class Computer {
             addresses.forEach { memory[it] = value }
         }
     }
-
 
 
 }

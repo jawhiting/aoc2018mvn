@@ -1,8 +1,9 @@
 package com.drinkscabinet
 
 import Delta
+import Direction
 
-class Grid<V>(private val default: V): MutableMap<Coord, V> {
+class Grid<V>(private val default: V) : MutableMap<Coord, V> {
     private val map = mutableMapOf<Coord, V>().withDefault { default }
 
     override fun equals(other: Any?): Boolean = map.equals(other)
@@ -26,15 +27,15 @@ class Grid<V>(private val default: V): MutableMap<Coord, V> {
         return map[key] ?: default
     }
 
-    fun neighbours(pos: Coord, directions: Iterable<Delta>) : Iterable<Pair<Coord, V>> {
-        return directions.map{ pos.move(it) }.map{ it to  getOrDefault(it)}
+    fun neighbours(pos: Coord, directions: Iterable<Delta>): Iterable<Pair<Coord, V>> {
+        return directions.map { pos.move(it) }.map { it to getOrDefault(it) }
     }
 
-    fun neighboursMatch(pos: Coord, directions: Iterable<Delta>, filter: (V) -> Boolean) : Int {
+    fun neighboursMatch(pos: Coord, directions: Iterable<Delta>, filter: (V) -> Boolean): Int {
         return directions.map { pos.move(it) }.count { filter(getOrDefault(it)) }
     }
 
-    fun neighbours4(pos: Coord) : Iterable<Pair<Coord, V>> {
+    fun neighbours4(pos: Coord): Iterable<Pair<Coord, V>> {
         return neighbours(pos, Direction.values().asIterable())
     }
 

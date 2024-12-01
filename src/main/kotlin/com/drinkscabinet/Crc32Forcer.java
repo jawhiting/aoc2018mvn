@@ -31,6 +31,8 @@ public final class Crc32Forcer {
 
     /*---- Main application ----*/
 
+    private static final long POLYNOMIAL = 0x104C11DB7L;  // Generator polynomial. Do not modify, because there are many dependencies
+
     public static void main(String[] args) {
         String errmsg = submain(args);
         if (errmsg != null) {
@@ -39,6 +41,8 @@ public final class Crc32Forcer {
         }
     }
 
+
+    /*---- Main function ----*/
 
     private static String submain(String[] args) {
         // Handle arguments
@@ -59,7 +63,7 @@ public final class Crc32Forcer {
             long temp = Long.parseLong(args[2], 16);
             if ((temp & 0xFFFFFFFFL) != temp)
                 return "Error: Invalid new CRC-32 value";
-            newCrc = Integer.reverse((int)temp);
+            newCrc = Integer.reverse((int) temp);
         } catch (NumberFormatException e) {
             return "Error: Invalid new CRC-32 value";
         }
@@ -81,7 +85,7 @@ public final class Crc32Forcer {
     }
 
 
-    /*---- Main function ----*/
+    /*---- Utilities ----*/
 
     // Public library function.
     public static void modifyFileCrc32(File file, long offset, int newCrc, boolean printStatus) throws IOException {
@@ -100,7 +104,7 @@ public final class Crc32Forcer {
 
             // Compute the change to make
             int delta = crc ^ newCrc;
-            delta = (int)multiplyMod(reciprocalMod(powMod(2, (raf.length() - offset) * 8)), delta & 0xFFFFFFFFL);
+            delta = (int) multiplyMod(reciprocalMod(powMod(2, (raf.length() - offset) * 8)), delta & 0xFFFFFFFFL);
 
             // Patch 4 bytes in the file
             raf.seek(offset);
@@ -121,12 +125,6 @@ public final class Crc32Forcer {
         }
     }
 
-
-    /*---- Utilities ----*/
-
-    private static final long POLYNOMIAL = 0x104C11DB7L;  // Generator polynomial. Do not modify, because there are many dependencies
-
-
     private static int getCrc32(RandomAccessFile raf) throws IOException {
         raf.seek(0);
         int crc = 0xFFFFFFFF;
@@ -139,7 +137,7 @@ public final class Crc32Forcer {
                 for (int j = 0; j < 8; j++) {
                     crc ^= (buffer[i] >>> j) << 31;
                     if (crc < 0)
-                        crc = (crc << 1) ^ (int)POLYNOMIAL;
+                        crc = (crc << 1) ^ (int) POLYNOMIAL;
                     else
                         crc <<= 1;
                 }

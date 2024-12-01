@@ -12,7 +12,7 @@ class Day1 {
 
         fun totalFuel(m: Int): Int {
             val f = fuel(m)
-            if( f <= 0 ) return 0
+            if (f <= 0) return 0
             return f + totalFuel(f)
         }
     }
@@ -20,8 +20,8 @@ class Day1 {
 
 fun main() {
     println(Day1.fuel(100756))
-    println(Utils.extractInts(input).map{Day1.fuel(it)}.sum())
-    println(Utils.extractInts(input).map{Day1.totalFuel(it)}.sum())
+    println(Utils.extractInts(input).map { Day1.fuel(it) }.sum())
+    println(Utils.extractInts(input).map { Day1.totalFuel(it) }.sum())
 }
 
 private val input = """

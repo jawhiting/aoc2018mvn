@@ -33,7 +33,7 @@ public class Crc {
 
         for (int i = 1; i < Integer.MAX_VALUE; i++) {
             String postfix = calcPostfix(i);
-            if( i % 1000 == 0 ) {
+            if (i % 1000 == 0) {
                 System.out.println(i + " " + postfix);
             }
             // Calculate postfix
@@ -42,7 +42,7 @@ public class Crc {
             crc32.update(root.getBytes());
             crc32.update(postfix.getBytes());
             long c = crc32.getValue();
-            if( c == target ) {
+            if (c == target) {
                 return root + postfix;
             }
         }
@@ -59,7 +59,7 @@ public class Crc {
 
         for (int i = 1; i < Integer.MAX_VALUE; i++) {
             String postfix = calcPostfix(i);
-            if( i % 1000 == 0 ) {
+            if (i % 1000 == 0) {
                 System.out.println(i + " " + postfix);
             }
             // Calculate postfix
@@ -68,12 +68,11 @@ public class Crc {
             crc32.update(root.getBytes());
             crc32.update(postfix.getBytes());
             long c = crc32.getValue();
-            if( seenHashes.containsKey(c)) {
+            if (seenHashes.containsKey(c)) {
                 System.out.println("Found collision between " + postfix + " and " + seenHashes.get(c));
                 System.out.println("Iterations: " + i);
                 return;
-            }
-            else {
+            } else {
                 seenHashes.put(c, postfix);
             }
         }
@@ -82,9 +81,9 @@ public class Crc {
     private static String calcPostfix(int i) {
         StringBuilder builder = new StringBuilder(10);
 
-        while( i > 0 ) {
+        while (i > 0) {
             int x = i % 26;
-            builder.append((char)('a' + x));
+            builder.append((char) ('a' + x));
             i /= 26;
         }
         return builder.toString();

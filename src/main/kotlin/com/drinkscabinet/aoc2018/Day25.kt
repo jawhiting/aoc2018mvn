@@ -3,7 +3,7 @@ package com.drinkscabinet.aoc2018
 import kotlin.math.abs
 import kotlin.system.measureTimeMillis
 
-private fun extractInts(s: String) : IntArray {
+private fun extractInts(s: String): IntArray {
     return "(-?\\d+)".toRegex().findAll(s).asIterable().map { it.value.toInt() }.toIntArray()
 }
 
@@ -11,7 +11,7 @@ private data class Coord4(val x: Int, val y: Int, val z: Int, val t: Int) {
 
 
     fun distance(c: Coord4): Int {
-        return abs(x-c.x) + abs(y-c.y) + abs(z-c.z) + abs( t-c.t)
+        return abs(x - c.x) + abs(y - c.y) + abs(z - c.z) + abs(t - c.t)
     }
 
     fun inConstellation(c: Coord4): Boolean {
