@@ -49,7 +49,7 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3"""
         // Check range should be minX - maxRange to maxX + maxRange
         val maxRange = sensorRanges.values.max()
         val minX = sensorRanges.keys.minBy { it.x }.x
-        val maxX = sensorRanges.keys.maxBy { it.x }.x
+        val maxX = sensorRanges.keys.maxByOrNull { it.x }!!.x
 
         val xRange = minX - maxRange..maxX + maxRange
 

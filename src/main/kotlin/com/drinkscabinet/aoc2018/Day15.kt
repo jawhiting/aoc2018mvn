@@ -78,7 +78,7 @@ internal data class Entity(val race: Race, var position: Coord, var hp: Int = 20
         // combine targets with distances to find closest
         val closestTarget = targets.map{ it to paths.first[it] }.filter { it.second != null }.minBy { it.second ?: Int.MAX_VALUE }
         // can't get to target
-        if( closestTarget == null || closestTarget.second ?: Int.MAX_VALUE == Int.MAX_VALUE) return
+        if((closestTarget.second ?: Int.MAX_VALUE) == Int.MAX_VALUE) return
 
         // step towards, making sure to account for equal options
         // Get the com.drinkscabinet.aoc2018.path to this target

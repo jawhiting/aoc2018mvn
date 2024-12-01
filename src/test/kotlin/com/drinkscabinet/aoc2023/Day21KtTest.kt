@@ -104,8 +104,8 @@ class Day21KtTest {
 
     private fun drawExtended(grid: GridString, visited: Set<Coord>, nextToVisit: Set<Coord>) {
         val g2 = GridString(' ', true)
-        val xr = visited.minBy { it.x }.x - 5..visited.maxBy { it.x }.x + 5
-        val yr = visited.minBy { it.y }.y - 5..visited.maxBy { it.y }.y + 5
+        val xr = visited.minBy { it.x }.x - 5..visited.maxByOrNull { it.x }!!.x + 5
+        val yr = visited.minBy { it.y }.y - 5..visited.maxByOrNull { it.y }!!.y + 5
         val gxr = grid.getXRange()
         val gyr = grid.getYRange()
         for (y in yr) {

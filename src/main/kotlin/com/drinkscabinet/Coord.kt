@@ -66,13 +66,13 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
         }
     }
 
-    inline fun distance(x: Long, y: Long): Long {
+    fun distance(x: Long, y: Long): Long {
         return abs(this.x - x) + abs(this.y - y)
     }
 
     fun rotate90(c: Int): Coord {
         var amount = c % 4
-        if (amount < 0) amount = 4 + amount
+        if (amount < 0) amount += 4
         var result = this
         for (i in 1..amount) {
             result = result.rotate90()

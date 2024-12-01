@@ -21,11 +21,11 @@ enum class Direction(override val x: Int, override val y: Int) : Delta {
     override fun rotate(c: Int): Direction {
         var amount = c % 4
         if (c < 0) amount += 4
-        return values()[(ordinal + amount) % values().size]
+        return Direction.entries[(ordinal + amount) % Direction.entries.size]
     }
 
     fun opposite(): Direction {
-        return entries[(ordinal + 2) % entries.size]
+        return Direction.entries[(ordinal + 2) % Direction.entries.size]
     }
 }
 

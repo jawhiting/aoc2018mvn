@@ -207,9 +207,9 @@ hdj{m>838:A,pv}
         companion object {
             fun parse(s: String): Workflow {
                 val id = s.substringBefore("{")
-                val rules = s.substringAfter("{").substringBefore("}").split(",")
+                val rules = s.substringAfter("{").substringBefore("}").split(",").toMutableList()
                 // last one is special
-                val defResult = rules.removeLast()!!
+                val defResult = rules.removeLast()
                 return Workflow(id, rules.map { Rule.parse(it) }, defResult)
             }
         }

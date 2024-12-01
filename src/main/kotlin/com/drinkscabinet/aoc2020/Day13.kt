@@ -88,7 +88,7 @@ private data class Tester(val buses: List<Pair<Long, Long>>) {
     val maxPair = buses.maxByOrNull { it.first }!!
     val firstPair = buses.first()
 
-    inline fun matches(toTest: Long): Boolean {
+    fun matches(toTest: Long): Boolean {
         return buses.none { toTest % it.first != it.second }
     }
 }

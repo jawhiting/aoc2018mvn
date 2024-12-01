@@ -21,21 +21,19 @@ private fun main() {
 private fun process(size: Int, instructions: String) : IntArray {
     var current = deck(size)
     for (instruction in instructions.lines()) {
-        if( instruction.startsWith("cut")) {
-            current = cut(current, Utils.extractInts(instruction).first())
-        }
-        else if (instruction.endsWith("stack")) {
-            current = newStack(current)
-        }
-        else {
-            current = increment(current, Utils.extractInts(instruction).first())
+        current = if( instruction.startsWith("cut")) {
+            cut(current, Utils.extractInts(instruction).first())
+        } else if (instruction.endsWith("stack")) {
+            newStack(current)
+        } else {
+            increment(current, Utils.extractInts(instruction).first())
         }
     }
     return current
 }
 
 private fun deck(size: Int ) : IntArray {
-    return IntArray(size, {it})
+    return IntArray(size) { it }
 }
 
 private fun newStack(arr: IntArray) : IntArray {

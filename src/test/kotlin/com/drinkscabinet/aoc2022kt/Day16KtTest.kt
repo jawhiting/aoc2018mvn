@@ -158,11 +158,11 @@ Valve JJ has flow rate=21; tunnel leads to valve II"""
 
             while (remaining.any { it > 0 } && rates.isNotEmpty()) {
                 // take the next item with the longest time
-                val timeIndex = remaining.indices.maxBy { remaining[it] }
+                val timeIndex = remaining.indices.maxByOrNull { remaining[it] }!!
                 // move earliest time
                 result += (remaining[timeIndex] - 1) * rates.removeFirst()
                 // increment earliest time
-                remaining[timeIndex] -= 1
+                remaining[timeIndex]--
             }
             return result
         }
