@@ -36,7 +36,7 @@ class Grid<V>(private val default: V) : MutableMap<Coord, V> {
     }
 
     fun neighbours4(pos: Coord): Iterable<Pair<Coord, V>> {
-        return neighbours(pos, Direction.values().asIterable())
+        return neighbours(pos, Direction.entries.asIterable())
     }
 
 }

@@ -35,7 +35,7 @@ class Ring<T> {
         }
         val target = index % size
         var cur = root!!
-        for (i in 1..target) {
+        (1..target).forEach { i ->
             cur = cur.next
         }
         return cur

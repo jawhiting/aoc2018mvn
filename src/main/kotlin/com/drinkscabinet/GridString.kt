@@ -24,7 +24,7 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         } else {
             chars[coord] = char
         }
-        invalidateRanges()
+        if(!contains(coord)) invalidateRanges()
     }
 
     operator fun plus(gridString: GridString): GridString {
@@ -352,7 +352,7 @@ fun main() {
 
     println(gs.toString(true))
 
-    for (i in 1..4) {
+    (1..4).forEach { i ->
         gs.rotate90(1).normalise()
         println(gs.toString(true))
         println(gs.getXRange())
