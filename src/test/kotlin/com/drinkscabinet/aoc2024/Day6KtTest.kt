@@ -69,12 +69,12 @@ class Day6KtTest {
         var curr = 0
         var total = options.size
         for(c in options) {
-            val gridObstacle = grid.copyOf()
-            gridObstacle[c] = '#'
-            if(!exits(startPos, startDir, gridObstacle)) {
+            grid[c] = '#'
+            if(!exits(startPos, startDir, grid)) {
                 count++
                 println("Loops with $c")
             }
+            grid[c] = '.'
 //            println("Tested ${curr++} out of $total")
         }
         return count
@@ -83,13 +83,10 @@ class Day6KtTest {
     private fun exits(start: Coord, startDir: Direction, grid: GridString) : Boolean {
         // navigate the path, track vector at each coord
         val visited = mutableMapOf(start to mutableSetOf(startDir))
-        val grid2 = grid.copyOf()
         var pos = start
         var dir = startDir
 
         while(grid.contains(pos)) {
-            // mark where we've been
-            grid2[pos] = 'X'
             // add to path
             visited.getOrPut(pos){mutableSetOf<Direction>()}.add(dir)
             // Check next step
