@@ -3,6 +3,10 @@ package com.drinkscabinet.aoc2024
 import com.drinkscabinet.Utils
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.lang.Math.pow
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.log10
 
 
 class Day7KtTest {
@@ -58,13 +62,31 @@ class Day7KtTest {
         val child = numbers.subList(1, numbers.size)
         return matches2(target, runningTotal * numbers[0], child) ||
             matches2(target, runningTotal + numbers[0], child) ||
-            matches2(target, concat(runningTotal,numbers[0]), child)
+            matches2(target, concat2(runningTotal,numbers[0]), child)
     }
 
 
 
     fun concat(a: Long, b: Long): Long {
         // concatenate two numbers together
-        return (a.toString() + b.toString()).toLong()
+        val result = (a.toString() + b.toString()).toLong()
+        val result2 = concat2(a,b)
+        if(result2 != result) {
+            println("a=$a b=$b result=$result result2=$result2")
+        }
+        return result
+    }
+
+    fun concat2(a: Long, b: Long): Long {
+        val p = floor(log10(b.toDouble())).toInt()+1
+        val mult = pow(10.0, p.toDouble()).toLong()
+        return (a * mult + b)
+    }
+
+    @Test
+    fun testConcat() {
+        assertEquals(1234L, concat(1L, 234L))
+        assertEquals(1234L, concat2(1L, 234L))
+        assertEquals(1231L, concat2(123L, 1L))
     }
 }
