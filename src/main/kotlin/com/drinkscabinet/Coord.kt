@@ -23,6 +23,13 @@ data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
         return Coord(this.x + c.x * times, this.y + c.y * times)
     }
 
+    /**
+     * What delta to we need to apply to this coord to move to b
+     */
+    fun diff(b: Coord) : Coord {
+        return Coord(b.x-x, b.y-y)
+    }
+
     operator fun plus(d: Delta): Coord {
         return move(d)
     }

@@ -23,4 +23,9 @@ class CoordTest {
             Coord(1, 1).to(Coord(2, 2)).toList()
         }
     }
+
+    @Test
+    fun testDiff() {
+        assertEquals(Coord(2,3), Coord(1,1).diff(Coord(3,4)))
+    }
 }

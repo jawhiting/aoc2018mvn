@@ -1,12 +1,31 @@
 import Direction8.values
 import DirectionHex.values
 import UpDown.values
+import com.drinkscabinet.Coord
 
 interface Delta {
     val x: Int
     val y: Int
 
     fun rotate(c: Int): Delta
+}
+
+class DeltaImpl(override val x: Int, override val y: Int) : Delta {
+
+    override fun rotate(c: Int): DeltaImpl {
+        var amount = c % 4
+        if (amount < 0) amount += 4
+        var result = this
+        for (i in 1..amount) {
+            result = result.rotate90()
+        }
+        return result
+    }
+
+    // Rotate 90 degrees clockwise
+    fun rotate90(): DeltaImpl {
+        return DeltaImpl(-y, x)
+    }
 }
 
 interface Delta3 {
