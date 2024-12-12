@@ -58,6 +58,18 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         return this
     }
 
+    /** Does this shape at the specified offset match the underlying characters
+     * this includes default, ie all must match
+     */
+    fun matches(offset: Coord, shape: GridString) : Boolean {
+        for ((pos, c) in shape.chars) {
+            if (this[pos.move(offset)] != c) {
+                return false
+            }
+        }
+        return true
+    }
+
     /** Does this shape at the specified offset overlap with
      * any non-default characters
      */

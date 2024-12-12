@@ -38,6 +38,13 @@ EEEEE
 EXXXX
 EEEEE"""
 
+    private val testData5 = """AAAAAA
+AAABBA
+AAABBA
+ABBAAA
+ABBAAA
+AAAAAA"""
+
     // Get the year and day from the class
     private val realData = Utils.input(this)
 
@@ -52,7 +59,12 @@ EEEEE"""
 
     @Test
     fun testPart2() {
-        assertEquals(259593838049805, this.part1(realData))
+        assertEquals(80, this.part2(testData1))
+        assertEquals(436, this.part2(testData2))
+        assertEquals(236, this.part2(testData4))
+        assertEquals(368, this.part2(testData5))
+        assertEquals(1206, this.part2(testData3))
+        assertEquals(815788, this.part2(realData))
     }
 
 
@@ -60,6 +72,12 @@ EEEEE"""
         val grid = GridString.parse(data)
         val regions = extractRegions(grid)
         return regions.sumOf { it.score(grid) }
+    }
+
+    private fun part2(data: String): Long {
+        val grid = GridString.parse(data)
+        val regions = extractRegions(grid)
+        return regions.sumOf { it.score2() }
     }
 
     private data class Region(
@@ -74,11 +92,69 @@ EEEEE"""
             return area * perimeter
         }
 
-        fun sides() : Int {
-            // Pick an edge and walk through its neighbours
-            return 0
+        fun score2(): Long {
+            val area = coords.size
+            val corners = countCorners(scale())
+            return area * corners.toLong()
+        }
+
+        fun scale(s: Int = 3): GridString {
+            val result = GridString()
+            for (c in coords) {
+                for (x in 0..s - 1) {
+                    for (y in 0..s - 1) {
+                        result[Coord(c.x * s + x, c.y * s + y)] = 'X'
+                    }
+                }
+            }
+            return result.normalise()
+        }
+
+        val corner = GridString.parse(
+            """..
+X."""
+        )
+        val innerCorner = GridString.parse(
+            """XX
+X."""
+        )
+
+        val xCorner = GridString.parse(
+            """X.
+.X"""
+        )
+
+        val corners = (0..3).map { corner.copyOf().rotate90(it).normalise() }
+        val innerCorners = (0..3).map { innerCorner.copyOf().rotate90(it).normalise() }
+        val xCorners = (0..3).map { xCorner.copyOf().rotate90(it).normalise() }
+
+        fun countCorners(grid: GridString): Int {
+            // count the number of inner and outer corners
+            var cornerCount = 0
+            for (rotate in 0..3) {
+                val c = corners[rotate]
+                val ic = innerCorners[rotate]
+                val xc = xCorners[rotate]
+
+                for (x in grid.getXMin() - 1..grid.getXMax() + 1) {
+                    for (y in grid.getYMin() - 1..grid.getYMax() + 1) {
+                        if (grid.matches(Coord(x, y), c)) {
+//                            println("Found corner at $x $y")
+                            cornerCount++
+                        } else if (grid.matches(Coord(x, y), ic)) {
+//                            println("Found innercorner at $x $y")
+                            cornerCount++
+                        } else if (grid.matches(Coord(x, y), xc)) {
+//                            println("Found xcorner at $x $y")
+                            cornerCount++
+                        }
+                    }
+                }
+            }
+            return cornerCount
         }
     }
+
 
     private fun extractRegions(grid: GridString): List<Region> {
         val regions = mutableListOf<Region>()
@@ -110,12 +186,10 @@ EEEEE"""
             if (matching.size != 4) {
                 edges.add(cur)
             }
-            toVisit.addAll(matching.map { it.first }.filter{it !in members})
+            toVisit.addAll(matching.map { it.first }.filter { it !in members })
         }
         return Region(c, members, edges)
     }
 
-    private fun part2(data: String): Long {
-        return 0L
-    }
+
 }
