@@ -42,6 +42,11 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         }
     }
 
+    fun setAll(coords: Iterable<Coord>, c: Char) : GridString {
+        coords.forEach { this[it] = c }
+        return this
+    }
+
     fun getExtra(coord: Coord): Long? {
         return extra[coord]
     }

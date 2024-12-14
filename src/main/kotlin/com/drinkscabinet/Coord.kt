@@ -239,7 +239,9 @@ fun main() {
     val l = sortedSetOf(
         Coord(9, 0),
         Coord(1, 1),
-        Coord(5, 0)
+        Coord(1, 2),
+        Coord(5, 0),
+        Coord(8, 0)
     )
     println(l)
 }
