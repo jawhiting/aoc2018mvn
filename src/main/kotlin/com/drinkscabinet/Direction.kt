@@ -50,6 +50,18 @@ enum class Direction(override val x: Int, override val y: Int) : Delta {
     fun opposite(): Direction {
         return Direction.entries[(ordinal + 2) % Direction.entries.size]
     }
+
+    companion object {
+        fun from(c: Char) : Direction {
+            return when(c) {
+                '^' -> Direction.N
+                '>' -> Direction.E
+                'v' -> Direction.S
+                '<' -> Direction.W
+                else -> throw RuntimeException("Invalid direction char $c")
+            }
+        }
+    }
 }
 
 enum class UpDown(override val x: Int, override val y: Int) : Delta {
