@@ -48,6 +48,25 @@ class Utils {
             }
             return lcm
         }
+
+        fun binarySearch(start: Long, end: Long, checker: (Long) -> Boolean): Pair<Long, Long> {
+            var lower = start
+            var upper = end
+            // TODO Validate that lower and upper are correct
+            var mid = (lower + upper)/2
+
+            while(mid != lower && mid != upper) {
+                val mr = checker(mid)
+                if(mr == true) {
+                    lower = mid
+                }
+                else {
+                    upper = mid
+                }
+                mid = (lower + upper)/2
+            }
+            return lower to upper
+        }
     }
 }
 
