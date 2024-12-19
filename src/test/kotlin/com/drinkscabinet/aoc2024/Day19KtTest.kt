@@ -53,7 +53,7 @@ bbrgwb"""
         return patterns.sumOf { canMake2(it, towels) }
     }
 
-    private val cache = mutableMapOf<String, Long>()
+    private val cache = HashMap<String, Long>()
 
 
     private fun canMake2(pattern: String, towels: Iterable<String>): Long {
