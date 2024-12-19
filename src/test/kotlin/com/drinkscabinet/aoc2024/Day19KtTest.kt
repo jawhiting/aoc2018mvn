@@ -22,9 +22,9 @@ bbrgwb"""
     // Get the year and day from the class
     private val realData = Utils.input(this)
 
-    private fun parse(data: String) : Pair<List<String>, List<String>> {
+    private fun parse(data: String): Pair<List<String>, List<String>> {
         val s = data.split("\n\n")
-        val towels = s[0].split(", ").map{it.trim()}
+        val towels = s[0].split(", ").map { it.trim() }
 
         val patterns = s[1].lines().map { it.trim() }
         return towels to patterns
@@ -55,13 +55,14 @@ bbrgwb"""
 
     private val cache = mutableMapOf<String, Long>()
 
-    private fun canMake2(pattern: String, towels: Iterable<String>) : Long {
-        if(pattern.isEmpty()) return 1
+
+    private fun canMake2(pattern: String, towels: Iterable<String>): Long {
+        if (pattern.isEmpty()) return 1
 
         // Otherwise we need to recurse
         val options = towels.filter { pattern.startsWith(it) }
         var count = 0L
-        for(o in options) {
+        for (o in options) {
             val remainingPattern = pattern.substring(o.length)
             count += cache.getOrPut(remainingPattern) { canMake2(remainingPattern, towels) }
         }
