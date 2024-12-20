@@ -49,21 +49,27 @@ class Utils {
             return lcm
         }
 
+        /**
+         * Given a range, and a checker function, return the pair where the checker transitions from false to true
+         * So, the first element of the pair is the last element that returns false, and the second is the first element that returns true
+         */
         fun binarySearch(start: Long, end: Long, checker: (Long) -> Boolean): Pair<Long, Long> {
+            assert(start < end) { "Start $start must be less than end $end" }
+            assert(checker(start) == false) { "Checker for Start $start must be false" }
+            assert(checker(end) == true) { "Checker for end $end must be true" }
             var lower = start
             var upper = end
-            // TODO Validate that lower and upper are correct
-            var mid = (lower + upper)/2
 
-            while(mid != lower && mid != upper) {
+            var mid = (lower + upper) / 2
+
+            while (mid != lower && mid != upper) {
                 val mr = checker(mid)
-                if(mr == true) {
+                if (mr == true) {
                     lower = mid
-                }
-                else {
+                } else {
                     upper = mid
                 }
-                mid = (lower + upper)/2
+                mid = (lower + upper) / 2
             }
             return lower to upper
         }

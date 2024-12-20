@@ -34,6 +34,22 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         return this
     }
 
+    /**
+     * Draw a rectangular border in the grid
+     */
+    fun drawRect(topLeft: Coord, bottomRight: Coord, c: Char='#') : GridString {
+        // Just draw the edges of the rectangle, not filled
+        for (x in topLeft.x..bottomRight.x) {
+            this[Coord(x, topLeft.y)] = c
+            this[Coord(x, bottomRight.y)] = c
+        }
+        for (y in topLeft.y..bottomRight.y) {
+            this[Coord(topLeft.x, y)] = c
+            this[Coord(bottomRight.x, y)] = c
+        }
+        return this
+    }
+
     fun setExtra(coord: Coord, e: Long?) {
         if (e != null) {
             extra[coord] = e
