@@ -57,13 +57,9 @@ class Day18KtTest {
     private fun part1(data: String, count: Int, range: IntRange): Int {
         // Draw bounds around a grid
         val grid = GridString()
-        // draw square bounds
-        for (i in range.min() - 1..range.max() + 1) {
-            grid[Coord(i, range.min() - 1)] = '#'
-            grid[Coord(i, range.max() + 1)] = '#'
-            grid[Coord(range.min() - 1, i)] = '#'
-            grid[Coord(range.max() + 1, i)] = '#'
-        }
+        // draw square bounds using drawRect
+        grid.drawRect(Coord(range.min()-1, range.min()-1), Coord(range.max()+1, range.max()+1), '#')
+
         println(grid)
         corrupt(count, data, grid)
         println(grid)
@@ -80,12 +76,8 @@ class Day18KtTest {
         // Draw bounds around a grid
         val grid = GridString()
         // draw square bounds
-        for (i in range.min() - 1..range.max() + 1) {
-            grid[Coord(i, range.min() - 1)] = '#'
-            grid[Coord(i, range.max() + 1)] = '#'
-            grid[Coord(range.min() - 1, i)] = '#'
-            grid[Coord(range.max() + 1, i)] = '#'
-        }
+        grid.drawRect(Coord(range.min()-1, range.min()-1), Coord(range.max()+1, range.max()+1), '#')
+
         val start = Coord(range.min(), range.min())
         val end = Coord(range.max(), range.max())
 
