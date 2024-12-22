@@ -1,7 +1,7 @@
+
 import Direction8.values
 import DirectionHex.values
-import UpDown.values
-import com.drinkscabinet.Coord
+import UpDown.entries
 
 interface Delta {
     val x: Int
@@ -54,26 +54,38 @@ enum class Direction(override val x: Int, override val y: Int) : Delta {
     companion object {
         fun from(c: Char) : Direction {
             return when(c) {
-                '^' -> Direction.N
-                '>' -> Direction.E
-                'v' -> Direction.S
-                '<' -> Direction.W
+                '^' -> N
+                '>' -> E
+                'v' -> S
+                '<' -> W
                 else -> throw RuntimeException("Invalid direction char $c")
             }
         }
     }
 }
 
-enum class UpDown(override val x: Int, override val y: Int) : Delta {
-    U(0, -1),
-    R(1, 0),
-    D(0, 1),
-    L(-1, 0);
+enum class UpDown(override val x: Int, override val y: Int, val c: Char) : Delta {
+    U(0, -1, '^'),
+    R(1, 0, '>'),
+    D(0, 1,'v'),
+    L(-1, 0, '<');
 
     override fun rotate(c: Int): UpDown {
         var amount = c % 4
         if (c < 0) amount += 4
-        return values()[(ordinal + amount) % values().size]
+        return entries[(ordinal + amount) % entries.size]
+    }
+
+    companion object {
+        fun from(c: Char) : UpDown {
+            return when(c) {
+                '^' -> U
+                '>' -> R
+                'v' -> D
+                '<' -> L
+                else -> throw RuntimeException("Invalid UpDown char $c")
+            }
+        }
     }
 
 }
