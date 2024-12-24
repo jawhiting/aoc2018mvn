@@ -9,7 +9,11 @@ import org.junit.jupiter.api.Test
 
 class Day21KtTest {
 
-    private val testData = """"""
+    private val testData = """029A
+980A
+179A
+456A
+379A"""
 
 
     // Get the year and day from the class
@@ -18,7 +22,10 @@ class Day21KtTest {
 
     @Test
     fun testPart1() {
-        assertEquals(36, this.part1(testData))
+        assertEquals(126384, this.part1(testData))
+        // mine v<<A>>^AvA^Av<<A>>^AAv<A<A>>^AAvAA<^A>Av<A>^AA<A>Av<A<A>>^AAAvA<^A>A
+        // mine v<<A>>^AvA^Av<<A>>^AAv<A<A>>^AAvAA<^A>Av<A>^AA<A>Av<A<A>>^AAAvA<^A>A
+        // them <v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A
         assertEquals(638, this.part1(realData))
     }
 
@@ -28,28 +35,69 @@ class Day21KtTest {
         assertEquals(1289, this.part2(realData))
     }
 
-    private fun part1(data: String): Int {
-        return 0
+    fun part1(data: String) : Int {
+        var result = 0
+        for(d in data.lines()) {
+            val length = enterPart1(d)
+            val numeric = Utils.extractInts(d)[0]
+            println("Code $d length $length numeric $numeric score ${length*numeric}")
+            result += length * numeric
+        }
+        return result
+    }
+
+    @Test
+    fun testEnterPart1() {
+        val example = "<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A"
+        val expected = """<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A
+v<<A>>^A<A>AvA<^AA>A<vAAA>^A
+<A^A>^^AvvvA
+029A"""
+        for(e in expected.lines()) {
+            println("Expected length: ${e.length}")
+        }
+        assertEquals(example.length, enterPart1("029A"))
+    }
+
+    private fun enterPart1(code: String): Int {
+        val pad = Pad(numPadLayout, listOf(UpDown.U, UpDown.R, UpDown.D, UpDown.L))
+        val dPad = Pad(dPadLayout, listOf(UpDown.R, UpDown.D, UpDown.L, UpDown.U))
+
+        val pads = listOf(pad, dPad, dPad)
+        val code = enter(code, pads)
+        println("Code: $code")
+        return code.length
     }
 
     private fun part2(data: String): Int {
         return 0
     }
 
+    private fun enter(number: String, pads: List<Pad>): String {
+        // expand out from the base pad
+        var code = number
+        for((i,p) in pads.withIndex()) {
+            val nextCode = p.enter(code).joinToString("")
+            println("To enter code $code using pad $i: ${nextCode.length} $nextCode")
+            code = nextCode
+        }
+        return code
+    }
+
 
     @Test
     fun testNumberPad() {
         val pad = Pad(numPadLayout, listOf(UpDown.U, UpDown.R, UpDown.D, UpDown.L))
-        val dPad = Pad(dPadLayout, listOf(UpDown.R, UpDown.D, UpDown.L, UpDown.U))
+        val dPad = Pad(dPadLayout, listOf(UpDown.D, UpDown.R, UpDown.L, UpDown.U))
         val moves = pad.enter("029A").joinToString("")
-        println(moves)
+        println("Moves: " + moves)
         val moves1 = dPad.enter(moves).joinToString("")
-        println(moves1)
+        println("Moves1: " + moves1)
         assertEquals(12, moves.length)
         val k1 = "v<<A>>^A<A>AvA<^AA>A<vAAA>^A"
-        println(dPad.move('A', '^').toList().joinToString(""))
+//        println("Mine: " + dPad.move('A', '^').toList().joinToString(""))
 
-        println(k1)
+        println("Them  : " + k1)
         assertEquals(k1.length, moves1.length)
 
         /**
@@ -76,12 +124,16 @@ class Day21KtTest {
 
     private class Pad(layout: String, val moveSeq: List<UpDown>) {
         private val keyPositions = mutableMapOf<Char, Coord>()
+        private var dead : Coord = Coord(0,0)
 
         init {
             layout.lines().forEachIndexed { y, line ->
                 line.forEachIndexed { x, c ->
                     if (c != '#') {
                         keyPositions[c] = Coord(x, y)
+                    }
+                    else {
+                        dead = Coord(x, y)
                     }
                 }
             }
@@ -107,6 +159,8 @@ class Day21KtTest {
                         // If this move gets us closer, do it
                         yield(m)
                         pos += m
+                        assert(pos != dead, { "Dead at $pos" })
+                        break
                     }
                 }
             }
