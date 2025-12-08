@@ -17,6 +17,10 @@ class Utils {
             return "(-?\\d+)".toRegex().findAll(s).asIterable().map { it.value.toLong() }.toLongArray()
         }
 
+        fun extractULongs(s: String): LongArray {
+            return "(\\d+)".toRegex().findAll(s).asIterable().map { it.value.toLong() }.toLongArray()
+        }
+
         fun input(year: Int, day: Int): String {
             return {}.javaClass.getResource("/$year/day$day.txt")?.readText()!!
         }

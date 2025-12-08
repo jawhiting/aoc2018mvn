@@ -5,6 +5,8 @@ import Delta3
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 data class Coord(val x: Long, val y: Long) : Comparable<Coord> {
     constructor(x: Int, y: Int) : this(x.toLong(), y.toLong())
@@ -138,6 +140,10 @@ data class Coord3(override val x: Long, override val y: Long, override val z: Lo
 
     fun distance(other: Coord3): Long {
         return abs(x - other.x) + abs(y - other.y) + abs(z - other.z)
+    }
+
+    fun euclidianDistance(other: Coord3): Double {
+        return sqrt((x - other.x).toDouble().pow(2) + (y - other.y).toDouble().pow(2) + (z - other.z).toDouble().pow(2))
     }
 
     fun move(d: Delta3, times: Long = 1): Coord3 {

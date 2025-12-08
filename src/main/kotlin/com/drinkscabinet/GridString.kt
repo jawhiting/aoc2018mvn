@@ -174,6 +174,18 @@ class GridString(val default: Char = '.', val ignoreDefault: Boolean = false) {
         return true
     }
 
+    fun getColumn(x: Long): List<Char> {
+        val result = mutableListOf<Char>()
+        for (y in getYRange()) {
+            result.add(this[Coord(x, y)])
+        }
+        return result
+    }
+
+    fun getRowEntries(y: Long, includeEmpty: Boolean = false): List<Pair<Coord, Char>> {
+        return chars.filter { it.key.y == y }.toList().sortedBy { it.first.x }
+    }
+
     fun <T> addAllExtra(m: Map<Coord, T>, transformer: (v: T) -> Pair<Char, String?>): GridString {
         m.entries.forEach {
             val r = transformer.invoke(it.value)

@@ -9,11 +9,11 @@ private fun main() {
         val c = Computer(i, comp.clone(), router)
         router.add(c)
     }
-    router.part1()
+    router.part2()
 }
 
 private class Computer(val address: Long, val computer: IntCode, val router: Router) {
-    val input = mutableListOf(address.toLong())
+    val input = mutableListOf(address)
 
     val buffer = mutableListOf<Long>()
     var interrupt = false
