@@ -17,11 +17,11 @@
         <kotlin.code.style>official</kotlin.code.style>
         <junit.version>5.10.2</junit.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <kotlin.compiler.jvmTarget>26</kotlin.compiler.jvmTarget>
+        <kotlin.compiler.jvmTarget>25</kotlin.compiler.jvmTarget>
         <kotlin.compiler.languageVersion>2.4</kotlin.compiler.languageVersion>
         <kotlin.compiler.apiVersion>2.4</kotlin.compiler.apiVersion>
-        <maven.compiler.source>26</maven.compiler.source>
-        <maven.compiler.target>26</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
     </properties>
 
     <dependencies>
