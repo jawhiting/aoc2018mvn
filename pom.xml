@@ -13,13 +13,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>2.1.10</kotlin.version>
+        <kotlin.version>2.4.21</kotlin.version>
         <kotlin.code.style>official</kotlin.code.style>
         <junit.version>5.10.2</junit.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <kotlin.compiler.jvmTarget>23</kotlin.compiler.jvmTarget>
-        <kotlin.compiler.languageVersion>2.1</kotlin.compiler.languageVersion>
-        <kotlin.compiler.apiVersion>2.1</kotlin.compiler.apiVersion>
+        <kotlin.compiler.languageVersion>2.4</kotlin.compiler.languageVersion>
+        <kotlin.compiler.apiVersion>2.4</kotlin.compiler.apiVersion>
         <maven.compiler.source>23</maven.compiler.source>
         <maven.compiler.target>23</maven.compiler.target>
     </properties>
